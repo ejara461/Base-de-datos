@@ -1,0 +1,1656 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Clase 1 · Contextualización de Bases de Datos · IE María de los Ángeles Cano</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --tinta:#06182E; --azul900:#0A2A52; --azul700:#12457F; --azul500:#1E6FB8;
+  --azul300:#6BAEDB; --azul050:#E8F1F9; --papel:#FFFFFF; --nieve:#F4F8FC;
+  --linea:#CFE0EF; --alerta:#C81E33; --ok:#0F7A6C; --ambar:#A76A00;
+  --display:'Space Grotesk','Segoe UI',system-ui,sans-serif;
+  --cuerpo:'IBM Plex Sans','Segoe UI',system-ui,sans-serif;
+  --mono:'IBM Plex Mono','Consolas',monospace;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth; scroll-padding-top:104px}
+body{margin:0;background:var(--nieve);color:var(--tinta);font-family:var(--cuerpo);font-size:16.5px;line-height:1.62}
+h1,h2,h3,h4{font-family:var(--display);line-height:1.2;margin:0 0 .5em}
+a{color:var(--azul700)}
+code,.mono{font-family:var(--mono)}
+
+/* ---------- Barra superior ---------- */
+.barra{position:sticky;top:0;z-index:50;background:linear-gradient(180deg,var(--azul900),var(--azul700));color:#fff;
+  border-bottom:3px solid var(--azul300);box-shadow:0 2px 14px rgba(6,24,46,.18)}
+.barra-in{max-width:1400px;margin:0 auto;padding:10px 18px;display:flex;gap:16px;align-items:center;flex-wrap:wrap}
+.marca{display:flex;gap:12px;align-items:center}
+.marca img{width:52px;height:52px;object-fit:contain;background:#fff;border-radius:10px;padding:4px}
+.marca .txt strong{font-family:var(--display);font-size:.95rem;display:block;letter-spacing:.02em}
+.marca .txt span{font-size:.72rem;opacity:.85;letter-spacing:.09em;text-transform:uppercase}
+.titulo-clase{font-family:var(--display);font-weight:600;font-size:1rem;padding-left:16px;border-left:1px solid rgba(255,255,255,.28);flex:1;min-width:220px}
+.titulo-clase small{display:block;font-weight:400;font-size:.74rem;opacity:.8;font-family:var(--cuerpo)}
+.reloj{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.crono{font-family:var(--mono);font-size:1.05rem;background:rgba(255,255,255,.12);padding:5px 11px;border-radius:8px;border:1px solid rgba(255,255,255,.22)}
+.crono.rojo{background:var(--alerta);border-color:var(--alerta)}
+.bt{font-family:var(--cuerpo);font-size:.78rem;font-weight:600;cursor:pointer;border-radius:8px;padding:6px 11px;
+  border:1px solid rgba(255,255,255,.35);background:rgba(255,255,255,.1);color:#fff}
+.bt:hover{background:rgba(255,255,255,.22)}
+.progreso{width:100%;height:5px;background:rgba(255,255,255,.15)}
+.progreso i{display:block;height:100%;width:0;background:var(--azul300);transition:width .4s}
+
+/* ---------- Estructura ---------- */
+.marco{max-width:1400px;margin:0 auto;display:grid;grid-template-columns:262px 1fr;gap:26px;padding:26px 18px 80px}
+.rail{position:sticky;top:118px;align-self:start;background:var(--papel);border:1px solid var(--linea);border-radius:12px;overflow-y:auto;overflow-x:hidden;max-height:calc(100vh - 140px);overscroll-behavior:contain;scrollbar-width:thin;scrollbar-color:var(--azul300) var(--azul050)}
+.rail::-webkit-scrollbar{width:9px}
+.rail::-webkit-scrollbar-track{background:var(--azul050);border-radius:0 12px 12px 0}
+.rail::-webkit-scrollbar-thumb{background:var(--azul300);border-radius:9px;border:2px solid var(--azul050)}
+.rail::-webkit-scrollbar-thumb:hover{background:var(--azul500)}
+.rail h4{font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;color:var(--azul700);margin:0;padding:12px 14px 8px;border-bottom:1px solid var(--linea);position:sticky;top:0;background:var(--papel);z-index:2}
+.rail a{display:grid;grid-template-columns:34px 1fr;gap:6px;padding:8px 12px;text-decoration:none;color:var(--tinta);
+  font-size:.83rem;border-bottom:1px solid #EDF3F9;align-items:center}
+.rail a .id{font-family:var(--mono);font-size:.72rem;color:var(--azul500);background:var(--azul050);border-radius:5px;text-align:center;padding:2px 0}
+.rail a .mn{display:block;font-size:.7rem;color:#5C7189}
+.rail a:hover{background:var(--azul050)}
+.rail a.on{background:var(--azul050);box-shadow:inset 3px 0 0 var(--azul500)}
+.rail .pausa{background:#FFF4E0;color:#7A4E00}
+.rail .pausa .id{background:#F5D9A8;color:#7A4E00}
+
+main{min-width:0}
+section{background:var(--papel);border:1px solid var(--linea);border-radius:14px;padding:26px 28px;margin-bottom:22px}
+.eyebrow{font-family:var(--mono);font-size:.72rem;letter-spacing:.1em;color:var(--azul500);text-transform:uppercase;margin-bottom:6px}
+.eyebrow b{color:var(--ambar)}
+section h2{font-size:1.55rem;color:var(--azul900)}
+section h3{font-size:1.08rem;color:var(--azul700);margin-top:1.5em}
+p{margin:.7em 0}
+ul,ol{margin:.6em 0 .6em 1.1em;padding:0}
+li{margin:.3em 0}
+
+/* ---------- Componentes ---------- */
+.hero{background:linear-gradient(135deg,var(--azul900) 0%,var(--azul700) 55%,var(--azul500) 100%);color:#fff;border:none}
+.hero h2,.hero h1{color:#fff}
+.hero h1{font-size:2.25rem;letter-spacing:-.02em}
+.hero .lede{font-size:1.06rem;max-width:66ch;opacity:.95}
+.pill-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px}
+.pill{font-family:var(--mono);font-size:.74rem;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.3);
+  padding:5px 10px;border-radius:20px}
+
+.caja{border-left:4px solid var(--azul500);background:var(--azul050);border-radius:0 10px 10px 0;padding:14px 18px;margin:16px 0}
+.caja h4{margin:0 0 .3em;font-size:.95rem;color:var(--azul900)}
+.villano{border-left-color:var(--alerta);background:#FDF0F1}
+.villano h4{color:#8E1522}
+.taller{border-left-color:var(--ok);background:#EAF5F3}
+.taller h4{color:#0B564C}
+.nota{border-left-color:var(--ambar);background:#FFF7E8}
+.nota h4{color:#7A4E00}
+
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:14px;margin:16px 0}
+.tarjeta{border:1px solid var(--linea);border-radius:11px;padding:14px 16px;background:var(--nieve)}
+.tarjeta h4{font-size:.95rem;color:var(--azul700);margin-bottom:.3em}
+.tarjeta p{margin:.3em 0;font-size:.92rem}
+
+table{width:100%;border-collapse:collapse;margin:16px 0;font-size:.9rem}
+th,td{border:1px solid var(--linea);padding:8px 10px;text-align:left;vertical-align:top}
+th{background:var(--azul050);color:var(--azul900);font-family:var(--display);font-size:.85rem}
+tbody tr:nth-child(even){background:#FAFCFE}
+
+.archivo{border:1px solid var(--linea);border-radius:10px;overflow:hidden;margin:14px 0;background:#fff}
+.archivo .cab{background:var(--azul900);color:#fff;font-family:var(--mono);font-size:.78rem;padding:7px 12px;display:flex;justify-content:space-between;align-items:center}
+.archivo pre{margin:0;padding:12px;font-family:var(--mono);font-size:.8rem;overflow-x:auto;background:#F7FAFD;color:#183654}
+.archivo table{margin:0;font-size:.82rem}
+.archivo td.marcada{background:#FDE3E6;outline:2px solid var(--alerta);cursor:pointer}
+.archivo td{cursor:pointer}
+
+details{border:1px solid var(--linea);border-radius:10px;padding:10px 14px;margin:12px 0;background:var(--nieve)}
+summary{cursor:pointer;font-weight:600;color:var(--azul700);font-family:var(--display);font-size:.93rem}
+details[open]{background:#fff}
+
+.btn{font-family:var(--display);font-weight:600;font-size:.86rem;cursor:pointer;border:none;border-radius:9px;
+  padding:9px 16px;background:var(--azul700);color:#fff;margin:4px 6px 4px 0}
+.btn:hover{background:var(--azul500)}
+.btn.sec{background:#fff;color:var(--azul700);border:1px solid var(--azul300)}
+.btn.sec:hover{background:var(--azul050)}
+
+/* Quiz */
+.quiz{border:1px solid var(--linea);border-radius:12px;padding:16px 18px;background:var(--nieve);margin:16px 0}
+.q{padding:12px 0;border-bottom:1px dashed var(--linea)}
+.q:last-of-type{border-bottom:none}
+.qt{font-weight:600;margin:0 0 8px}
+.opt{display:block;width:100%;text-align:left;background:#fff;border:1px solid var(--linea);border-radius:9px;
+  padding:9px 13px;margin:5px 0;cursor:pointer;font-family:var(--cuerpo);font-size:.92rem;color:var(--tinta)}
+.opt:hover{border-color:var(--azul500);background:var(--azul050)}
+.opt.bien{border-color:var(--ok);background:#E7F5F2;font-weight:600}
+.opt.mal{border-color:var(--alerta);background:#FDF0F1}
+.opt:disabled{cursor:default}
+.fb{font-size:.87rem;margin:8px 0 0;padding:9px 12px;border-radius:8px;background:#fff;border:1px solid var(--linea);display:none}
+.fb.ver{display:block}
+.marcador{font-family:var(--mono);font-size:.9rem;background:var(--azul900);color:#fff;display:inline-block;padding:6px 12px;border-radius:8px;margin-top:10px}
+
+/* Clasificador */
+.clasi{margin:16px 0}
+.citem{display:flex;gap:10px;align-items:center;flex-wrap:wrap;border:1px solid var(--linea);border-radius:10px;
+  padding:9px 12px;margin:7px 0;background:#fff}
+.citem .val{flex:1;min-width:200px;font-family:var(--mono);font-size:.86rem}
+.citem .cb{font-size:.76rem;padding:5px 10px;border-radius:16px;border:1px solid var(--azul300);background:#fff;
+  color:var(--azul700);cursor:pointer;font-family:var(--cuerpo)}
+.citem .cb.sel{background:var(--azul700);color:#fff;border-color:var(--azul700)}
+.citem.bien{border-color:var(--ok);background:#F0F9F7}
+.citem.mal{border-color:var(--alerta);background:#FDF4F5}
+
+/* Línea de tiempo */
+.tl{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:12px;margin:18px 0}
+.flip{perspective:1000px;height:172px;cursor:pointer}
+.flip-in{position:relative;width:100%;height:100%;transition:transform .55s;transform-style:preserve-3d}
+.flip.girada .flip-in{transform:rotateY(180deg)}
+.cara{position:absolute;inset:0;backface-visibility:hidden;border-radius:12px;padding:14px;display:flex;flex-direction:column;
+  justify-content:center;border:1px solid var(--linea)}
+.cara.frente{background:linear-gradient(150deg,var(--azul700),var(--azul500));color:#fff}
+.cara.frente .anio{font-family:var(--mono);font-size:1.5rem;font-weight:600}
+.cara.frente .ev{font-family:var(--display);font-size:.95rem;margin-top:6px}
+.cara.detras{background:#fff;transform:rotateY(180deg);font-size:.82rem;overflow:auto}
+@media (prefers-reduced-motion:reduce){.flip-in{transition:none}}
+
+/* Orden */
+.orden .oitem{border:1px solid var(--linea);background:#fff;border-radius:9px;padding:9px 13px;margin:6px 0;cursor:pointer;font-size:.9rem}
+.orden .oitem.eleg{background:var(--azul050);border-color:var(--azul500)}
+.orden .oitem .num{font-family:var(--mono);color:var(--azul500);margin-right:8px}
+.orden .oitem.bien{border-color:var(--ok);background:#EDF8F5}
+.orden .oitem.mal{border-color:var(--alerta);background:#FDF2F3}
+
+/* Compromisos */
+.compromiso{display:flex;gap:12px;align-items:flex-start;border:1px solid var(--linea);border-radius:11px;padding:12px 15px;
+  margin:9px 0;background:#fff;cursor:pointer}
+.compromiso input{margin-top:5px;width:19px;height:19px;accent-color:var(--azul700);cursor:pointer}
+.compromiso.ok{border-color:var(--ok);background:#F1F9F7}
+.compromiso b{display:block;font-family:var(--display);font-size:.98rem;color:var(--azul900)}
+.compromiso span{font-size:.87rem;color:#43586E}
+
+/* Editor de taller */
+.hoja textarea, .hoja input[type=text]{width:100%;border:1px solid var(--linea);border-radius:8px;padding:9px 11px;
+  font-family:var(--cuerpo);font-size:.9rem;color:var(--tinta);background:#fff}
+.hoja textarea{min-height:88px;resize:vertical}
+.hoja label{display:block;font-size:.83rem;font-weight:600;color:var(--azul700);margin:12px 0 4px}
+
+/* Recursos */
+.links{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:11px;margin:14px 0}
+.link{display:block;border:1px solid var(--linea);border-radius:10px;padding:12px 14px;text-decoration:none;background:#fff}
+.link:hover{border-color:var(--azul500);background:var(--azul050)}
+.link b{display:block;font-family:var(--display);font-size:.92rem;color:var(--azul900)}
+.link span{font-size:.8rem;color:#4A6076}
+.link em{font-family:var(--mono);font-size:.72rem;color:var(--azul500);font-style:normal}
+
+.docente{display:none;border:1px dashed var(--azul500);background:#F2F8FD;border-radius:10px;padding:12px 16px;margin:14px 0}
+body.ver-docente .docente{display:block}
+.docente h4{font-size:.82rem;letter-spacing:.1em;text-transform:uppercase;color:var(--azul500);margin:0 0 .4em}
+.docente p,.docente li{font-size:.89rem}
+
+.visto{display:flex;gap:10px;align-items:center;margin-top:22px;padding-top:14px;border-top:1px solid var(--linea);font-size:.86rem;color:#4A6076}
+.visto input{width:19px;height:19px;accent-color:var(--ok)}
+
+.pie{max-width:1400px;margin:0 auto;padding:0 18px 60px;color:#5C7189;font-size:.8rem;text-align:center}
+
+@media(max-width:980px){
+  .marco{grid-template-columns:1fr;padding:16px 12px 60px}
+  .rail{position:static;max-height:46vh;overflow-y:auto}
+  section{padding:20px 17px}
+  .hero h1{font-size:1.6rem}
+  html{scroll-padding-top:150px}
+}
+@media print{
+  .barra,.rail,.btn,.bt{display:none!important}
+  .marco{display:block;max-width:none}
+  section{break-inside:avoid;border:1px solid #999;box-shadow:none}
+  body.ver-docente .docente{display:block}
+  .cara.detras{position:static;transform:none;height:auto}
+  .flip{height:auto}.cara.frente{position:static}
+}
+</style>
+
+<style>
+/* Identificación del estudiante y envío */
+.ident-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px;margin:10px 0 16px}
+.ident-grid label{display:block;font-size:.83rem;font-weight:600;color:var(--azul700);margin:0 0 4px}
+.ident-grid input{width:100%;border:1px solid var(--linea);border-radius:8px;padding:9px 11px;
+  font-family:var(--cuerpo);font-size:.92rem;color:var(--tinta);background:#fff}
+.ident-grid input:focus{outline:2px solid var(--azul500);outline-offset:1px}
+.chip-est{font-family:var(--mono);font-size:.75rem;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.3);
+  padding:5px 10px;border-radius:20px;color:#fff;display:none}
+.chip-est.ver{display:inline-block}
+#estadoEnvio{margin:10px 0 0;padding:9px 12px;border-radius:8px;display:none}
+#estadoEnvio.ok{display:block;background:#EAF5F3;border:1px solid var(--ok);color:#0B564C}
+#estadoEnvio.err{display:block;background:#FDF0F1;border:1px solid var(--alerta);color:#8E1522}
+.btn[disabled]{opacity:.5;cursor:not-allowed}
+</style>
+
+<style>
+/* ================= AJUSTES RESPONSIVE ================= */
+html{-webkit-text-size-adjust:100%}
+img,svg{max-width:100%;height:auto}
+pre{max-width:100%}
+#btMenu{display:none}
+input,textarea,select,button{font-size:16px}
+
+@media(max-width:1180px){
+  .marco{grid-template-columns:224px 1fr;gap:18px}
+}
+
+@media(max-width:980px){
+  html{scroll-padding-top:92px}
+  .barra-in{padding:8px 12px;gap:9px;row-gap:7px}
+  .marca img{width:42px;height:42px}
+  .marca .txt strong{font-size:.84rem}
+  .marca .txt span{font-size:.63rem}
+  .titulo-clase{order:3;width:100%;min-width:0;padding-left:0;border-left:none;font-size:.88rem}
+  .titulo-clase small{font-size:.7rem}
+  .reloj{order:4;width:100%;gap:6px}
+  .crono{font-size:.95rem;padding:4px 9px}
+  .bt{padding:8px 11px;font-size:.74rem}
+  .chip-est{font-size:.7rem;padding:4px 9px}
+
+  #btMenu{display:flex;justify-content:space-between;align-items:center;width:100%;margin:0 0 13px;
+    padding:13px 15px;border:1px solid var(--linea);background:var(--papel);border-radius:12px;
+    font-family:var(--display);font-weight:600;font-size:.92rem;color:var(--azul900);cursor:pointer}
+  #btMenu span{font-family:var(--mono);font-size:.78rem;color:var(--azul500)}
+  .rail{display:none;margin-bottom:14px;max-height:62vh}
+  .rail.abierto{display:block}
+  .rail a{padding:11px 12px;font-size:.86rem}
+
+  section{padding:19px 15px;border-radius:12px;margin-bottom:16px}
+  section h2{font-size:1.32rem}
+  section h3{font-size:1.02rem}
+  .hero h1{font-size:1.55rem}
+  .hero .lede{font-size:.97rem}
+  .caja{padding:13px 15px}
+  .opt{padding:12px 13px}
+  .btn{padding:11px 16px;margin:5px 6px 5px 0}
+  .compromiso{padding:12px 14px}
+  .citem{padding:11px 12px}
+  .citem .cb{padding:7px 12px;font-size:.78rem}
+  .citem .val{min-width:100%}
+  .flip{height:205px}
+  .cara.detras{font-size:.8rem}
+  .nivvis{min-height:0}
+}
+
+@media(max-width:760px){
+  body{font-size:16px}
+  .marco{padding:14px 11px 60px}
+  table{display:block;overflow-x:auto;-webkit-overflow-scrolling:touch}
+  th,td{min-width:112px}
+  .hoja td[contenteditable]{min-width:140px}
+  .grid2,.links,.tl,.ident-grid{grid-template-columns:1fr}
+  .archivo pre{font-size:.75rem}
+  .marcador{display:block;text-align:center}
+  .visto{align-items:flex-start}
+}
+
+@media(max-width:420px){
+  .marca .txt{display:none}
+  .titulo-clase{font-size:.84rem}
+  .bt{flex:1 1 auto;text-align:center}
+  section{padding:16px 13px}
+  section h2{font-size:1.2rem}
+  .hero h1{font-size:1.35rem}
+  .flip{height:230px}
+}
+
+@media print{#btMenu{display:none!important}}
+</style>
+</head>
+<body>
+
+<header class="barra">
+  <div class="barra-in">
+    <div class="marca">
+      <img src="data:image/png;base64,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" alt="Logo IE María de los Ángeles Cano">
+      <div class="txt">
+        <strong>IE María de los Ángeles Cano</strong>
+        <span>Medellín · Media Técnica</span>
+      </div>
+    </div>
+    <div class="titulo-clase">
+      Clase 1 · Contextualización de Bases de Datos
+      <small>Técnico Laboral en Desarrollo de Software · Grado 11 · 4 h 30 min</small>
+    </div>
+    <div class="reloj">
+      <span class="chip-est" id="chipEst"></span>
+      <span class="crono" id="crono">00:00:00</span>
+      <button class="bt" id="btCrono">Iniciar sesión</button>
+      <button class="bt" id="btDescanso">Descanso 20:00</button>
+      <button class="bt" id="btImprimir">Imprimir</button>
+    </div>
+  </div>
+  <div class="progreso"><i id="barraProg"></i></div>
+</header>
+
+<div class="marco">
+  <button id="btMenu" aria-expanded="false" aria-controls="rail">Ruta de la sesión <span>Ver</span></button>
+  <nav class="rail" id="rail">
+    <h4>Ruta de la sesión · 270 min</h4>
+    <a href="#datos"><span class="id">ID</span><span>Tus datos<span class="mn">3 min</span></span></a>
+    <a href="#m0"><span class="id">00</span><span>Compromisos<span class="mn">10 min</span></span></a>
+    <a href="#m1"><span class="id">01</span><span>La prueba del carné<span class="mn">20 min</span></span></a>
+    <a href="#m2"><span class="id">02</span><span>Dato, información y conocimiento<span class="mn">25 min</span></span></a>
+    <a href="#m3"><span class="id">03</span><span>¿Qué es una base de datos?<span class="mn">25 min</span></span></a>
+    <a href="#m4"><span class="id">04</span><span>Cómo llegamos hasta aquí<span class="mn">25 min</span></span></a>
+    <a href="#m5"><span class="id">05</span><span>Taller 1: auditoría de datos<span class="mn">25 min</span></span></a>
+    <a href="#pausa" class="pausa"><span class="id">☕</span><span>Descanso<span class="mn">20 min</span></span></a>
+    <a href="#m6"><span class="id">06</span><span>Los sistemas de archivos<span class="mn">25 min</span></span></a>
+    <a href="#m7"><span class="id">07</span><span>Los 7 problemas del enfoque de archivos<span class="mn">30 min</span></span></a>
+    <a href="#m8"><span class="id">08</span><span>Taller 2: laboratorio del caos<span class="mn">30 min</span></span></a>
+    <a href="#m9"><span class="id">09</span><span>Archivo o base de datos<span class="mn">15 min</span></span></a>
+    <a href="#m10"><span class="id">10</span><span>Investigación y reto<span class="mn">10 min</span></span></a>
+    <a href="#m11"><span class="id">11</span><span>Evaluación de cierre<span class="mn">10 min</span></span></a>
+  </nav>
+
+  <main>
+
+  <!-- ================= HERO ================= -->
+  <section class="hero" id="inicio">
+    <div class="eyebrow" style="color:#BFE0F5">Tema 6.1 · Contextualización · Clase 1 de 2</div>
+    <h1>Del desorden al dato</h1>
+    <p class="lede">Antes de escribir una sola línea de código, un desarrollador tiene que entender un problema viejo:
+      los datos se pierden, se repiten, se contradicen y se vuelven inservibles. Hoy vamos a ver por qué la humanidad
+      inventó las bases de datos y qué pasa cuando se intenta trabajar sin ellas.</p>
+    <div class="pill-row">
+      <span class="pill">Bases de datos</span>
+      <span class="pill">Sistemas de archivos vs. sistemas de BD</span>
+      <span class="pill">2 talleres en clase</span>
+      <span class="pill">Evaluación de cierre</span>
+    </div>
+  </section>
+
+
+  <section id="datos">
+    <div class="eyebrow">Antes de empezar · <b>3 min</b> · Identificación</div>
+    <h2>Tus datos</h2>
+    <p>Completa estos campos ahora. Con ellos se identifica la evaluación que enviarás al final de la sesión; si quedan
+      vacíos, tu envío no queda registrado a tu nombre.</p>
+    <div class="hoja">
+      <div class="ident-grid">
+        <div><label for="estNombre">Nombres y apellidos completos</label><input type="text" id="estNombre" autocomplete="name"></div>
+        <div><label for="estDoc">Número de documento</label><input type="text" id="estDoc" inputmode="numeric"></div>
+        <div><label for="estGrupo">Grupo</label><input type="text" id="estGrupo" placeholder="11-A, 11-B, 11-C"></div>
+        <div><label for="estCorreo">Correo institucional</label><input type="email" id="estCorreo" autocomplete="email"></div>
+      </div>
+      <button class="btn" id="btGuardarDatos">Confirmar mis datos</button>
+      <span class="marcador" id="estadoDatos" style="display:none"></span>
+      <p style="font-size:.82rem;color:#4A6076">Los datos se conservan mientras esta página esté abierta. Si la recargas,
+        tendrás que escribirlos de nuevo.</p>
+    </div>
+    <div class="visto"><input type="checkbox" class="chk-visto"> <span>Datos confirmados</span></div>
+  </section>
+
+  <!-- ================= M0 COMPROMISOS ================= -->
+  <section id="m0">
+    <div class="eyebrow">Módulo 00 · <b>10 min</b> · Acuerdos de aula</div>
+    <h2>Compromisos de la sesión</h2>
+    <p>Antes de empezar leemos en voz alta los acuerdos. Marca cada uno cuando lo aceptes; la sesión inicia cuando el grupo
+      completo esté de acuerdo.</p>
+
+    <label class="compromiso"><input type="checkbox" class="chk-comp">
+      <span><b>El celular es herramienta, no distracción</b>
+      <span>Se usa únicamente para las actividades de clase: consultar los enlaces propuestos, resolver los talleres y
+      registrar evidencias. Fuera de esas actividades permanece guardado y en silencio.</span></span></label>
+
+    <label class="compromiso"><input type="checkbox" class="chk-comp">
+      <span><b>Respeto con el docente y con los compañeros</b>
+      <span>Se escucha sin interrumpir, se pide la palabra, se corrige la idea y nunca a la persona. Las burlas y los
+      apodos no tienen lugar en el aula.</span></span></label>
+
+    <label class="compromiso"><input type="checkbox" class="chk-comp">
+      <span><b>Puntualidad y permanencia</b>
+      <span>Entramos a la hora acordada y regresamos del descanso de 20 minutos a tiempo. El que llega tarde se pone al día
+      solo, sin detener al grupo.</span></span></label>
+
+    <label class="compromiso"><input type="checkbox" class="chk-comp">
+      <span><b>Cuidado de los equipos y del puesto de trabajo</b>
+      <span>Reportamos cualquier daño al inicio de la sesión, no comemos ni bebemos sobre los equipos y dejamos el puesto
+      como lo encontramos.</span></span></label>
+
+    <label class="compromiso"><input type="checkbox" class="chk-comp">
+      <span><b>Todo taller tiene evidencia</b>
+      <span>Cada actividad se entrega: en el cuaderno, impresa o en archivo digital. Sin evidencia no hay valoración.</span></span></label>
+
+    <p id="estadoComp" class="marcador">Compromisos aceptados: 0 de 5</p>
+
+
+
+    <div class="visto"><input type="checkbox" class="chk-visto"> <span>Módulo trabajado</span></div>
+  </section>
+
+  <!-- ================= M1 ARRANQUE ================= -->
+  <section id="m1">
+    <div class="eyebrow">Módulo 01 · <b>20 min</b> · Actividad de arranque, sin computador</div>
+    <h2>La prueba del carné</h2>
+    <p>Vamos a construir el problema antes de nombrarlo. Necesitamos hojas de papel y algo con qué escribir.</p>
+
+    <div class="caja taller">
+      <h4>Ronda A · Formato libre (5 minutos)</h4>
+      <ol>
+        <li>Cada estudiante toma media hoja y escribe, como quiera, estos cinco datos de sí mismo: nombre completo,
+          número de documento, grupo, teléfono del acudiente y barrio donde vive.</li>
+        <li>El docente recoge todas las hojas y las revuelve.</li>
+        <li>Con el cronómetro corriendo (60 segundos), tres voluntarios deben responder:
+          <ul>
+            <li>¿Cuántos estudiantes viven en el mismo barrio?</li>
+            <li>¿Cuántas hojas tienen el teléfono incompleto o ilegible?</li>
+            <li>¿Cuál es el estudiante cuyo documento termina en el número más alto?</li>
+          </ul>
+        </li>
+      </ol>
+    </div>
+
+    <div class="caja taller">
+      <h4>Ronda B · Formato acordado (5 minutos)</h4>
+      <ol>
+        <li>Ahora el grupo acuerda <b>una sola estructura</b> en el tablero: cinco columnas con nombres fijos, orden fijo y
+          reglas fijas (documento sin puntos, teléfono de 10 dígitos, barrio escrito en mayúscula).</li>
+        <li>Cada estudiante vuelve a escribir sus datos en una tira de papel siguiendo la estructura.</li>
+        <li>Se repiten las mismas tres preguntas con el cronómetro.</li>
+      </ol>
+    </div>
+
+    <h3>Cierre de la actividad (10 minutos)</h3>
+    <p>Comparamos los tiempos de la ronda A y la ronda B y escribimos en el tablero las respuestas del grupo:</p>
+    <ul>
+      <li>¿Qué hizo que la segunda ronda fuera más rápida? Escribe la razón con tus palabras.</li>
+      <li>¿Qué pasaría si mañana quisiéramos agregar el dato "EPS" a las tiras de papel ya escritas?</li>
+      <li>¿Qué pasa si dos personas escriben el mismo barrio de forma distinta: "Robledo", "robledo", "ROBLEDO Aures"?</li>
+      <li>Si en lugar de 35 estudiantes fueran 3.500, ¿el método del papel seguiría funcionando?</li>
+    </ul>
+
+    <div class="caja">
+      <h4>Conclusión que debe quedar escrita en el cuaderno</h4>
+      <p>Los datos solo sirven cuando están <b>organizados bajo una estructura acordada</b>. Sin estructura hay datos, pero
+        no hay forma rápida ni confiable de responder preguntas con ellos. Ese es el punto de partida de toda esta unidad.</p>
+    </div>
+
+
+
+    <div class="visto"><input type="checkbox" class="chk-visto"> <span>Módulo trabajado</span></div>
+  </section>
+
+  <!-- ================= M2 DATO ================= -->
+  <section id="m2">
+    <div class="eyebrow">Módulo 02 · <b>25 min</b> · Conceptual</div>
+    <h2>Dato, información y conocimiento</h2>
+    <p>Estas tres palabras se usan como sinónimos en la calle, pero en desarrollo de software significan cosas distintas.
+      Confundirlas es la primera fuente de errores de diseño.</p>
+
+    <div class="grid2">
+      <div class="tarjeta">
+        <h4>Dato</h4>
+        <p>Un hecho aislado, sin contexto. No dice nada por sí solo.</p>
+        <p class="mono" style="color:var(--azul700)">3.2 &nbsp;·&nbsp; 1036402578 &nbsp;·&nbsp; "Robledo"</p>
+      </div>
+      <div class="tarjeta">
+        <h4>Información</h4>
+        <p>Datos puestos en contexto y relacionados entre sí. Responde una pregunta.</p>
+        <p class="mono" style="color:var(--azul700)">"El promedio de Ana en Matemáticas del primer periodo es 3.2"</p>
+      </div>
+      <div class="tarjeta">
+        <h4>Conocimiento</h4>
+        <p>Patrones y conclusiones obtenidos al analizar mucha información. Permite decidir y predecir.</p>
+        <p class="mono" style="color:var(--azul700)">"Los estudiantes con más de 5 inasistencias bajan su promedio"</p>
+      </div>
+    </div>
+
+    <p>Una base de datos almacena <b>datos</b>. La aplicación y las consultas producen <b>información</b>. Las personas
+      que interpretan esa información generan <b>conocimiento</b> y toman decisiones. El objetivo general de nuestra
+      asignatura apunta justamente a eso: acceder a la información de manera ágil y centralizada para decidir mejor.</p>
+
+    <h3>Actividad guiada · Clasifica cada elemento</h3>
+    <p>Lee cada tarjeta y decide si es un dato, información o conocimiento. Después presiona "Verificar".</p>
+
+    <div class="clasi" data-clasi data-cats="Dato|Información|Conocimiento">
+      <div class="citem" data-cat="Dato"><span class="val">18</span></div>
+      <div class="citem" data-cat="Información"><span class="val">Carlos tiene 18 años y está matriculado en el grupo 11-B</span></div>
+      <div class="citem" data-cat="Dato"><span class="val">2026-03-15</span></div>
+      <div class="citem" data-cat="Información"><span class="val">La matrícula de Carlos se registró el 15 de marzo de 2026</span></div>
+      <div class="citem" data-cat="Conocimiento"><span class="val">El 70 % de las matrículas tardías del colegio ocurren en marzo, así que hay que reforzar el equipo de secretaría ese mes</span></div>
+      <div class="citem" data-cat="Dato"><span class="val">"MEDELLÍN"</span></div>
+      <div class="citem" data-cat="Conocimiento"><span class="val">Los grupos que usan la sala de sistemas en la última hora entregan menos talleres, conviene reprogramar</span></div>
+      <div class="citem" data-cat="Información"><span class="val">La sala de sistemas tiene 24 equipos disponibles y 3 en mantenimiento</span></div>
+      <button class="btn verificar">Verificar</button>
+      <span class="resultado marcador" style="display:none"></span>
+    </div>
+
+    <h3>La naturaleza del dato</h3>
+    <p>Todo dato tiene una <b>naturaleza</b> que condiciona cómo se guarda y qué se puede hacer con él. Todavía no vamos a
+      declarar tipos en ningún motor; por ahora basta con reconocerlos:</p>
+    <table>
+      <thead><tr><th>Naturaleza</th><th>Ejemplo del colegio</th><th>Qué operación tiene sentido</th></tr></thead>
+      <tbody>
+        <tr><td>Texto</td><td>Nombre del estudiante, barrio</td><td>Comparar, ordenar alfabéticamente, buscar por fragmento</td></tr>
+        <tr><td>Número</td><td>Nota, edad, número de aula</td><td>Sumar, promediar, comparar mayor/menor</td></tr>
+        <tr><td>Fecha</td><td>Fecha de matrícula, fecha de nacimiento</td><td>Calcular antigüedad, ordenar cronológicamente</td></tr>
+        <tr><td>Lógico (sí/no)</td><td>¿Repite el año?, ¿autorizó salida pedagógica?</td><td>Filtrar en dos grupos</td></tr>
+        <tr><td>Identificador</td><td>Documento, código de matrícula</td><td>Distinguir un registro de otro sin ambigüedad</td></tr>
+      </tbody>
+    </table>
+
+    <div class="caja nota">
+      <h4>Trampa frecuente</h4>
+      <p>El número de documento y el teléfono <b>parecen</b> números, pero no se suman ni se promedian, y pueden empezar por
+        cero. En la práctica se tratan como texto o como identificador. Guarda esta observación: la vamos a necesitar cuando
+        lleguemos al modelamiento en el tema 6.2.</p>
+    </div>
+
+
+
+    <div class="visto"><input type="checkbox" class="chk-visto"> <span>Módulo trabajado</span></div>
+  </section>
+
+  <!-- ================= M3 QUÉ ES UNA BD ================= -->
+  <section id="m3">
+    <div class="eyebrow">Módulo 03 · <b>25 min</b> · Concepto central</div>
+    <h2>¿Qué es una base de datos?</h2>
+
+    <p>Tres definiciones que conviene tener a la mano, en orden de menor a mayor detalle técnico:</p>
+
+    <div class="caja">
+      <h4>1. Definición legal vigente en Colombia</h4>
+      <p>La Ley 1581 de 2012, en su artículo 3, define base de datos como
+        <span class="mono">"Conjunto organizado de datos personales que sea objeto de Tratamiento"</span>.
+        Es una definición restringida a datos personales, pero deja clara la palabra clave: <b>organizado</b>.</p>
+      <p style="font-size:.85rem;color:#4A6076">Fuente: Ley Estatutaria 1581 de 2012, Régimen General de Protección de Datos Personales.</p>
+    </div>
+
+    <div class="caja">
+      <h4>2. Definición operativa</h4>
+      <p>Una base de datos es una <b>colección organizada de datos relacionados entre sí</b>, almacenada de forma
+        permanente, con una estructura definida, que puede ser consultada y modificada por varias personas y varios
+        programas al mismo tiempo, sin que los datos se dañen ni se contradigan.</p>
+    </div>
+
+    <div class="caja">
+      <h4>3. Definición desde la necesidad (la de nuestra guía)</h4>
+      <p>Las bases de datos se diseñaron para dar solución de almacenamiento al enorme volumen de información generado por
+        las organizaciones: era necesario registrar los datos de forma rápida, sencilla y fiable, y poder acceder a ellos en
+        cualquier momento sin desplazarse hasta un archivo físico.</p>
+    </div>
+
+    <h3>Las seis características que debe cumplir</h3>
+    <div class="grid2">
+      <div class="tarjeta"><h4>Persistencia</h4><p>Los datos siguen existiendo cuando se apaga el programa o el equipo.</p></div>
+      <div class="tarjeta"><h4>Estructura</h4><p>Hay reglas explícitas sobre qué se guarda, con qué nombre y de qué naturaleza.</p></div>
+      <div class="tarjeta"><h4>Mínima redundancia</h4><p>Un mismo hecho se guarda una sola vez, en un solo lugar.</p></div>
+      <div class="tarjeta"><h4>Integridad</h4><p>Los datos cumplen reglas de validez: una nota entre 1.0 y 5.0, un documento que no se repite.</p></div>
+      <div class="tarjeta"><h4>Concurrencia</h4><p>Varios usuarios pueden trabajar a la vez sin pisarse los cambios.</p></div>
+      <div class="tarjeta"><h4>Seguridad</h4><p>Cada usuario ve y modifica solo lo que le corresponde.</p></div>
+    </div>
+
+    <h3>Bases de datos que ya usas todos los días</h3>
+    <table>
+      <thead><tr><th>Situación cotidiana</th><th>Qué datos hay detrás</th><th>Qué se rompería sin base de datos</th></tr></thead>
+      <tbody>
+        <tr><td>Pasar la Cívica en el Metro</td><td>Número de tarjeta, saldo, hora y estación de validación</td><td>No se sabría cuánto saldo queda ni dónde se usó</td></tr>
+        <tr><td>Consultar tus notas en la plataforma del colegio</td><td>Estudiante, asignatura, periodo, valoración</td><td>Cada docente tendría su propia planilla suelta</td></tr>
+        <tr><td>Pedir una cita con la EPS</td><td>Afiliado, profesional, agenda, historia clínica</td><td>Se agendarían dos pacientes en el mismo horario</td></tr>
+        <tr><td>Continuar una serie en el punto exacto donde la dejaste</td><td>Usuario, título, minuto exacto, dispositivo</td><td>Empezarías desde cero en cada dispositivo</td></tr>
+        <tr><td>Recibir un pedido a domicilio</td><td>Cliente, dirección, productos, estado del pedido, repartidor</td><td>No habría forma de saber qué pedido va para dónde</td></tr>
+      </tbody>
+    </table>
+
+    <div class="caja nota">
+      <h4>Tres cosas distintas que se suelen confundir</h4>
+      <ul>
+        <li><b>Base de datos:</b> los datos organizados y almacenados.</li>
+        <li><b>Sistema de gestión de bases de datos (SGBD):</b> el software que los administra. Es el tema de la clase 2.</li>
+        <li><b>Aplicación:</b> el programa con el que interactúa el usuario final. Le pide los datos al SGBD.</li>
+      </ul>
+      <p>Analogía: los datos son los libros, el SGBD es el bibliotecario con su sistema de catalogación, y la aplicación es
+        el mostrador donde tú pides el libro.</p>
+    </div>
+
+    <div class="quiz" data-quiz>
+      <h3 style="margin-top:0">Comprobación rápida</h3>
+      <div class="q" data-exp="La palabra clave de toda definición de base de datos es «organizado»: sin estructura hay datos sueltos, no una base de datos.">
+        <p class="qt">1. ¿Cuál es la palabra que aparece en las tres definiciones vistas?</p>
+        <button class="opt">Digital</button>
+        <button class="opt" data-ok>Organizado / estructurado</button>
+        <button class="opt">Grande</button>
+        <button class="opt">Gratuito</button>
+        <p class="fb"></p>
+      </div>
+      <div class="q" data-exp="La persistencia significa que el dato sobrevive al apagado del equipo o al cierre del programa.">
+        <p class="qt">2. Guardas 40 registros en la memoria de un programa y al cerrarlo desaparecen. ¿Qué característica falta?</p>
+        <button class="opt">Integridad</button>
+        <button class="opt">Concurrencia</button>
+        <button class="opt" data-ok>Persistencia</button>
+        <button class="opt">Seguridad</button>
+        <p class="fb"></p>
+      </div>
+      <div class="q" data-exp="El SGBD es el software administrador; la base de datos es el conjunto de datos que administra.">
+        <p class="qt">3. Los datos son los libros y la aplicación es el mostrador. ¿Quién es el bibliotecario?</p>
+        <button class="opt">La base de datos</button>
+        <button class="opt" data-ok>El SGBD</button>
+        <button class="opt">El usuario final</button>
+        <button class="opt">El archivo CSV</button>
+        <p class="fb"></p>
+      </div>
+      <span class="marcador puntaje">Aciertos: 0 / 3</span>
+    </div>
+
+    <div class="visto"><input type="checkbox" class="chk-visto"> <span>Módulo trabajado</span></div>
+  </section>
+
+  <!-- ================= M4 HISTORIA ================= -->
+  <section id="m4">
+    <div class="eyebrow">Módulo 04 · <b>25 min</b> · Antecedentes históricos</div>
+    <h2>Cómo llegamos hasta aquí</h2>
+    <p>Ninguna de estas ideas apareció de un día para otro. Toca cada tarjeta para ver qué ocurrió y por qué importa.</p>
+
+    <div class="tl">
+      <div class="flip"><div class="flip-in">
+        <div class="cara frente"><span class="anio">1890</span><span class="ev">Tarjetas perforadas</span></div>
+        <div class="cara detras">Herman Hollerith aplica máquinas tabuladoras con tarjetas perforadas al censo de Estados Unidos. Por primera vez los datos de millones de personas se procesan mecánicamente. Su empresa terminó siendo una de las que dio origen a IBM.</div>
+      </div></div>
+      <div class="flip"><div class="flip-in">
+        <div class="cara frente"><span class="anio">1960s</span><span class="ev">La era de los archivos</span></div>
+        <div class="cara detras">Con los primeros computadores comerciales, cada programa guardaba sus propios archivos en cinta y disco. Nómina tenía su archivo, contabilidad el suyo, ventas el suyo. Nadie se hablaba con nadie: aquí nacen la redundancia y la inconsistencia.</div>
+      </div></div>
+      <div class="flip"><div class="flip-in">
+        <div class="cara frente"><span class="anio">1970</span><span class="ev">El modelo relacional</span></div>
+        <div class="cara detras">Edgar F. Codd, matemático de IBM, publica en <em>Communications of the ACM</em> el artículo que propone organizar los datos en tablas (relaciones) con una base matemática. Es el origen de prácticamente todas las bases de datos que usarás.</div>
+      </div></div>
+      <div class="flip"><div class="flip-in">
+        <div class="cara frente"><span class="anio">1974</span><span class="ev">Nace SEQUEL / SQL</span></div>
+        <div class="cara detras">En el proyecto System R de IBM, Donald Chamberlin y Raymond Boyce diseñan un lenguaje para consultar las tablas de Codd. Se llamó SEQUEL y después SQL. Lo estudiaremos en el tema 6.3, no antes.</div>
+      </div></div>
+      <div class="flip"><div class="flip-in">
+        <div class="cara frente"><span class="anio">1979</span><span class="ev">Primer producto comercial</span></div>
+        <div class="cara detras">Se lanza la primera versión comercial de Oracle, la primera base de datos relacional vendida en el mercado. El modelo relacional deja de ser teoría y se vuelve industria.</div>
+      </div></div>
+      <div class="flip"><div class="flip-in">
+        <div class="cara frente"><span class="anio">1986-87</span><span class="ev">SQL se estandariza</span></div>
+        <div class="cara detras">ANSI (1986) e ISO (1987) publican el estándar de SQL. Gracias a eso lo que aprendes en un motor te sirve, en gran medida, en cualquier otro.</div>
+      </div></div>
+      <div class="flip"><div class="flip-in">
+        <div class="cara frente"><span class="anio">1995-96</span><span class="ev">MySQL y PostgreSQL</span></div>
+        <div class="cara detras">Aparece MySQL (1995) y el proyecto POSTGRES de la Universidad de California en Berkeley pasa a llamarse PostgreSQL (1996). Bases de datos potentes y de código abierto quedan al alcance de cualquiera, incluido este salón.</div>
+      </div></div>
+      <div class="flip"><div class="flip-in">
+        <div class="cara frente"><span class="anio">2000</span><span class="ev">SQLite</span></div>
+        <div class="cara detras">D. Richard Hipp publica SQLite: una base de datos completa dentro de un solo archivo, sin servidor. Hoy va dentro de teléfonos, navegadores y aviones. Su propia documentación dice que no compite con Oracle sino con la función de abrir archivos.</div>
+      </div></div>
+      <div class="flip"><div class="flip-in">
+        <div class="cara frente"><span class="anio">2009</span><span class="ev">La ola NoSQL</span></div>
+        <div class="cara detras">Con la explosión de las redes sociales se popularizan bases de datos no relacionales (documentos, clave-valor, grafos), como MongoDB. No reemplazan al modelo relacional: resuelven otros problemas.</div>
+      </div></div>
+      <div class="flip"><div class="flip-in">
+        <div class="cara frente"><span class="anio">Hoy</span><span class="ev">Bases de datos en la nube</span></div>
+        <div class="cara detras">Ya no hace falta un servidor físico en la empresa: se contrata la base de datos como servicio y el proveedor se encarga de copias de seguridad, actualizaciones y disponibilidad. Cambia la administración, no los conceptos que estás estudiando.</div>
+      </div></div>
+    </div>
+
+    <h3>Actividad · Ordena la historia</h3>
+    <p>Haz clic en los hechos en el orden cronológico correcto, del más antiguo al más reciente. Si te equivocas, reinicia.</p>
+    <div class="orden" data-orden>
+      <div class="oitem" data-pos="4">Se estandariza SQL en ANSI e ISO</div>
+      <div class="oitem" data-pos="1">Hollerith procesa el censo con tarjetas perforadas</div>
+      <div class="oitem" data-pos="6">Aparece SQLite, la base de datos dentro de un archivo</div>
+      <div class="oitem" data-pos="2">Codd publica el modelo relacional</div>
+      <div class="oitem" data-pos="7">Se populariza el movimiento NoSQL</div>
+      <div class="oitem" data-pos="3">Se lanza el primer producto relacional comercial</div>
+      <div class="oitem" data-pos="5">Nacen MySQL y PostgreSQL</div>
+      <button class="btn verificarOrden">Verificar orden</button>
+      <button class="btn sec reiniciarOrden">Reiniciar</button>
+      <span class="marcador resOrden" style="display:none"></span>
+    </div>
+
+    <div class="caja">
+      <h4>Lo que hay que llevarse de este módulo</h4>
+      <p>La historia de las bases de datos es la historia de un mismo problema resuelto cada vez mejor: <b>cómo guardar
+        muchos datos, sin repetirlos, y poder preguntarles cosas rápido</b>. Cada etapa nació porque la anterior se quedó
+        corta.</p>
+    </div>
+
+
+
+    <div class="visto"><input type="checkbox" class="chk-visto"> <span>Módulo trabajado</span></div>
+  </section>
+
+  <!-- ================= M5 TALLER 1 ================= -->
+  <section id="m5">
+    <div class="eyebrow">Módulo 05 · <b>25 min</b> · Taller evaluable 1</div>
+    <h2>Taller 1: auditoría de tus propios datos</h2>
+    <p><b>Modalidad:</b> parejas. <b>Entregable:</b> tabla diligenciada + tres conclusiones escritas.</p>
+
+    <div class="caja taller">
+      <h4>Instrucciones</h4>
+      <ol>
+        <li>Identifiquen <b>seis organizaciones</b> que hoy tienen datos suyos (colegio, EPS, banco o billetera digital,
+          Metro de Medellín, red social, tienda en línea, gimnasio, biblioteca…).</li>
+        <li>Para cada una completen la tabla de abajo.</li>
+        <li>Respondan las tres preguntas de cierre.</li>
+        <li>Usen el botón <em>Generar informe</em> para armar el texto y luego cópienlo al cuaderno o impriman la página.</li>
+      </ol>
+    </div>
+
+    <div class="hoja">
+      <table id="tablaAuditoria">
+        <thead><tr><th style="width:22%">Organización</th><th style="width:30%">¿Qué datos tuyos tiene?</th><th style="width:24%">¿Qué pasaría si se pierden?</th><th style="width:24%">¿Qué pasaría si están mal escritos?</th></tr></thead>
+        <tbody></tbody>
+      </table>
+      <button class="btn sec" id="addFila">Agregar fila</button>
+
+      <label>Pregunta 1. ¿Cuál de esas organizaciones maneja tus datos más críticos y por qué?</label>
+      <textarea id="p1"></textarea>
+      <label>Pregunta 2. La Ley 1581 de 2012 te da derecho a conocer, actualizar, rectificar y solicitar la supresión de tus datos personales. Escoge una de las organizaciones y explica cómo ejercerías uno de esos derechos.</label>
+      <textarea id="p2"></textarea>
+      <label>Pregunta 3. Menciona una situación real en la que un dato mal registrado te haya causado un problema a ti o a alguien de tu familia.</label>
+      <textarea id="p3"></textarea>
+
+      <button class="btn" id="btInforme">Generar informe</button>
+      <button class="btn sec" onclick="window.print()">Imprimir entregable</button>
+      <pre id="salidaInforme" class="mono" style="display:none;white-space:pre-wrap;background:#F7FAFD;border:1px solid var(--linea);border-radius:10px;padding:14px;font-size:.83rem"></pre>
+    </div>
+
+    <div class="caja nota">
+      <h4>Contexto normativo colombiano</h4>
+      <p>En Colombia el tratamiento de datos personales está regulado por la Ley Estatutaria 1581 de 2012 y sus decretos
+        reglamentarios. La Superintendencia de Industria y Comercio es la autoridad de protección de datos y administra el
+        Registro Nacional de Bases de Datos. Toda base de datos que ustedes construyan en su vida laboral queda cobijada por
+        esa norma: no es un detalle legal menor, es parte del oficio.</p>
+    </div>
+
+
+
+    <div class="visto"><input type="checkbox" class="chk-visto"> <span>Módulo trabajado</span></div>
+  </section>
+
+  <!-- ================= PAUSA ================= -->
+  <section id="pausa" style="background:linear-gradient(135deg,#FFF7E8,#FFEFD1);border-color:#F0D8A8">
+    <div class="eyebrow" style="color:#A76A00">Descanso · <b>20 min</b></div>
+    <h2 style="color:#7A4E00">Pausa activa</h2>
+    <p style="max-width:60ch">Veinte minutos exactos. Usa el botón <b>Descanso 20:00</b> de la barra superior para que todo el
+      grupo vea el mismo conteo. Al regresar retomamos con los sistemas de archivos.</p>
+    <p style="font-size:.9rem;color:#7A4E00"><b>Antes de salir:</b> deja tu puesto ordenado y guarda el taller 1 diligenciado.</p>
+  </section>
+
+  <!-- ================= M6 ARCHIVOS ================= -->
+  <section id="m6">
+    <div class="eyebrow">Módulo 06 · <b>25 min</b> · Subtema 6.1.2</div>
+    <h2>Los sistemas de archivos</h2>
+    <p>Antes de comparar hay que entender bien la alternativa. Un <b>sistema de archivos</b> es la forma en que el sistema
+      operativo organiza la información en carpetas y archivos dentro de un disco. Cada archivo es una secuencia de bytes con
+      un nombre y un formato, y el programa que lo abre debe saber cómo interpretarlo.</p>
+
+    <h3>Los tres formatos que más vas a encontrar</h3>
+
+    <div class="archivo">
+      <div class="cab"><span>notas_11B.csv</span><span>Texto separado por comas</span></div>
+      <pre>documento,nombre,asignatura,periodo,nota
+1036402578,Ana Restrepo,Bases de datos,1,4.3
+1036402579,Carlos Muñoz,Bases de datos,1,3.1
+1036402580,Sara Zapata,Bases de datos,1,4.8</pre>
+    </div>
+    <p><b>CSV:</b> la primera línea son los nombres de las columnas, cada línea siguiente es un registro y las comas separan
+      los campos. Es el formato más simple y universal: lo abre Excel, lo lee Python, lo entiende cualquier motor de base de
+      datos. Su debilidad es que no guarda reglas: nada impide escribir una nota de 9.7 o dejar el documento vacío.</p>
+
+    <div class="archivo">
+      <div class="cab"><span>acudientes.json</span><span>Notación de objetos JavaScript</span></div>
+      <pre>[
+  { "documento": "1036402578",
+    "acudiente": "Luz Restrepo",
+    "telefonos": ["3105558899", "6044441122"] },
+  { "documento": "1036402579",
+    "acudiente": "Jorge Muñoz",
+    "telefonos": ["3009998877"] }
+]</pre>
+    </div>
+    <p><b>JSON:</b> guarda datos con estructura anidada (un estudiante puede tener varios teléfonos dentro del mismo
+      registro). Es el formato con el que las aplicaciones web intercambian datos. Más flexible que el CSV, pero también
+      más fácil de romper: una coma de más y el archivo completo deja de leerse.</p>
+
+    <div class="archivo">
+      <div class="cab"><span>matriculas.xlsx</span><span>Hoja de cálculo</span></div>
+      <table>
+        <thead><tr><th>A</th><th>B</th><th>C</th><th>D</th></tr></thead>
+        <tbody>
+          <tr><td>Documento</td><td>Nombre</td><td>Grupo</td><td>Fecha matrícula</td></tr>
+          <tr><td>1036402578</td><td>Ana Restrepo</td><td>11-B</td><td>15/03/2026</td></tr>
+          <tr><td>1036402579</td><td>Carlos M.</td><td>11B</td><td>2026-03-15</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p><b>Hoja de cálculo:</b> cómoda para el usuario porque permite ver, editar y calcular en el mismo lugar. Por eso media
+      Colombia administra su información en Excel. El problema aparece cuando el archivo crece, cuando lo necesitan cinco
+      personas a la vez y cuando cada quien escribe el grupo y la fecha a su manera, como ya se ve en esas dos filas.</p>
+
+    <div class="caja">
+      <h4>La diferencia de fondo</h4>
+      <p>En un sistema de archivos, <b>la estructura y las reglas viven dentro del programa</b> que abre el archivo, no
+        dentro del archivo. Si cambia el programa, o si otro programa lo abre distinto, los datos quedan a merced de esa
+        interpretación. En un sistema de bases de datos ocurre al revés: la estructura y las reglas viven junto a los datos
+        y el motor las hace cumplir siempre, sin importar quién se conecte.</p>
+    </div>
+
+
+
+    <div class="visto"><input type="checkbox" class="chk-visto"> <span>Módulo trabajado</span></div>
+  </section>
+
+  <!-- ================= M7 PROBLEMAS ================= -->
+  <section id="m7">
+    <div class="eyebrow">Módulo 07 · <b>30 min</b> · Subtema 6.1.2</div>
+    <h2>Los siete problemas del enfoque de archivos</h2>
+    <p>Esta lista es clásica en la literatura de bases de datos (Silberschatz, Korth y Sudarshan, entre otros autores de la
+      bibliografía de la asignatura). Cada problema es la razón por la que existe un motor de bases de datos.</p>
+
+    <div class="caja villano">
+      <h4>1. Redundancia e inconsistencia</h4>
+      <p>El mismo dato está repetido en varios archivos. Se actualiza en uno y se olvida en los otros. Resultado: el sistema
+        da dos respuestas distintas a la misma pregunta y nadie sabe cuál es la buena.</p>
+      <p><b>Caso:</b> el teléfono del acudiente de Ana aparece en la planilla de la coordinación, en el archivo de matrícula y
+        en el listado de la salida pedagógica. Ana cambió de número y solo se corrigió en uno.</p>
+    </div>
+
+    <div class="caja villano">
+      <h4>2. Dificultad para acceder a los datos</h4>
+      <p>Cada pregunta nueva exige un procedimiento nuevo. Con archivos, si mañana piden "los estudiantes de 11-B que viven en
+        la comuna 7 y tienen más de dos inasistencias", toca revisar a mano o programar algo desde cero.</p>
+      <p><b>Caso:</b> la rectoría pide un informe atípico un viernes a las 3 p. m. y no hay forma de responder sin quedarse
+        hasta las 8.</p>
+    </div>
+
+    <div class="caja villano">
+      <h4>3. Aislamiento de los datos</h4>
+      <p>La información está dispersa en muchos archivos con formatos distintos. Cruzarlos es un trabajo manual, lento y
+        propenso al error.</p>
+      <p><b>Caso:</b> las notas están en un Excel, la asistencia en un cuaderno, los acudientes en un JSON exportado de la
+        plataforma. Responder "¿qué estudiantes con bajo rendimiento tienen acudiente sin teléfono registrado?" es casi
+        imposible.</p>
+    </div>
+
+    <div class="caja villano">
+      <h4>4. Problemas de integridad</h4>
+      <p>Las reglas del negocio (una nota va de 1.0 a 5.0; un documento no se repite; un estudiante debe pertenecer a un grupo
+        existente) quedan escondidas dentro del código de cada programa. Si alguien edita el archivo directamente, o si se
+        escribe un programa nuevo, la regla se salta.</p>
+      <p><b>Caso:</b> aparece un estudiante con nota 43 porque a alguien se le olvidó el punto decimal, y el archivo lo
+        aceptó sin protestar.</p>
+    </div>
+
+    <div class="caja villano">
+      <h4>5. Problemas de atomicidad</h4>
+      <p>Una operación que debe ocurrir completa o no ocurrir queda a medias por un corte de energía o un cierre inesperado.</p>
+      <p><b>Caso:</b> un traslado de estudiante de 11-A a 11-B: se alcanzó a borrar de la lista de 11-A pero no se escribió en
+        la de 11-B. El estudiante desapareció del colegio.</p>
+    </div>
+
+    <div class="caja villano">
+      <h4>6. Anomalías de acceso concurrente</h4>
+      <p>Dos personas abren el mismo archivo al mismo tiempo. La última en guardar borra el trabajo de la primera.</p>
+      <p><b>Caso:</b> dos docentes abren la planilla compartida a la misma hora. Uno registra 12 notas, el otro 8. Al final del
+        día solo quedaron 8.</p>
+    </div>
+
+    <div class="caja villano">
+      <h4>7. Problemas de seguridad</h4>
+      <p>Con archivos el permiso es prácticamente de todo o nada: quien puede abrir el archivo, ve y modifica todo lo que hay
+        adentro.</p>
+      <p><b>Caso:</b> el archivo de matrículas incluye documentos, direcciones y teléfonos. Cualquiera que necesite consultar
+        un solo grupo termina con acceso a los datos personales de todo el colegio, en contravía de la Ley 1581 de 2012.</p>
+    </div>
+
+    <h3>Actividad · Diagnostica el villano</h3>
+    <p>Lee cada situación e identifica cuál de los siete problemas la explica mejor.</p>
+
+    <div class="quiz" data-quiz>
+      <div class="q" data-exp="Dos escrituras simultáneas sobre el mismo archivo: es una anomalía de acceso concurrente.">
+        <p class="qt">1. En la tienda del colegio, dos estudiantes registran ventas al tiempo en el mismo archivo de Excel compartido. Al cerrar el día faltan la mitad de los registros.</p>
+        <button class="opt">Redundancia</button>
+        <button class="opt" data-ok>Acceso concurrente</button>
+        <button class="opt">Seguridad</button>
+        <button class="opt">Atomicidad</button>
+        <p class="fb"></p>
+      </div>
+      <div class="q" data-exp="El dato está repetido en varios archivos y se actualizó solo en uno: redundancia que produce inconsistencia.">
+        <p class="qt">2. La dirección de un estudiante aparece distinta en el archivo de matrícula y en el de transporte escolar. Ambas fueron correctas alguna vez.</p>
+        <button class="opt" data-ok>Redundancia e inconsistencia</button>
+        <button class="opt">Integridad</button>
+        <button class="opt">Aislamiento</button>
+        <button class="opt">Dificultad de acceso</button>
+        <p class="fb"></p>
+      </div>
+      <div class="q" data-exp="La regla de validez (rango de la nota) no está garantizada por el archivo: es un problema de integridad.">
+        <p class="qt">3. Alguien escribió 43 en la casilla de una nota que debía estar entre 1.0 y 5.0, y el archivo lo aceptó.</p>
+        <button class="opt">Concurrencia</button>
+        <button class="opt">Atomicidad</button>
+        <button class="opt" data-ok>Integridad</button>
+        <button class="opt">Seguridad</button>
+        <p class="fb"></p>
+      </div>
+      <div class="q" data-exp="La operación quedó a la mitad: o se hace completa o no se hace. Es atomicidad.">
+        <p class="qt">4. Se cayó la energía mientras se pasaba un pago del archivo de "pendientes" al de "pagados". El pago desapareció de pendientes y nunca llegó a pagados.</p>
+        <button class="opt">Redundancia</button>
+        <button class="opt" data-ok>Atomicidad</button>
+        <button class="opt">Aislamiento</button>
+        <button class="opt">Integridad</button>
+        <p class="fb"></p>
+      </div>
+      <div class="q" data-exp="La información está dispersa en formatos distintos y cruzarla es manual: aislamiento de datos.">
+        <p class="qt">5. Para saber qué estudiantes con matrícula vigente asistieron al refuerzo hay que cruzar a mano un Excel, un cuaderno y un PDF.</p>
+        <button class="opt">Seguridad</button>
+        <button class="opt">Concurrencia</button>
+        <button class="opt" data-ok>Aislamiento de datos</button>
+        <button class="opt">Atomicidad</button>
+        <p class="fb"></p>
+      </div>
+      <div class="q" data-exp="Para acceder a un dato puntual hay que ver todo el archivo: control de acceso insuficiente, problema de seguridad.">
+        <p class="qt">6. Para que la practicante consulte el grupo de un estudiante hay que darle el archivo completo con los datos de todo el colegio.</p>
+        <button class="opt">Integridad</button>
+        <button class="opt" data-ok>Seguridad</button>
+        <button class="opt">Redundancia</button>
+        <button class="opt">Concurrencia</button>
+        <p class="fb"></p>
+      </div>
+      <div class="q" data-exp="No existe forma de consultar sin programar o revisar manualmente: dificultad para acceder a los datos.">
+        <p class="qt">7. La coordinación pide una lista que nunca se había pedido y responderla implica revisar 400 filas a mano.</p>
+        <button class="opt" data-ok>Dificultad de acceso</button>
+        <button class="opt">Atomicidad</button>
+        <button class="opt">Seguridad</button>
+        <button class="opt">Redundancia</button>
+        <p class="fb"></p>
+      </div>
+      <span class="marcador puntaje">Aciertos: 0 / 7</span>
+    </div>
+
+    <div class="visto"><input type="checkbox" class="chk-visto"> <span>Módulo trabajado</span></div>
+  </section>
+
+  <!-- ================= M8 TALLER 2 ================= -->
+  <section id="m8">
+    <div class="eyebrow">Módulo 08 · <b>30 min</b> · Taller evaluable 2</div>
+    <h2>Taller 2: laboratorio del caos</h2>
+    <p><b>Modalidad:</b> grupos de tres. <b>Situación:</b> la coordinación de la media técnica administra su información en
+      tres archivos sueltos. Los tres hablan de los mismos estudiantes. Su trabajo es auditarlos.</p>
+
+    <div class="caja taller">
+      <h4>Instrucciones</h4>
+      <ol>
+        <li>Revisen los tres archivos y hagan clic sobre cada celda que consideren problemática. Marcar y desmarcar es libre.</li>
+        <li>Registren cada hallazgo en la hoja de auditoría indicando <b>cuál de los siete problemas</b> del módulo 07 lo explica.</li>
+        <li>Propongan una <b>estructura única</b>: qué columnas debería tener un registro de estudiante y qué regla debería
+          cumplir cada columna. Todavía no dibujen diagramas ni piensen en tablas relacionadas; eso corresponde al tema 6.2.</li>
+        <li>Comparen con los hallazgos esperados solo al final.</li>
+      </ol>
+    </div>
+
+    <p class="mono" style="font-size:.85rem;color:var(--azul700)">Celdas marcadas: <span id="contMarcadas">0</span></p>
+
+    <div class="archivo">
+      <div class="cab"><span>1 · planilla_notas.xlsx (la maneja el docente)</span><span>Hoja de cálculo</span></div>
+      <table class="marcable">
+        <thead><tr><th>Documento</th><th>Estudiante</th><th>Grupo</th><th>Nota P1</th><th>Teléfono acudiente</th></tr></thead>
+        <tbody>
+          <tr><td>1036402578</td><td>Ana Restrepo</td><td>11-B</td><td>4.3</td><td>3105558899</td></tr>
+          <tr><td>1036402579</td><td>Carlos Muñoz</td><td>11B</td><td>3.1</td><td>3009998877</td></tr>
+          <tr><td>1036402580</td><td>Sara Zapata</td><td>11-B</td><td>48</td><td>3204447766</td></tr>
+          <tr><td>1036402578</td><td>Ana Restrepo P.</td><td>11-B</td><td>4.3</td><td>3105558899</td></tr>
+          <tr><td>1036402581</td><td>Julián Gómez</td><td>11-A</td><td>3.9</td><td></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="archivo">
+      <div class="cab"><span>2 · matriculas_2026.csv (la maneja la secretaría)</span><span>Texto separado por comas</span></div>
+      <table class="marcable">
+        <thead><tr><th>documento</th><th>nombre</th><th>grupo</th><th>fecha_matricula</th><th>direccion</th></tr></thead>
+        <tbody>
+          <tr><td>1036402578</td><td>ANA MARIA RESTREPO</td><td>11-B</td><td>15/03/2026</td><td>Cr 80 # 45-12, Robledo</td></tr>
+          <tr><td>1036402579</td><td>Carlos Muñoz</td><td>11-C</td><td>2026-03-15</td><td>Cl 50 # 70-30, Laureles</td></tr>
+          <tr><td>1036402580</td><td>Sara Zapata</td><td>11-B</td><td>16/03/2026</td><td>robledo, cra 82</td></tr>
+          <tr><td>1036402582</td><td>Mariana Ospina</td><td>11-A</td><td>18/03/2026</td><td>Cl 44 # 55-10, Castilla</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="archivo">
+      <div class="cab"><span>3 · acudientes.json (lo maneja la coordinación)</span><span>Archivo JSON</span></div>
+      <pre>[
+  { "doc": "1036402578", "acudiente": "Luz Restrepo", "tel": "3105558800" },
+  { "doc": "1036402579", "acudiente": "Jorge Muñoz",  "tel": "3009998877" },
+  { "doc": "1036402583", "acudiente": "Marta Cano",   "tel": "3112223344" }
+]</pre>
+    </div>
+
+    <div class="hoja">
+      <h3>Hoja de auditoría del grupo</h3>
+      <table id="tablaHallazgos">
+        <thead><tr><th style="width:38%">Hallazgo (qué encontraron y dónde)</th><th style="width:28%">Problema que lo explica</th><th style="width:34%">Consecuencia para el colegio</th></tr></thead>
+        <tbody></tbody>
+      </table>
+      <button class="btn sec" id="addHallazgo">Agregar hallazgo</button>
+
+      <label>Propuesta de estructura única: ¿qué columnas debería tener el registro de un estudiante y qué regla debe cumplir cada una?</label>
+      <textarea id="propuesta" style="min-height:120px"></textarea>
+      <button class="btn sec" onclick="window.print()">Imprimir entregable</button>
+    </div>
+
+    <details>
+      <summary>Hallazgos esperados (abrir solo después de terminar la auditoría)</summary>
+      <ol>
+        <li><b>Ana Restrepo aparece dos veces</b> en la planilla de notas, con el mismo documento y el nombre escrito distinto.
+          Redundancia; además, ¿cuál de las dos filas es la buena?</li>
+        <li><b>El grupo de Carlos</b> es 11B en un archivo, 11-C en otro. Inconsistencia entre archivos: nadie sabe en qué
+          grupo está realmente.</li>
+        <li><b>La nota 48 de Sara</b> debía ser 4.8. Ningún archivo impidió el error: falta de integridad.</li>
+        <li><b>Las fechas de matrícula</b> están en dos formatos distintos (15/03/2026 y 2026-03-15). Ordenarlas o compararlas
+          exige limpiarlas primero.</li>
+        <li><b>El teléfono del acudiente de Ana</b> termina en 8899 en la planilla y en 8800 en el JSON. El mismo dato guardado
+          dos veces terminó en dos verdades.</li>
+        <li><b>Julián Gómez no tiene teléfono</b> registrado y aun así el archivo lo aceptó.</li>
+        <li><b>Julián Gómez y Mariana Ospina</b> no coinciden entre archivos: uno tiene notas pero no matrícula, la otra tiene
+          matrícula pero no notas. Aislamiento de datos.</li>
+        <li><b>El documento 1036402583 del JSON</b> no existe en ningún otro archivo: un acudiente sin estudiante.</li>
+        <li><b>Las direcciones</b> están escritas en formatos libres ("Cr 80 # 45-12, Robledo" frente a "robledo, cra 82").
+          No hay forma confiable de agrupar por barrio.</li>
+        <li><b>Los tres archivos los manejan tres personas distintas</b>, cada una con acceso completo a datos personales que
+          no necesita. Problema de seguridad y de cumplimiento normativo.</li>
+      </ol>
+      <p><b>Estructura mínima razonable:</b> documento (identificador único, obligatorio, solo dígitos), nombres y apellidos
+        por separado (texto obligatorio), grupo (valor tomado de una lista fija: 11-A, 11-B, 11-C), fecha de matrícula
+        (formato único AAAA-MM-DD), dirección y barrio en campos separados, teléfono del acudiente (10 dígitos, obligatorio),
+        nombre del acudiente (texto obligatorio). Y una regla que aún no podemos imponer con archivos: <b>un documento, un
+        solo registro</b>.</p>
+    </details>
+
+
+
+    <div class="visto"><input type="checkbox" class="chk-visto"> <span>Módulo trabajado</span></div>
+  </section>
+
+  <!-- ================= M9 COMPARATIVO ================= -->
+  <section id="m9">
+    <div class="eyebrow">Módulo 09 · <b>15 min</b> · Síntesis</div>
+    <h2>Archivo o base de datos: la decisión</h2>
+
+    <table>
+      <thead><tr><th style="width:22%">Criterio</th><th>Sistema de archivos</th><th>Sistema de bases de datos</th></tr></thead>
+      <tbody>
+        <tr><td>Dónde viven las reglas</td><td>Dentro de cada programa que abre el archivo</td><td>Junto a los datos; el motor las hace cumplir siempre</td></tr>
+        <tr><td>Redundancia</td><td>Alta: el mismo dato se copia en varios archivos</td><td>Controlada: un hecho se guarda una vez</td></tr>
+        <tr><td>Consultas nuevas</td><td>Requieren programar o revisar a mano</td><td>Se resuelven con una consulta al motor</td></tr>
+        <tr><td>Varios usuarios a la vez</td><td>El último en guardar gana</td><td>El motor coordina los accesos simultáneos</td></tr>
+        <tr><td>Operaciones a medias</td><td>Quedan a medias</td><td>El motor las deshace por completo</td></tr>
+        <tr><td>Permisos</td><td>Prácticamente todo o nada</td><td>Por usuario y por porción de datos</td></tr>
+        <tr><td>Costo y complejidad inicial</td><td>Mínimo: se abre y se escribe</td><td>Mayor: hay que instalar, diseñar y administrar</td></tr>
+        <tr><td>Cuándo conviene</td><td>Pocos datos, un solo usuario, uso temporal, intercambio entre sistemas</td><td>Datos que crecen, varios usuarios, información crítica, consultas frecuentes</td></tr>
+      </tbody>
+    </table>
+
+    <div class="caja">
+      <h4>Un archivo no siempre es la respuesta equivocada</h4>
+      <p>El CSV es el idioma común para intercambiar datos entre sistemas distintos, y prácticamente todas las bases de datos
+        importan y exportan CSV. La decisión no es "archivos malos, bases de datos buenas", sino <b>qué exige el problema</b>:
+        volumen, número de usuarios simultáneos, criticidad de la información y frecuencia de las consultas.</p>
+    </div>
+
+    <h3>Ejercicio relámpago · ¿Archivo o base de datos?</h3>
+    <div class="quiz" data-quiz>
+      <div class="q" data-exp="Un solo usuario, pocos datos, uso temporal: un archivo basta y sobra.">
+        <p class="qt">1. Llevar la lista de mercado de tu casa esta semana.</p>
+        <button class="opt" data-ok>Archivo</button>
+        <button class="opt">Base de datos</button>
+        <p class="fb"></p>
+      </div>
+      <div class="q" data-exp="Varios usuarios simultáneos, dinero de por medio y consultas permanentes: exige base de datos.">
+        <p class="qt">2. El sistema de ventas de una cadena de papelerías con seis sucursales.</p>
+        <button class="opt">Archivo</button>
+        <button class="opt" data-ok>Base de datos</button>
+        <p class="fb"></p>
+      </div>
+      <div class="q" data-exp="Es un intercambio puntual entre dos sistemas: el CSV es exactamente para eso.">
+        <p class="qt">3. Entregarle a otra institución el listado de inscritos a un torneo, una sola vez.</p>
+        <button class="opt" data-ok>Archivo</button>
+        <button class="opt">Base de datos</button>
+        <p class="fb"></p>
+      </div>
+      <div class="q" data-exp="Historia clínica: información crítica, muchos usuarios, obligaciones legales de trazabilidad y seguridad.">
+        <p class="qt">4. Las historias clínicas de una IPS del barrio.</p>
+        <button class="opt">Archivo</button>
+        <button class="opt" data-ok>Base de datos</button>
+        <p class="fb"></p>
+      </div>
+      <span class="marcador puntaje">Aciertos: 0 / 4</span>
+    </div>
+
+    <div class="visto"><input type="checkbox" class="chk-visto"> <span>Módulo trabajado</span></div>
+  </section>
+
+  <!-- ================= M10 RECURSOS ================= -->
+  <section id="m10">
+    <div class="eyebrow">Módulo 10 · <b>10 min</b> · Investigación guiada</div>
+    <h2>Dónde seguir investigando</h2>
+    <p>Todos los enlaces son fuentes primarias u oficiales. Consúltalos con el celular únicamente durante esta actividad.</p>
+
+    <div class="links">
+      <a class="link" href="https://www.datos.gov.co/" target="_blank" rel="noopener">
+        <b>Datos Abiertos Colombia</b><span>Portal nacional con miles de conjuntos de datos públicos descargables en CSV.</span><em>datos.gov.co</em></a>
+      <a class="link" href="https://medata.gov.co/" target="_blank" rel="noopener">
+        <b>MEData · Medellín</b><span>Datos abiertos de las dependencias de la Alcaldía de Medellín, con sus diccionarios de datos.</span><em>medata.gov.co</em></a>
+      <a class="link" href="https://www.funcionpublica.gov.co/eva/gestornormativo/norma.php?i=49981" target="_blank" rel="noopener">
+        <b>Ley 1581 de 2012</b><span>Texto completo del régimen de protección de datos personales. Lee los artículos 3, 4 y 8.</span><em>funcionpublica.gov.co</em></a>
+      <a class="link" href="https://www.sic.gov.co/" target="_blank" rel="noopener">
+        <b>Superintendencia de Industria y Comercio</b><span>Autoridad de protección de datos personales en Colombia y administradora del Registro Nacional de Bases de Datos.</span><em>sic.gov.co</em></a>
+      <a class="link" href="https://sqlite.org/whentouse.html" target="_blank" rel="noopener">
+        <b>SQLite · Cuándo conviene usarlo</b><span>Documento oficial donde se compara una base de datos con el simple hecho de abrir un archivo. En inglés.</span><em>sqlite.org</em></a>
+      <a class="link" href="https://db-engines.com/en/ranking" target="_blank" rel="noopener">
+        <b>DB-Engines Ranking</b><span>Listado actualizado de los motores de bases de datos más usados del mundo. Sirve para ver el panorama real.</span><em>db-engines.com</em></a>
+      <a class="link" href="https://www.dane.gov.co/" target="_blank" rel="noopener">
+        <b>DANE</b><span>El censo colombiano: el mismo problema que resolvió Hollerith en 1890, hoy.</span><em>dane.gov.co</em></a>
+      <a class="link" href="https://es.wikipedia.org/wiki/Herman_Hollerith" target="_blank" rel="noopener">
+        <b>Herman Hollerith</b><span>Punto de partida para la línea de tiempo. Verifica los datos con una segunda fuente.</span><em>es.wikipedia.org</em></a>
+    </div>
+
+    <div class="caja taller">
+      <h4>Reto para la casa · Se entrega al inicio de la clase 2</h4>
+      <ol>
+        <li>Entra a <b>datos.gov.co</b> o a <b>medata.gov.co</b> y descarga un conjunto de datos en CSV que te interese
+          (movilidad, seguridad, educación, deporte…).</li>
+        <li>Ábrelo con Excel, LibreOffice o Google Sheets.</li>
+        <li>Responde por escrito:
+          <ul>
+            <li>¿Cuántas filas y cuántas columnas tiene?</li>
+            <li>¿Qué naturaleza tiene cada columna (texto, número, fecha, lógico, identificador)?</li>
+            <li>¿Encontraste celdas vacías, datos repetidos o formatos mezclados? Da dos ejemplos concretos.</li>
+            <li>Formula <b>tres preguntas</b> que te gustaría hacerle a esos datos y explica qué tan difícil sería
+              responderlas con solo la hoja de cálculo.</li>
+          </ul>
+        </li>
+        <li>Trae el archivo y las respuestas. Los usaremos en la clase 2.</li>
+      </ol>
+    </div>
+
+    <div class="visto"><input type="checkbox" class="chk-visto"> <span>Módulo trabajado</span></div>
+  </section>
+
+  <!-- ================= M11 EVALUACIÓN ================= -->
+  <section id="m11">
+    <div class="eyebrow">Módulo 11 · <b>10 min</b> · Evaluación de cierre</div>
+    <h2>¿Qué quedó de la sesión?</h2>
+    <p>Diez preguntas. Respóndelas sin mirar atrás; al final revisa lo que hayas fallado.</p>
+
+    <div class="quiz" data-quiz id="quizFinal">
+      <div class="q" data-exp="La estructura acordada es lo que permite responder preguntas rápido y de forma confiable.">
+        <p class="qt">1. En la prueba del carné, ¿qué hizo que la segunda ronda fuera más rápida?</p>
+        <button class="opt">Que los estudiantes ya tenían práctica</button>
+        <button class="opt" data-ok>Que todos escribieron bajo una misma estructura acordada</button>
+        <button class="opt">Que había menos hojas</button>
+        <button class="opt">Que el docente ayudó</button>
+        <p class="fb"></p>
+      </div>
+      <div class="q" data-exp="Un hecho aislado sin contexto es un dato.">
+        <p class="qt">2. "4.5" escrito solo en una hoja es:</p>
+        <button class="opt" data-ok>Un dato</button>
+        <button class="opt">Información</button>
+        <button class="opt">Conocimiento</button>
+        <button class="opt">Un registro</button>
+        <p class="fb"></p>
+      </div>
+      <div class="q" data-exp="La Ley 1581 de 2012 define base de datos como conjunto organizado de datos personales objeto de tratamiento.">
+        <p class="qt">3. ¿Qué norma colombiana define legalmente qué es una base de datos personales?</p>
+        <button class="opt">Ley 115 de 1994</button>
+        <button class="opt" data-ok>Ley 1581 de 2012</button>
+        <button class="opt">Decreto 1075 de 2015</button>
+        <button class="opt">Ley 100 de 1993</button>
+        <p class="fb"></p>
+      </div>
+      <div class="q" data-exp="Codd, matemático de IBM, publicó el modelo relacional en 1970.">
+        <p class="qt">4. ¿Quién propuso el modelo relacional y en qué año?</p>
+        <button class="opt">Herman Hollerith, 1890</button>
+        <button class="opt">Donald Chamberlin, 1974</button>
+        <button class="opt" data-ok>Edgar F. Codd, 1970</button>
+        <button class="opt">Richard Hipp, 2000</button>
+        <p class="fb"></p>
+      </div>
+      <div class="q" data-exp="En archivos las reglas viven en el programa; en bases de datos viven junto a los datos y el motor las aplica.">
+        <p class="qt">5. Diferencia de fondo entre archivos y bases de datos:</p>
+        <button class="opt">Los archivos ocupan más espacio</button>
+        <button class="opt">Las bases de datos son siempre más rápidas</button>
+        <button class="opt" data-ok>En archivos las reglas viven en el programa; en bases de datos viven junto a los datos</button>
+        <button class="opt">Los archivos no se pueden abrir en internet</button>
+        <p class="fb"></p>
+      </div>
+      <div class="q" data-exp="Guardar el mismo dato en varios lugares es redundancia, y su consecuencia habitual es la inconsistencia.">
+        <p class="qt">6. Guardar el teléfono de un estudiante en tres archivos distintos produce:</p>
+        <button class="opt">Mayor seguridad</button>
+        <button class="opt" data-ok>Redundancia y riesgo de inconsistencia</button>
+        <button class="opt">Mejor rendimiento</button>
+        <button class="opt">Atomicidad</button>
+        <p class="fb"></p>
+      </div>
+      <div class="q" data-exp="Que una operación ocurra completa o no ocurra es la propiedad de atomicidad.">
+        <p class="qt">7. "O se hace completa, o no se hace". Esa propiedad se llama:</p>
+        <button class="opt">Integridad</button>
+        <button class="opt">Concurrencia</button>
+        <button class="opt" data-ok>Atomicidad</button>
+        <button class="opt">Persistencia</button>
+        <p class="fb"></p>
+      </div>
+      <div class="q" data-exp="El CSV es el formato de intercambio más universal entre sistemas distintos.">
+        <p class="qt">8. ¿Cuál es el formato de archivo más usado para intercambiar datos entre sistemas diferentes?</p>
+        <button class="opt">DOCX</button>
+        <button class="opt" data-ok>CSV</button>
+        <button class="opt">PDF</button>
+        <button class="opt">MP4</button>
+        <p class="fb"></p>
+      </div>
+      <div class="q" data-exp="Documento y teléfono no se suman ni se promedian y pueden empezar por cero: se manejan como texto o identificador.">
+        <p class="qt">9. ¿Por qué el número de documento no se trata como un número?</p>
+        <button class="opt">Porque es muy largo</button>
+        <button class="opt">Porque es un dato privado</button>
+        <button class="opt" data-ok>Porque no se opera aritméticamente y puede empezar por cero</button>
+        <button class="opt">Porque cambia con el tiempo</button>
+        <p class="fb"></p>
+      </div>
+      <div class="q" data-exp="El SGBD es el software que administra la base de datos; lo estudiaremos en la clase 2.">
+        <p class="qt">10. El software que administra una base de datos y hace cumplir sus reglas se llama:</p>
+        <button class="opt">Sistema operativo</button>
+        <button class="opt">Hoja de cálculo</button>
+        <button class="opt" data-ok>Sistema de gestión de bases de datos (SGBD)</button>
+        <button class="opt">Servidor web</button>
+        <p class="fb"></p>
+      </div>
+    </div>
+
+
+    <h3>Ticket de salida</h3>
+    <p>Responde las tres preguntas. Se envían junto con tu evaluación.</p>
+    <div class="hoja">
+      <label for="t1">1. Una idea nueva que aprendiste hoy, en una sola frase.</label>
+      <textarea id="t1"></textarea>
+      <label for="t2">2. Un problema del enfoque de archivos que hayas visto en la vida real, fuera de los ejemplos de clase.</label>
+      <textarea id="t2"></textarea>
+      <label for="t3">3. Una pregunta que te quedó sin resolver.</label>
+      <textarea id="t3"></textarea>
+    </div>
+
+    <div class="caja" id="bloqueEnvio">
+      <h4>Enviar mi evaluación</h4>
+      <p>Antes de enviar verifica que confirmaste tus datos al inicio, que respondiste las diez preguntas y que
+        completaste el ticket de salida. <b>El envío es definitivo: solo se puede hacer una vez.</b></p>
+      <button class="btn" id="btEnviar">Enviar</button>
+      <p id="estadoEnvio" class="mono"></p>
+      <p style="font-size:.82rem;color:#4A6076">¿El envío no funciona por la red del colegio?
+        <a href="#" id="enlaceRespaldo" target="_blank" rel="noopener">Abre el formulario con tus respuestas ya cargadas</a>
+        y presiona Enviar allí.</p>
+    </div>
+    <iframe name="destinoForm" id="destinoForm" style="display:none" title="Destino del envío"></iframe>
+
+    <div class="caja">
+      <h4>Lo que viene en la clase 2</h4>
+      <p>Ya sabemos qué es una base de datos y por qué los archivos se quedan cortos. La clase 2 responde la pregunta que
+        quedó abierta: <b>¿quién hace cumplir todas esas reglas?</b> Estudiaremos los sistemas de gestión de bases de datos
+        (SGBD) y los conceptos de modelo conceptual y modelo lógico, con lo que cerramos el numeral 6.1 de la guía.</p>
+    </div>
+
+
+
+    <div class="visto"><input type="checkbox" class="chk-visto"> <span>Módulo trabajado</span></div>
+  </section>
+
+  </main>
+</div>
+
+<p class="pie">Institución Educativa María de los Ángeles Cano · Medellín · Media Técnica: Técnico Laboral en Desarrollo de Software<br>
+Asignatura Bases de Datos · Tema 6.1 Contextualización · Clase 1 de 2 · Material de aula</p>
+
+<script>
+/* ---------- Cronómetro ---------- */
+(function(){
+  var seg=0, act=false, id=null, modoDescanso=false, restante=0;
+  var el=document.getElementById('crono'), bt=document.getElementById('btCrono'), bd=document.getElementById('btDescanso');
+  function fmt(s){var h=Math.floor(s/3600),m=Math.floor((s%3600)/60),g=s%60;
+    return (h<10?'0':'')+h+':'+(m<10?'0':'')+m+':'+(g<10?'0':'')+g;}
+  function fmt2(s){var m=Math.floor(s/60),g=s%60;return (m<10?'0':'')+m+':'+(g<10?'0':'')+g;}
+  function tick(){
+    if(modoDescanso){restante--; el.textContent=fmt2(Math.max(restante,0));
+      if(restante<=0){clearInterval(id);id=null;modoDescanso=false;act=false;el.textContent='00:00';el.classList.add('rojo');
+        bd.textContent='Descanso 20:00'; alert('Se terminó el descanso de 20 minutos.');}
+    } else {seg++; el.textContent=fmt(seg);}
+  }
+  bt.addEventListener('click',function(){
+    if(modoDescanso){clearInterval(id);id=null;modoDescanso=false;el.classList.remove('rojo');bd.textContent='Descanso 20:00';el.textContent=fmt(seg);}
+    if(act){clearInterval(id);id=null;act=false;bt.textContent='Reanudar sesión';}
+    else{id=setInterval(tick,1000);act=true;bt.textContent='Pausar sesión';}
+  });
+  bd.addEventListener('click',function(){
+    if(modoDescanso){clearInterval(id);id=null;modoDescanso=false;act=false;el.classList.remove('rojo');
+      bd.textContent='Descanso 20:00';el.textContent=fmt(seg);bt.textContent='Iniciar sesión';return;}
+    clearInterval(id); modoDescanso=true; restante=20*60; act=true; el.classList.add('rojo');
+    el.textContent=fmt2(restante); bd.textContent='Cancelar descanso'; bt.textContent='Iniciar sesión';
+    id=setInterval(tick,1000);
+  });
+})();
+
+/* ---------- Impresión ---------- */
+document.getElementById('btImprimir').addEventListener('click',function(){window.print();});
+
+/* ---------- Compromisos ---------- */
+(function(){
+  var chks=document.querySelectorAll('.chk-comp'), est=document.getElementById('estadoComp');
+  chks.forEach(function(c){c.addEventListener('change',function(){
+    c.closest('.compromiso').classList.toggle('ok',c.checked);
+    var n=document.querySelectorAll('.chk-comp:checked').length;
+    est.textContent='Compromisos aceptados: '+n+' de '+chks.length;
+    est.style.background=(n===chks.length)?'#0F7A6C':'#0A2A52';
+  });});
+})();
+
+/* ---------- Progreso y navegación ---------- */
+(function(){
+  var vistos=document.querySelectorAll('.chk-visto'), barra=document.getElementById('barraProg');
+  vistos.forEach(function(v){v.addEventListener('change',function(){
+    var n=document.querySelectorAll('.chk-visto:checked').length;
+    barra.style.width=(n/vistos.length*100)+'%';
+  });});
+  var links=document.querySelectorAll('#rail a');
+  var obs=new IntersectionObserver(function(ents){
+    ents.forEach(function(e){
+      if(e.isIntersecting){
+        links.forEach(function(l){l.classList.toggle('on', l.getAttribute('href')==='#'+e.target.id);});
+      }
+    });
+  },{rootMargin:'-120px 0px -60% 0px'});
+  document.querySelectorAll('section[id]').forEach(function(s){obs.observe(s);});
+})();
+
+/* ---------- Quiz ---------- */
+document.querySelectorAll('[data-quiz]').forEach(function(quiz){
+  var total=quiz.querySelectorAll('.q').length, marc=quiz.querySelector('.puntaje'), ok=0;
+  quiz.querySelectorAll('.q').forEach(function(q){
+    q.querySelectorAll('.opt').forEach(function(b){
+      b.addEventListener('click',function(){
+        if(q.dataset.resuelta) return;
+        q.dataset.resuelta='1';
+        var correcta=q.querySelector('.opt[data-ok]');
+        correcta.classList.add('bien');
+        if(b!==correcta){b.classList.add('mal');} else {ok++;}
+        q.querySelectorAll('.opt').forEach(function(x){x.disabled=true;});
+        var fb=q.querySelector('.fb');
+        if(fb){fb.textContent=(b===correcta?'Correcto. ':'Revisa: ')+(q.dataset.exp||'');fb.classList.add('ver');}
+        if(marc){marc.textContent='Aciertos: '+ok+' / '+total;
+          marc.style.background=(ok>=Math.ceil(total*0.6))?'#0F7A6C':'#0A2A52';}
+      });
+    });
+  });
+});
+
+/* ---------- Clasificador ---------- */
+document.querySelectorAll('[data-clasi]').forEach(function(cl){
+  var cats=cl.dataset.cats.split('|');
+  cl.querySelectorAll('.citem').forEach(function(it){
+    cats.forEach(function(c){
+      var b=document.createElement('button');
+      b.className='cb'; b.textContent=c;
+      b.addEventListener('click',function(){
+        it.querySelectorAll('.cb').forEach(function(x){x.classList.remove('sel');});
+        b.classList.add('sel'); it.dataset.eleccion=c;
+        it.classList.remove('bien','mal');
+      });
+      it.appendChild(b);
+    });
+  });
+  cl.querySelector('.verificar').addEventListener('click',function(){
+    var ok=0, tot=cl.querySelectorAll('.citem').length;
+    cl.querySelectorAll('.citem').forEach(function(it){
+      var bien=(it.dataset.eleccion===it.dataset.cat);
+      it.classList.toggle('bien',bien); it.classList.toggle('mal',!bien && !!it.dataset.eleccion);
+      if(bien) ok++;
+    });
+    var r=cl.querySelector('.resultado');
+    r.style.display='inline-block';
+    r.textContent='Correctas: '+ok+' de '+tot;
+    r.style.background=(ok===tot)?'#0F7A6C':'#0A2A52';
+  });
+});
+
+/* ---------- Ordenar línea de tiempo ---------- */
+document.querySelectorAll('[data-orden]').forEach(function(o){
+  var items=Array.prototype.slice.call(o.querySelectorAll('.oitem'));
+  var cont=1, secuencia=[];
+  items.sort(function(){return Math.random()-0.5;}).forEach(function(i){o.insertBefore(i,o.querySelector('.verificarOrden'));});
+  function reset(){cont=1;secuencia=[];items.forEach(function(i){
+    i.classList.remove('eleg','bien','mal');
+    var n=i.querySelector('.num'); if(n) n.remove();});
+    o.querySelector('.resOrden').style.display='none';}
+  items.forEach(function(i){
+    i.addEventListener('click',function(){
+      if(i.classList.contains('eleg')) return;
+      i.classList.add('eleg');
+      var s=document.createElement('span'); s.className='num'; s.textContent=cont+'.';
+      i.insertBefore(s,i.firstChild); secuencia.push(i); cont++;
+    });
+  });
+  o.querySelector('.verificarOrden').addEventListener('click',function(){
+    var ok=0;
+    secuencia.forEach(function(i,idx){
+      var bien=(parseInt(i.dataset.pos,10)===idx+1);
+      i.classList.toggle('bien',bien); i.classList.toggle('mal',!bien);
+      if(bien) ok++;
+    });
+    var r=o.querySelector('.resOrden'); r.style.display='inline-block';
+    r.textContent='En posición correcta: '+ok+' de '+items.length;
+    r.style.background=(ok===items.length)?'#0F7A6C':'#0A2A52';
+  });
+  o.querySelector('.reiniciarOrden').addEventListener('click',reset);
+});
+
+/* ---------- Tarjetas de historia ---------- */
+document.querySelectorAll('.flip').forEach(function(f){
+  f.addEventListener('click',function(){f.classList.toggle('girada');});
+});
+
+/* ---------- Tablas editables ---------- */
+function filaEditable(n){
+  var tr=document.createElement('tr');
+  for(var i=0;i<n;i++){var td=document.createElement('td');td.contentEditable='true';td.innerHTML='&nbsp;';tr.appendChild(td);}
+  return tr;
+}
+(function(){
+  var tb=document.querySelector('#tablaAuditoria tbody');
+  for(var i=0;i<6;i++) tb.appendChild(filaEditable(4));
+  document.getElementById('addFila').addEventListener('click',function(){tb.appendChild(filaEditable(4));});
+
+  var th=document.querySelector('#tablaHallazgos tbody');
+  for(var j=0;j<5;j++) th.appendChild(filaEditable(3));
+  document.getElementById('addHallazgo').addEventListener('click',function(){th.appendChild(filaEditable(3));});
+})();
+
+/* ---------- Informe del taller 1 ---------- */
+document.getElementById('btInforme').addEventListener('click',function(){
+  var txt='TALLER 1 · AUDITORÍA DE DATOS PERSONALES\n';
+  txt+='IE María de los Ángeles Cano · Bases de Datos · Clase 1\n';
+  txt+='Fecha: '+new Date().toLocaleDateString('es-CO')+'\n\n';
+  document.querySelectorAll('#tablaAuditoria tbody tr').forEach(function(tr,i){
+    var c=tr.querySelectorAll('td');
+    var org=c[0].innerText.trim();
+    if(!org) return;
+    txt+=(i+1)+'. '+org+'\n   Datos: '+c[1].innerText.trim()+'\n   Si se pierden: '+c[2].innerText.trim()+
+         '\n   Si están mal: '+c[3].innerText.trim()+'\n';
+  });
+  txt+='\nPregunta 1: '+document.getElementById('p1').value+'\n';
+  txt+='Pregunta 2: '+document.getElementById('p2').value+'\n';
+  txt+='Pregunta 3: '+document.getElementById('p3').value+'\n';
+  var s=document.getElementById('salidaInforme');
+  s.style.display='block'; s.textContent=txt;
+});
+
+/* ---------- Marcado de celdas del taller 2 ---------- */
+(function(){
+  var cont=document.getElementById('contMarcadas');
+  document.querySelectorAll('table.marcable tbody td').forEach(function(td){
+    td.addEventListener('click',function(){
+      td.classList.toggle('marcada');
+      cont.textContent=document.querySelectorAll('table.marcable td.marcada').length;
+    });
+  });
+})();
+</script>
+
+<script>
+/* =====================================================================
+   CONFIGURACIÓN DEL FORMULARIO DE GOOGLE
+   Reemplace el contenido entre comillas por los valores de SU formulario.
+   Instrucciones detalladas en el archivo INSTRUCCIONES_FORMULARIO.md
+   ===================================================================== */
+var FORMULARIO = {
+  // URL de envío del formulario "Evaluación Bases de Datos"
+  url: "https://docs.google.com/forms/d/e/1FAIpQLSdRAwnoz5-yAxF0ZB-BpqjIn65QsgJKxUpvePuS0xsO9e2trA/formResponse",
+
+  // Identificadores de cada pregunta del formulario
+  campos: {
+    nombre:    "entry.1266011274",
+    documento: "entry.1798684734",
+    grupo:     "entry.2084765200",
+    correo:    "entry.1015756365",
+    clase:     "entry.333872770",
+    resultado: "entry.261360188",
+    detalle:   "entry.42719728",
+    ticket1:   "entry.1352795142",
+    ticket2:   "entry.1264207567",
+    ticket3:   "entry.1088356855"
+  }
+};
+var VALOR_CLASE = "Clase 1 - Contextualizacion";
+/* ============ FIN DE LA CONFIGURACIÓN · no modifique lo de abajo ============ */
+
+(function(){
+  var est = {nombre:'', documento:'', grupo:'', correo:'', confirmado:false};
+
+  /* ---- Identificación ---- */
+  var chip = document.getElementById('chipEst');
+  document.getElementById('btGuardarDatos').addEventListener('click', function(){
+    est.nombre = document.getElementById('estNombre').value.trim();
+    est.documento = document.getElementById('estDoc').value.trim();
+    est.grupo = document.getElementById('estGrupo').value.trim();
+    est.correo = document.getElementById('estCorreo').value.trim();
+    var e = document.getElementById('estadoDatos');
+    e.style.display = 'inline-block';
+    if(!est.nombre || !est.documento || !est.grupo){
+      est.confirmado = false;
+      e.textContent = 'Faltan datos: nombre, documento y grupo son obligatorios.';
+      e.style.background = '#C81E33';
+      chip.classList.remove('ver');
+      return;
+    }
+    est.confirmado = true;
+    e.textContent = 'Datos confirmados.';
+    e.style.background = '#0F7A6C';
+    chip.textContent = est.nombre + ' · ' + est.grupo;
+    chip.classList.add('ver');
+  });
+
+  /* ---- Lectura del resultado de la evaluación final ---- */
+  function leerEvaluacion(){
+    var quiz = document.getElementById('quizFinal');
+    var preguntas = quiz.querySelectorAll('.q');
+    var aciertos = 0, sinResponder = 0, detalle = [];
+    preguntas.forEach(function(q, i){
+      if(!q.dataset.resuelta){ detalle.push((i+1)+':-'); sinResponder++; return; }
+      var falló = q.querySelector('.opt.mal');
+      if(falló){ detalle.push((i+1)+':X'); }
+      else { detalle.push((i+1)+':C'); aciertos++; }
+    });
+    return {total: preguntas.length, aciertos: aciertos, sinResponder: sinResponder,
+            detalle: detalle.join(' ')};
+  }
+
+  function datosEnvio(){
+    var ev = leerEvaluacion();
+    return {
+      nombre: est.nombre,
+      documento: est.documento,
+      grupo: est.grupo,
+      correo: est.correo,
+      clase: VALOR_CLASE,
+      resultado: ev.aciertos + ' de ' + ev.total,
+      detalle: ev.detalle,
+      ticket1: document.getElementById('t1').value.trim(),
+      ticket2: document.getElementById('t2').value.trim(),
+      ticket3: document.getElementById('t3').value.trim(),
+      _ev: ev
+    };
+  }
+
+  function mostrar(txt, tipo){
+    var e = document.getElementById('estadoEnvio');
+    e.textContent = txt; e.className = 'mono ' + tipo;
+  }
+
+  /* ---- Enlace de respaldo (formulario prellenado) ---- */
+  function urlPrellenada(d){
+    if(!FORMULARIO.url) return '';
+    var base = FORMULARIO.url.replace('/formResponse', '/viewform');
+    var p = ['usp=pp_url'];
+    for(var k in FORMULARIO.campos){
+      if(FORMULARIO.campos[k] && d[k]) p.push(FORMULARIO.campos[k] + '=' + encodeURIComponent(d[k]));
+    }
+    return base + '?' + p.join('&');
+  }
+  document.getElementById('enlaceRespaldo').addEventListener('click', function(ev){
+    var u = urlPrellenada(datosEnvio());
+    if(!u){ ev.preventDefault(); mostrar('El docente todavía no ha configurado el formulario de envío.', 'err'); return; }
+    this.href = u;
+  });
+
+  /* ---- Envío ---- */
+  var enviado = false;
+  document.getElementById('btEnviar').addEventListener('click', function(){
+    if(enviado) return;
+    if(!FORMULARIO.url){ mostrar('El docente todavía no ha configurado el formulario de envío. Avísale antes de continuar.', 'err'); return; }
+    if(!est.confirmado){ mostrar('Primero confirma tus datos en la sección "Tus datos", al inicio de la página.', 'err'); return; }
+    var d = datosEnvio();
+    if(d._ev.sinResponder > 0){
+      if(!confirm('Te quedan ' + d._ev.sinResponder + ' preguntas sin responder. ¿Enviar de todos modos?')) return;
+    }
+    if(!d.ticket1 || !d.ticket2 || !d.ticket3){
+      if(!confirm('El ticket de salida está incompleto. ¿Enviar de todos modos?')) return;
+    }
+    var f = document.createElement('form');
+    f.action = FORMULARIO.url; f.method = 'POST'; f.target = 'destinoForm'; f.style.display = 'none';
+    for(var k in FORMULARIO.campos){
+      if(!FORMULARIO.campos[k]) continue;
+      var i = document.createElement('input');
+      i.type = 'hidden'; i.name = FORMULARIO.campos[k]; i.value = d[k] || '';
+      f.appendChild(i);
+    }
+    document.body.appendChild(f);
+    f.submit();
+    enviado = true;
+    this.disabled = true; this.textContent = 'Enviado';
+    mostrar('Evaluación enviada el ' + new Date().toLocaleString('es-CO') +
+            '. Resultado: ' + d.resultado + '. Muéstrale esta confirmación al docente.', 'ok');
+  });
+})();
+</script>
+
+<script>
+/* ---------- Menú plegable en pantallas pequeñas ---------- */
+(function(){
+  var bt = document.getElementById('btMenu'), rail = document.getElementById('rail');
+  bt.addEventListener('click', function(){
+    var abierto = rail.classList.toggle('abierto');
+    bt.setAttribute('aria-expanded', abierto ? 'true' : 'false');
+    bt.querySelector('span').textContent = abierto ? 'Cerrar' : 'Ver';
+  });
+  rail.addEventListener('click', function(e){
+    if(e.target.closest('a') && window.matchMedia('(max-width:980px)').matches){
+      rail.classList.remove('abierto');
+      bt.setAttribute('aria-expanded','false');
+      bt.querySelector('span').textContent = 'Ver';
+    }
+  });
+})();
+</script>
+</body>
+</html>
