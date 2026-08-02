@@ -233,12 +233,14 @@ pre{max-width:100%}
 #btMenu{display:none}
 input,textarea,select,button{font-size:16px}
 
-@media(max-width:1180px){
+@media(min-width:981px) and (max-width:1180px){
   .marco{grid-template-columns:224px 1fr;gap:18px}
 }
 
 @media(max-width:980px){
   html{scroll-padding-top:92px}
+  .marco{display:block!important;padding:14px 12px 60px}
+  #btMenu{grid-column:1/-1}
   .barra-in{padding:8px 12px;gap:9px;row-gap:7px}
   .marca img{width:42px;height:42px}
   .marca .txt strong{font-size:.84rem}
@@ -250,10 +252,17 @@ input,textarea,select,button{font-size:16px}
   .bt{padding:8px 11px;font-size:.74rem}
   .chip-est{font-size:.7rem;padding:4px 9px}
 
-  #btMenu{display:flex;justify-content:space-between;align-items:center;width:100%;margin:0 0 13px;
-    padding:13px 15px;border:1px solid var(--linea);background:var(--papel);border-radius:12px;
-    font-family:var(--display);font-weight:600;font-size:.92rem;color:var(--azul900);cursor:pointer}
-  #btMenu span{font-family:var(--mono);font-size:.78rem;color:var(--azul500)}
+  #btMenu{display:flex;justify-content:space-between;align-items:center;gap:10px;width:100%;margin:0 0 13px;
+    padding:14px 16px;border:1px solid var(--azul300);background:var(--azul050);border-radius:12px;
+    font-family:var(--display);font-weight:600;font-size:.95rem;color:var(--azul900);cursor:pointer;text-align:left}
+  #btMenu span{font-family:var(--mono);font-size:.74rem;color:#fff;background:var(--azul700);
+    padding:5px 11px;border-radius:16px;white-space:nowrap}
+  .rail{border-color:var(--azul300);box-shadow:0 4px 14px rgba(10,42,82,.09)}
+  .rail h4{background:var(--azul050)}
+  #btFlotante{display:flex;position:fixed;right:14px;bottom:16px;z-index:60;width:54px;height:54px;
+    border-radius:50%;border:none;background:var(--azul700);color:#fff;font-size:1.35rem;line-height:1;
+    align-items:center;justify-content:center;box-shadow:0 6px 18px rgba(6,24,46,.35);cursor:pointer}
+  #btFlotante:active{background:var(--azul500)}
   .rail{display:none;margin-bottom:14px;max-height:62vh}
   .rail.abierto{display:block}
   .rail a{padding:11px 12px;font-size:.86rem}
@@ -297,7 +306,8 @@ input,textarea,select,button{font-size:16px}
   .flip{height:230px}
 }
 
-@media print{#btMenu{display:none!important}}
+#btFlotante{display:none}
+@media print{#btMenu,#btFlotante{display:none!important}}
 </style>
 </head>
 <body>
@@ -1648,6 +1658,22 @@ var VALOR_CLASE = "Clase 1 - Contextualizacion";
       rail.classList.remove('abierto');
       bt.setAttribute('aria-expanded','false');
       bt.querySelector('span').textContent = 'Ver';
+    }
+  });
+
+  /* Botón flotante: vuelve arriba y abre la ruta de la sesión */
+  var fab = document.createElement('button');
+  fab.id = 'btFlotante';
+  fab.type = 'button';
+  fab.setAttribute('aria-label','Ir a la ruta de la sesión');
+  fab.textContent = '\u2630';
+  document.body.appendChild(fab);
+  fab.addEventListener('click', function(){
+    window.scrollTo({top:0, behavior:'smooth'});
+    if(!rail.classList.contains('abierto')){
+      rail.classList.add('abierto');
+      bt.setAttribute('aria-expanded','true');
+      bt.querySelector('span').textContent = 'Cerrar';
     }
   });
 })();
