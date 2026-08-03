@@ -353,7 +353,7 @@ input,textarea,select,button{font-size:16px}
       <span class="chip-est" id="chipEst"></span>
       <span class="crono" id="crono">00:00:00</span>
       <button class="bt" id="btCrono">Iniciar sesión</button>
-      <button class="bt" id="btDescanso">Descanso 20:00</button>
+      <button class="bt" id="btDescanso">Descanso 15:00</button>
       <button class="bt" id="btImprimir">Imprimir</button>
     </div>
   </div>
@@ -371,10 +371,10 @@ input,textarea,select,button{font-size:16px}
     <a href="#m3"><span class="id">03</span><span>Las seis funciones del SGBD<span class="mn">30 min</span></span></a>
     <a href="#m4"><span class="id">04</span><span>Quién es quién alrededor del SGBD<span class="mn">20 min</span></span></a>
     <a href="#m5"><span class="id">05</span><span>Taller 3: el motor bajo la lupa<span class="mn">25 min</span></span></a>
-    <a href="#pausa" class="pausa"><span class="id">☕</span><span>Descanso<span class="mn">20 min</span></span></a>
+    <a href="#pausa" class="pausa"><span class="id">☕</span><span>Descanso<span class="mn">15 min</span></span></a>
     <a href="#m6"><span class="id">06</span><span>Los tres niveles de abstracción<span class="mn">30 min</span></span></a>
     <a href="#m7"><span class="id">07</span><span>Modelo conceptual, lógico y físico<span class="mn">30 min</span></span></a>
-    <a href="#m8"><span class="id">08</span><span>Taller 4: del enunciado al modelo<span class="mn">30 min</span></span></a>
+    <a href="#m8"><span class="id">08</span><span>Taller 4: del enunciado al modelo<span class="mn">35 min</span></span></a>
     <a href="#m9"><span class="id">09</span><span>Panorama de motores y entornos<span class="mn">15 min</span></span></a>
     <a href="#m10"><span class="id">10</span><span>Evaluación y cierre del tema 6.1<span class="mn">15 min</span></span></a>
   </nav>
@@ -435,7 +435,7 @@ input,textarea,select,button{font-size:16px}
 
     <label class="compromiso"><input type="checkbox" class="chk-comp">
       <span><b>Puntualidad y permanencia</b>
-      <span>Entramos a la hora acordada y regresamos del descanso de 20 minutos a tiempo. El que llega tarde se pone al día
+      <span>Entramos a la hora acordada y regresamos del descanso de 15 minutos a tiempo. El que llega tarde se pone al día
       solo, sin detener al grupo.</span></span></label>
 
     <label class="compromiso"><input type="checkbox" class="chk-comp">
@@ -730,9 +730,9 @@ input,textarea,select,button{font-size:16px}
 
   <!-- ================= PAUSA ================= -->
   <section id="pausa" style="background:linear-gradient(135deg,#FFF7E8,#FFEFD1);border-color:#F0D8A8">
-    <div class="eyebrow" style="color:#A76A00">Descanso · <b>20 min</b></div>
+    <div class="eyebrow" style="color:#A76A00">Descanso · <b>15 min</b></div>
     <h2 style="color:#7A4E00">Pausa activa</h2>
-    <p style="max-width:60ch">Veinte minutos. Al regresar cambiamos de tema: dejamos el software y pasamos a los planos, es
+    <p style="max-width:60ch">Quince minutos. Al regresar cambiamos de tema: dejamos el software y pasamos a los planos, es
       decir, a las distintas formas de representar una misma base de datos.</p>
   </section>
 
@@ -878,7 +878,7 @@ GRUPO      (codigo, jornada)</pre>
 
   <!-- ================= M8 TALLER 4 ================= -->
   <section id="m8">
-    <div class="eyebrow">Módulo 08 · <b>30 min</b> · Taller evaluable 4</div>
+    <div class="eyebrow">Módulo 08 · <b>35 min</b> · Taller evaluable 4</div>
     <h2>Taller 4: del enunciado al modelo conceptual</h2>
     <p><b>Modalidad:</b> parejas. <b>Entregable:</b> modelo conceptual escrito en lenguaje corriente + borrador del modelo
       lógico.</p>
@@ -941,22 +941,6 @@ GRUPO      (codigo, jornada)</pre>
         <li>¿Hay algún dato que no le corresponda a esa cosa?</li>
       </ul>
     </div>
-
-    <details>
-      <summary>Guía de referencia del caso 1, biblioteca (abrir solo al terminar)</summary>
-      <p><b>Cosas:</b> libro, usuario (estudiante o docente), préstamo.</p>
-      <p><b>Libro:</b> código (identificador), título (texto), autor (texto), año de publicación (número), ejemplares
-        disponibles (número).<br>
-        <b>Usuario:</b> documento (identificador), nombres y apellidos (texto), tipo de usuario (texto), grupo o dependencia
-        (texto), teléfono (texto).<br>
-        <b>Préstamo:</b> número de préstamo (identificador), libro prestado, usuario que lo llevó, fecha de préstamo (fecha),
-        fecha pactada de devolución (fecha), fecha real de devolución (fecha), devuelto sí o no (lógico).</p>
-      <p><b>Relaciones:</b> un usuario puede tener varios préstamos; un préstamo corresponde a un solo usuario; un libro puede
-        haber sido prestado muchas veces a lo largo del tiempo.</p>
-      <p><b>Reglas:</b> no se presta un ejemplar que no esté disponible; un usuario con un préstamo vencido no puede llevar
-        otro libro; la fecha de devolución no puede ser anterior a la del préstamo.</p>
-      <p>Este es un modelo de referencia, no la única respuesta correcta. Otros modelos bien argumentados también son válidos.</p>
-    </details>
 
 
 
@@ -1149,18 +1133,18 @@ Asignatura Bases de Datos · Tema 6.1 Contextualización · Clase 2 de 2 · Mate
   function tick(){
     if(modoDescanso){restante--; el.textContent=fmt2(Math.max(restante,0));
       if(restante<=0){clearInterval(id);id=null;modoDescanso=false;act=false;el.textContent='00:00';el.classList.add('rojo');
-        bd.textContent='Descanso 20:00'; alert('Se terminó el descanso de 20 minutos.');}
+        bd.textContent='Descanso 15:00'; alert('Se terminó el descanso de 15 minutos.');}
     } else {seg++; el.textContent=fmt(seg);}
   }
   bt.addEventListener('click',function(){
-    if(modoDescanso){clearInterval(id);id=null;modoDescanso=false;el.classList.remove('rojo');bd.textContent='Descanso 20:00';el.textContent=fmt(seg);}
+    if(modoDescanso){clearInterval(id);id=null;modoDescanso=false;el.classList.remove('rojo');bd.textContent='Descanso 15:00';el.textContent=fmt(seg);}
     if(act){clearInterval(id);id=null;act=false;bt.textContent='Reanudar sesión';}
     else{id=setInterval(tick,1000);act=true;bt.textContent='Pausar sesión';}
   });
   bd.addEventListener('click',function(){
     if(modoDescanso){clearInterval(id);id=null;modoDescanso=false;act=false;el.classList.remove('rojo');
-      bd.textContent='Descanso 20:00';el.textContent=fmt(seg);bt.textContent='Iniciar sesión';return;}
-    clearInterval(id); modoDescanso=true; restante=20*60; act=true; el.classList.add('rojo');
+      bd.textContent='Descanso 15:00';el.textContent=fmt(seg);bt.textContent='Iniciar sesión';return;}
+    clearInterval(id); modoDescanso=true; restante=15*60; act=true; el.classList.add('rojo');
     el.textContent=fmt2(restante); bd.textContent='Cancelar descanso'; bt.textContent='Iniciar sesión';
     id=setInterval(tick,1000);
   });
