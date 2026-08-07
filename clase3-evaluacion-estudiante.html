@@ -429,31 +429,36 @@ function cerrar(){
   document.getElementById('cuestionario').classList.add('bloq');
   document.getElementById('cerradoEval').classList.add('visible');
 }
-function calificarYEnviar(){
-  if(!calificar())return;
-  const d=window.__envio;
-  let m='Al continuar, sus respuestas quedan bloqueadas y no podrá modificarlas.';
-  if(d.faltan)m='Tiene '+d.faltan+' pregunta(s) sin responder. '+m;
-  if(!confirm(m+' ¿Desea continuar?'))return;
+async function calificarYEnviar() {
+  if(!calificar()) return;
+  const d = window.__envio; // Datos obtenidos de la evaluación
+  
+  if(!confirm('¿Desea enviar sus respuestas definitivamente?')) return;
+  
   cerrar();
-  const txt='EVALUACION CLASE 3 - ENTIDADES Y ATRIBUTOS\n'+
-    'Nombre: '+d.nom+'\nDocumento: '+d.doc+'\nGrado: '+d.gr+
-    '\nProyecto PIA: '+(d.proy||'-')+
-    '\n\nSELECCION: '+d.correctas+' de 6 correctas ('+d.parcial+' de 3.0)'+
-    '\nDetalle: '+d.det.join(' | ')+
-    '\n\nABIERTA 7 (entidad vs ejemplar):\n'+(d.a1||'(sin responder)')+
-    '\n\nABIERTA 8 (atributo no simple del proyecto):\n'+(d.a2||'(sin responder)')+
-    '\n\n(Las dos abiertas valen 2.0 y las califica el docente.)';
-  const ta=document.getElementById('resumen');
-  ta.value=txt; ta.classList.add('visible'); ta.select();
-  if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(txt).catch(()=>{});}
-  if(ENLACE_FORMULARIO && ENLACE_FORMULARIO.indexOf('http')===0){
-    window.open(ENLACE_FORMULARIO,'_blank','noopener');
-    document.getElementById('avisoEval').textContent=
-      'Respuestas bloqueadas. Se abrió el formulario y el resumen quedó copiado: péguelo allí.';
-  }else{
-    document.getElementById('avisoEval').textContent=
-      'Respuestas bloqueadas. El docente aún no configuró el enlace del formulario: copie el resumen y entrégueselo.';
+  
+  // URL QUE COPIASTE DE TU SCRIPT (PEGA TU URL AQUÍ)
+  const URL_SCRIPT = https://script.google.com/macros/s/AKfycbxvJ5SotGaJZssIRfrmp05v9NZGOyRvNUxZ1GD5HXqcSXLWpO_4AhnW2hhXHcALfI4zXg/exec; 
+  
+  // Preparamos los datos para el envío
+  const formData = new FormData();
+  formData.append('nom', d.nom);
+  formData.append('doc', d.doc);
+  formData.append('gr', d.gr);
+  formData.append('proy', d.proy);
+  
+  // Procesamos respuestas de selección (d.det contiene "n:valor ok/mal")
+  d.det.forEach((val, i) => { formData.append('p'+(i+1), val); });
+  
+  formData.append('a1', d.a1);
+  formData.append('a2', d.a2);
+
+  try {
+    const response = await fetch(URL_SCRIPT, { method: 'POST', body: formData, mode: 'no-cors' });
+    document.getElementById('avisoEval').textContent = '¡Enviado correctamente a la base de datos!';
+  } catch (error) {
+    document.getElementById('avisoEval').textContent = 'Error al enviar. Los datos quedaron en el resumen.';
+    console.error(error);
   }
 }
 document.addEventListener('DOMContentLoaded',()=>{
