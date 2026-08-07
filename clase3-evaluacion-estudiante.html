@@ -297,7 +297,7 @@ table.ti th{background:var(--azul050)}
       <div><label for="evDoc">Documento de identidad</label>
         <input id="evDoc" type="text" inputmode="numeric" placeholder="Número de documento"></div>
       <div><label for="evGrado">Grado</label>
-        <input id="evDoc" type="text" inputmode="numeric" placeholder="Grado"></div>
+        <select id="evGrado"><option>11-3</option><option>11-4</option><option>10</option></select></div>
       <div><label for="evProyecto">Proyecto PIA</label>
         <input id="evProyecto" type="text" placeholder="Biblioteca, Inventarios, ..."></div>
     </div>
@@ -431,37 +431,35 @@ function cerrar(){
 }
 async function calificarYEnviar() {
   if(!calificar()) return;
-  const d = window.__envio; // Datos obtenidos de la evaluación
+  const d = window.__envio;
   
-  if(!confirm('¿Desea enviar sus respuestas definitivamente?')) return;
+  if(!confirm('¿Desea enviar sus respuestas definitivamente a la base de datos?')) return;
   
   cerrar();
   
-  // URL QUE COPIASTE DE TU SCRIPT (PEGA TU URL AQUÍ)
-  const URL_SCRIPT = https://script.google.com/macros/s/AKfycbxvJ5SotGaJZssIRfrmp05v9NZGOyRvNUxZ1GD5HXqcSXLWpO_4AhnW2hhXHcALfI4zXg/exec; 
+  // REEMPLAZA LA URL DE ABAJO POR LA QUE OBTUVISTE AL PUBLICAR TU SCRIPT
+  const URL_SCRIPT = "https://script.google.com/macros/s/AKfycbxvJ5SotGaJZssIRfrmp05v9NZGOyRvNUxZ1GD5HXqcSXLWpO_4AhnW2hhXHcALfI4zXg/exec"; 
   
-  // Preparamos los datos para el envío
   const formData = new FormData();
   formData.append('nom', d.nom);
   formData.append('doc', d.doc);
   formData.append('gr', d.gr);
   formData.append('proy', d.proy);
   
-  // Procesamos respuestas de selección (d.det contiene "n:valor ok/mal")
   d.det.forEach((val, i) => { formData.append('p'+(i+1), val); });
   
   formData.append('a1', d.a1);
   formData.append('a2', d.a2);
 
   try {
-    const response = await fetch(URL_SCRIPT, { method: 'POST', body: formData, mode: 'no-cors' });
-    document.getElementById('avisoEval').textContent = '¡Enviado correctamente a la base de datos!';
+    document.getElementById('avisoEval').textContent = 'Enviando...';
+    await fetch(URL_SCRIPT, { method: 'POST', body: formData, mode: 'no-cors' });
+    document.getElementById('avisoEval').textContent = '¡Enviado exitosamente a la hoja de cálculo!';
   } catch (error) {
-    document.getElementById('avisoEval').textContent = 'Error al enviar. Los datos quedaron en el resumen.';
+    document.getElementById('avisoEval').textContent = 'Error al conectar con la base de datos. Revise su conexión.';
     console.error(error);
   }
-}
-document.addEventListener('DOMContentLoaded',()=>{
+}document.addEventListener('DOMContentLoaded',()=>{
   const lig=(id,fn)=>{const e=document.getElementById(id); if(e)e.addEventListener('click',fn);};
   lig('btnEnviar',calificarYEnviar); lig('btnPrueba',calificar);
   [1,2].forEach(i=>{const t=document.getElementById('abierta'+i);
