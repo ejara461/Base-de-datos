@@ -1,0 +1,676 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Clase 4 · Relaciones y cardinalidad</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;600;700&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --tinta:#06182E; --azul900:#0A2A52; --azul700:#12457F; --azul500:#1E6FB8;
+  --azul300:#6BAEDB; --azul050:#E8F1F9; --papel:#FFFFFF; --nieve:#F4F8FC;
+  --linea:#CFE0EF; --alerta:#C81E33; --alerta050:#FDECEE; --ok:#0F7A6C; --ok050:#E6F4F1;
+  --ambar:#A76A00; --ambar050:#FFF4E0; --gris:#5C7189;
+  --display:'Space Grotesk','Segoe UI',system-ui,sans-serif;
+  --cuerpo:'IBM Plex Sans','Segoe UI',system-ui,sans-serif;
+  --mono:'IBM Plex Mono','Consolas',monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;scroll-padding-top:96px}
+body{font-family:var(--cuerpo);color:var(--tinta);background:var(--nieve);line-height:1.62;font-size:16px}
+h1,h2,h3,h4{font-family:var(--display);line-height:1.16;letter-spacing:-.012em}
+
+/* barra superior */
+.barra{position:sticky;top:0;z-index:50;background:linear-gradient(180deg,var(--azul900),var(--azul700));
+  color:#fff;border-bottom:3px solid var(--azul300);box-shadow:0 2px 14px rgba(6,24,46,.18)}
+.barra-in{max-width:1400px;margin:0 auto;padding:9px 18px;display:flex;gap:14px;align-items:center;flex-wrap:wrap}
+.barra img{height:38px;background:#fff;border-radius:6px;padding:3px}
+.barra .quien{flex:1;min-width:180px}
+.barra .quien b{display:block;font-family:var(--display);font-size:.94rem;line-height:1.25}
+.barra .quien span{font-size:.76rem;opacity:.85}
+.crono{font-family:var(--mono);font-size:1rem;background:rgba(255,255,255,.13);padding:5px 11px;
+  border-radius:8px;border:1px solid rgba(255,255,255,.22);white-space:nowrap}
+.crono.rojo{background:var(--alerta);border-color:var(--alerta)}
+.paginas{display:flex;gap:6px;flex-wrap:wrap}
+.paginas a{font-size:.78rem;text-decoration:none;color:#fff;border:1px solid rgba(255,255,255,.3);
+  padding:5px 11px;border-radius:7px;background:rgba(255,255,255,.08)}
+.paginas a:hover{background:rgba(255,255,255,.2)}
+.paginas a.actual{background:#fff;color:var(--azul900);font-weight:700}
+
+/* rejilla */
+.marco{max-width:1400px;margin:0 auto;display:grid;grid-template-columns:262px 1fr;gap:26px;padding:26px 18px 80px}
+.rail{position:sticky;top:100px;align-self:start;background:var(--papel);border:1px solid var(--linea);
+  border-radius:12px;overflow-y:auto;overflow-x:hidden;max-height:calc(100vh - 122px);
+  overscroll-behavior:contain;scrollbar-width:thin;scrollbar-color:var(--azul300) var(--azul050)}
+.rail::-webkit-scrollbar{width:9px}
+.rail::-webkit-scrollbar-track{background:var(--azul050);border-radius:0 12px 12px 0}
+.rail::-webkit-scrollbar-thumb{background:var(--azul300);border-radius:9px;border:2px solid var(--azul050)}
+.rail h4{font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;color:var(--azul700);margin:0;
+  padding:12px 14px 8px;border-bottom:1px solid var(--linea);position:sticky;top:0;background:var(--papel);z-index:2}
+.rail a{display:grid;grid-template-columns:52px 1fr;gap:8px;padding:9px 12px;text-decoration:none;
+  color:var(--tinta);font-size:.83rem;border-bottom:1px solid #EDF3F9;align-items:center}
+.rail a .id{font-family:var(--mono);font-size:.68rem;color:var(--azul500);background:var(--azul050);
+  border-radius:5px;text-align:center;padding:2px 0}
+.rail a .mn{display:block;font-size:.7rem;color:var(--gris)}
+.rail a:hover{background:var(--azul050)}
+.rail a.on{background:var(--azul050);box-shadow:inset 3px 0 0 var(--azul500);font-weight:600}
+.rail a.pausa{background:var(--ambar050);color:#7A4E00}
+.rail a.pausa .id{background:#F5D9A8;color:#7A4E00}
+
+/* secciones */
+section{background:var(--papel);border:1px solid var(--linea);border-radius:14px;
+  padding:26px 28px;margin-bottom:20px}
+section.hero{background:linear-gradient(135deg,var(--azul900) 0%,var(--azul700) 55%,var(--azul500) 100%);
+  color:#fff;border:none}
+.eyebrow{font-size:.7rem;letter-spacing:.16em;text-transform:uppercase;color:var(--azul300);font-weight:700}
+.hero h1{font-family:var(--display);font-size:clamp(1.7rem,3.6vw,2.5rem);margin:8px 0 10px;font-weight:700}
+.hero .lede{font-size:1.02rem;opacity:.94;max-width:62ch}
+.pill-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+.pill{background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.26);padding:5px 12px;
+  border-radius:999px;font-size:.82rem}
+.rot{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;margin-bottom:8px}
+.rot .hora{font-family:var(--mono);font-size:.76rem;color:var(--azul500);background:var(--azul050);
+  padding:3px 10px;border-radius:999px;white-space:nowrap}
+section h2{font-size:clamp(1.25rem,2.5vw,1.65rem);color:var(--azul900)}
+h3{font-size:1.06rem;color:var(--azul700);margin:22px 0 6px}
+p{margin-bottom:9px;max-width:74ch}
+ul.l,ol.l{margin:8px 0 8px 22px}
+ul.l li,ol.l li{margin-bottom:6px}
+code{font-family:var(--mono);background:var(--azul050);padding:1px 6px;border-radius:4px;font-size:.88em}
+
+.caja{background:var(--nieve);border:1px solid var(--linea);border-radius:11px;padding:18px 20px;margin-top:16px}
+.caja.nota{background:var(--ambar050);border-color:var(--ambar);border-left:5px solid var(--ambar)}
+.caja.clave{background:var(--ok050);border-color:var(--ok);border-left:5px solid var(--ok)}
+.caja h3{margin-top:0}
+.def{background:var(--azul900);color:#fff;border-radius:12px;padding:20px 22px;margin-top:16px}
+.def .et{font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;color:var(--azul300);font-weight:700}
+.def p{font-size:1.08rem;margin:6px 0 0;max-width:64ch}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px;margin-top:14px}
+
+.chip-e,.chip-a{display:inline-block;padding:3px 11px;border-radius:7px;font-size:.87rem;
+  font-weight:600;margin:3px 4px 3px 0}
+.chip-e{background:var(--azul050);color:var(--azul900);border:1px solid var(--azul500)}
+.chip-a{background:var(--ambar050);color:var(--ambar);border:1px solid var(--ambar)}
+
+table{width:100%;border-collapse:collapse;margin-top:12px;font-size:.92rem;background:#fff}
+th,td{border:1px solid var(--linea);padding:9px 11px;text-align:left;vertical-align:top}
+th{background:var(--azul050);color:var(--azul900);font-weight:700}
+.tw{overflow-x:auto}
+
+button,.btn{font-family:var(--cuerpo);font-size:.94rem;font-weight:600;padding:10px 17px;border-radius:8px;
+  border:1px solid var(--azul700);background:var(--azul700);color:#fff;cursor:pointer}
+button.sec{background:#fff;color:var(--azul700)}
+button.mini{font-size:.84rem;padding:6px 11px;background:#fff;color:var(--alerta);border-color:var(--alerta)}
+button:hover:not(:disabled){filter:brightness(1.09)}
+button:disabled{opacity:.45;cursor:not-allowed}
+button:focus-visible,a:focus-visible{outline:3px solid var(--ambar);outline-offset:2px}
+.btns{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px;align-items:center}
+.msj{margin-top:10px;font-weight:600;min-height:24px;font-size:.94rem}
+a.enlace{color:var(--azul700);font-weight:600}
+a.boton{display:inline-block;text-decoration:none;background:var(--azul700);color:#fff;
+  padding:11px 20px;border-radius:8px;font-weight:700;margin-top:12px}
+
+/* ejercicios interactivos */
+.ejer{background:#fff;border:2px solid var(--azul500);border-radius:12px;padding:20px;margin-top:18px}
+.ejer .marcador{display:flex;gap:16px;flex-wrap:wrap;font-weight:700;color:var(--azul900);
+  font-size:.9rem;margin-bottom:10px}
+.ejer .actual{font-family:var(--display);font-size:1.4rem;font-weight:700;color:var(--azul900);margin:4px 0}
+.ejer .ctx{font-size:.88rem;color:var(--gris)}
+.tablero{display:flex;flex-wrap:wrap;gap:7px;margin-top:14px}
+.ficha{border:1px solid var(--linea);background:var(--nieve);border-radius:8px;padding:7px 12px;font-size:.86rem}
+.ficha.on{border-color:var(--azul500);background:#fff;box-shadow:0 0 0 3px var(--azul050)}
+.ficha.ok{border-color:var(--ok);background:var(--ok050);color:var(--ok)}
+.ficha.mal{border-color:var(--alerta);background:var(--alerta050);color:var(--alerta)}
+
+/* linea de tiempo */
+.linea{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:8px;margin-top:16px}
+.hito{background:#fff;border:1px solid var(--linea);border-radius:10px;padding:12px 10px;text-align:center;
+  cursor:pointer;font-family:var(--mono);font-size:.85rem;color:var(--azul700)}
+.hito:hover{border-color:var(--azul500);background:var(--azul050)}
+.hito.on{background:var(--azul700);color:#fff;border-color:var(--azul700)}
+.hito b{display:block;font-family:var(--display);font-size:1.05rem}
+.hitotexto{background:var(--nieve);border:1px solid var(--linea);border-left:5px solid var(--azul500);
+  border-radius:10px;padding:16px 18px;margin-top:12px;min-height:88px}
+.hitotexto h4{color:var(--azul900);margin-bottom:5px;font-size:1rem}
+
+/* formularios */
+.ident{background:var(--azul050);border:1px solid var(--azul500);border-radius:12px;padding:18px;margin-top:16px}
+.ident h3{margin-top:0}
+.ident .aviso{font-size:.88rem;color:var(--azul700);margin-bottom:10px}
+.campos{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px}
+.campos label{display:block;font-size:.83rem;font-weight:600;color:var(--azul700);margin-bottom:4px}
+.campos input,.campos select{width:100%;padding:9px 11px;border:1px solid var(--linea);border-radius:8px;
+  font-family:var(--cuerpo);font-size:.95rem;background:#fff;color:var(--tinta)}
+input:focus,select:focus,textarea:focus{outline:2px solid var(--azul500);outline-offset:1px}
+input:disabled,select:disabled,textarea:disabled{background:#EEF2F6;color:var(--gris);cursor:not-allowed}
+
+.caso{background:#fff;border:1px solid var(--linea);border-left:5px solid var(--azul500);
+  border-radius:10px;padding:16px 18px;margin-top:14px}
+.caso .num{font-family:var(--mono);font-size:.72rem;color:var(--azul500);letter-spacing:.08em}
+.caso .ctx{color:var(--gris);font-size:.95rem;margin:5px 0}
+.caso .preg{font-weight:700}
+.resp{margin-top:11px;padding-top:11px;border-top:1px dashed var(--linea)}
+.resp label.et{display:block;font-size:.83rem;font-weight:600;color:var(--azul700);margin-bottom:5px}
+.eleccion{display:flex;gap:7px;flex-wrap:wrap;margin:6px 0 9px}
+.eleccion label{display:flex;align-items:center;gap:6px;border:1px solid var(--linea);background:#fff;
+  border-radius:8px;padding:6px 12px;cursor:pointer;font-weight:600;font-size:.88rem}
+.eleccion label:hover{border-color:var(--azul500);background:var(--azul050)}
+.eleccion input{width:16px;height:16px;accent-color:var(--azul700)}
+textarea{width:100%;min-height:76px;padding:10px;border:1px solid var(--linea);border-radius:8px;
+  font-family:var(--cuerpo);font-size:.95rem;line-height:1.5;resize:vertical;background:#fff;color:var(--tinta)}
+
+table.tabla2 input,table.tabla2 select{width:100%;padding:7px 8px;border:1px solid var(--linea);
+  border-radius:6px;font-family:var(--cuerpo);font-size:.88rem;background:#fff}
+table.tabla2 td{padding:5px}
+table.tabla2 th:last-child,table.tabla2 td:last-child{width:84px;text-align:center}
+.conteo{font-size:.88rem;color:var(--gris);font-weight:600}
+
+.preg{background:#fff;border:1px solid var(--linea);border-radius:10px;padding:16px;margin-top:12px}
+.preg .enun{font-weight:700;display:flex;gap:9px}
+.preg .enun .n{color:var(--azul500);font-family:var(--mono)}
+.opt{display:flex;gap:9px;align-items:flex-start;padding:7px 9px;border-radius:8px;margin-top:5px;
+  cursor:pointer;border:1px solid transparent}
+.opt:hover{background:var(--azul050)}
+.opt input{margin-top:4px;width:17px;height:17px;flex-shrink:0;accent-color:var(--azul700)}
+.preg.bien{border-color:var(--ok);background:var(--ok050)}
+.preg.mal{border-color:var(--alerta);background:var(--alerta050)}
+.retro{margin-top:8px;font-size:.9rem;font-weight:600}
+.preg.bien .retro{color:var(--ok)}
+.preg.mal .retro{color:var(--alerta)}
+.resultado{margin-top:16px;padding:16px;border-radius:10px;background:var(--azul900);color:#fff;
+  font-weight:700;display:none}
+.resultado.visible{display:block}
+.abierta{background:#fff;border:1px solid var(--azul500);border-left-width:5px;border-radius:10px;
+  padding:16px;margin-top:14px}
+.abierta .enun{font-weight:700;display:flex;gap:9px;color:var(--azul900)}
+.abierta .enun .n{color:var(--azul500);font-family:var(--mono)}
+.abierta .guia{font-size:.88rem;color:var(--gris);margin:5px 0 8px}
+.abierta textarea{min-height:120px}
+.pendiente{background:var(--ambar050);border:1px solid var(--ambar);border-radius:8px;padding:9px 12px;
+  margin-top:8px;font-weight:600;color:var(--ambar);font-size:.88rem}
+.advert{background:var(--alerta050);border:1px solid var(--alerta);border-radius:10px;padding:13px 16px;
+  margin-top:16px;font-weight:600;color:#8C1D18}
+.cerrado{display:none;margin-top:9px;font-weight:700;color:var(--alerta);background:var(--alerta050);
+  border:1px solid var(--alerta);border-radius:8px;padding:9px 13px}
+.cerrado.visible{display:block}
+section.bloq .ejer,section.bloq .caso,section.bloq .tabla2{opacity:.85}
+textarea#resumen{display:none;font-family:var(--mono);font-size:.82rem;min-height:150px;margin-top:10px}
+textarea#resumen.visible{display:block}
+
+.docente{background:var(--ambar050);border:1px solid var(--ambar);border-left-width:5px;
+  border-radius:10px;padding:15px 18px;margin-top:16px}
+.docente h4{color:var(--ambar);font-size:.72rem;letter-spacing:.13em;text-transform:uppercase;margin-bottom:6px}
+.docente p{margin-bottom:7px;font-size:.94rem}
+.clave{background:var(--ok050);border:1px solid var(--ok);border-radius:9px;padding:12px 15px;
+  margin-top:10px;font-size:.94rem}
+.clave strong{color:var(--ok)}
+
+/* informe */
+#informe,#informe2{display:none;margin-top:18px;background:#fff;border:1px solid var(--linea);
+  border-radius:12px;padding:22px}
+#informe.visible,#informe2.visible{display:block}
+.hojainforme{display:none}
+.icab{border-bottom:2px solid var(--azul900);padding-bottom:9px;margin-bottom:12px}
+.icab h2{font-size:1.2rem;color:var(--azul900)}
+.icab p{font-size:.85rem;color:var(--gris);margin-top:3px}
+.idato{font-size:.95rem;margin-bottom:2px}
+.icaso{margin-top:11px;padding:10px 13px;border:1px solid var(--linea);border-radius:8px}
+.icaso .tit{font-weight:700;color:var(--azul900);font-size:.92rem}
+.icaso .cls{font-weight:700;color:var(--azul700);margin:3px 0;font-size:.92rem}
+.icaso .just{white-space:pre-wrap;font-size:.92rem}
+.falta{color:var(--alerta);font-weight:600}
+table.ti{width:100%;border-collapse:collapse;margin-top:9px;font-size:.86rem}
+table.ti th,table.ti td{border:1px solid var(--linea);padding:6px 8px;text-align:left}
+table.ti th{background:var(--azul050)}
+
+.pie{max-width:1400px;margin:0 auto;padding:22px 18px 40px;color:var(--gris);font-size:.85rem}
+
+@media(max-width:980px){
+  .marco{grid-template-columns:1fr;padding:16px 12px 60px;gap:16px}
+  .rail{position:static;max-height:44vh;overflow-y:auto}
+  section{padding:20px 17px}
+  html{scroll-padding-top:150px}
+}
+@media(max-width:520px){
+  body{font-size:15px}
+  .barra-in{padding:8px 12px;gap:9px}
+  .barra img{height:32px}
+  .rail{max-height:38vh}
+}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+@media print{
+  .barra,.rail,.btns,button,.paginas{display:none!important}
+  .marco{display:block;max-width:none;padding:0}
+  section{border:none;padding:10px 0;page-break-inside:avoid}
+  section.hero{background:#fff;color:#000}
+  .hero h1,.eyebrow{color:#000}
+  .def{background:#fff;color:#000;border:2px solid #000}
+  body.solo-informe *{visibility:hidden!important}
+  body.solo-informe .hojainforme,body.solo-informe .hojainforme *{visibility:visible!important}
+  body.solo-informe .hojainforme{display:block!important;position:absolute;left:0;top:0;width:100%;padding:0 6mm}
+}
+
+.lectura{background:#fff;border:1px solid var(--linea);border-left:5px solid var(--azul500);
+  border-radius:10px;padding:16px 18px;margin-top:14px}
+.lectura .et{font-family:var(--mono);font-size:.7rem;letter-spacing:.1em;color:var(--azul500);
+  text-transform:uppercase}
+.lectura h3{margin:4px 0 7px;font-size:1.05rem}
+.lectura p:last-child{margin-bottom:0}
+.dosp{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:12px;margin-top:12px}
+.tarj{background:var(--nieve);border:1px solid var(--linea);border-radius:10px;padding:14px 16px}
+.tarj h4{color:var(--azul700);font-size:.98rem;margin-bottom:5px}
+.card{display:inline-block;font-family:var(--mono);font-weight:600;background:var(--azul900);color:#fff;
+  padding:2px 9px;border-radius:6px;font-size:.85rem}
+.svgwrap{background:#fff;border:1px solid var(--linea);border-radius:10px;padding:14px;margin-top:12px;
+  overflow-x:auto;text-align:center}
+.svgwrap svg{max-width:100%;height:auto}
+.leyenda{display:flex;gap:14px;flex-wrap:wrap;justify-content:center;margin-top:8px;font-size:.85rem;color:var(--gris)}
+.leyenda span{display:flex;align-items:center;gap:6px}
+.leyenda i{width:15px;height:15px;display:inline-block;border:2px solid var(--azul700);background:#fff}
+.leyenda i.rombo{transform:rotate(45deg);border-color:var(--ambar)}
+.leyenda i.ovalo{border-radius:50%;border-color:var(--ok)}
+</style>
+</head>
+<body>
+
+<header class="barra">
+  <div class="barra-in">
+    <img src="data:image/png;base64,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" alt="Logo de la institución">
+    <div class="quien">
+      <b>Bases de datos · Grado 11</b>
+      <span>I. E. María de los Ángeles Cano Márquez</span>
+    </div>
+    <div class="paginas"><a class="actual" href="clase4-estudiante.html">Clase</a><a class="" href="clase4-talleres-estudiante.html">Talleres</a><a class="" href="clase4-evaluacion-estudiante.html">Evaluación</a></div>
+    <div class="crono" id="crono" aria-live="off">--:--</div>
+  </div>
+</header>
+<div class="hojainforme" id="hojaInforme" aria-hidden="true"></div>
+<div class="marco">
+<nav class="rail" aria-label="Agenda de la sesión"><h4>Agenda de la sesión</h4><a href="#m1" class="" data-ini="1:00" data-fin="1:30"><span class="id">1:00</span><span><span class="nm">Compromisos, agenda y repaso</span><span class="mn">hasta 1:30</span></span></a><a href="#m2" class="" data-ini="1:30" data-fin="2:30"><span class="id">1:30</span><span><span class="nm">Relaciones y cardinalidad</span><span class="mn">hasta 2:30</span></span></a><a href="#pausa" class="pausa" data-ini="2:30" data-fin="3:00"><span class="id">2:30</span><span><span class="nm">Descanso</span><span class="mn">hasta 3:00</span></span></a><a href="clase4-talleres-estudiante.html#t1" class="" data-ini="3:00" data-fin="3:30"><span class="id">3:00</span><span><span class="nm">Taller 1: cardinalidad</span><span class="mn">hasta 3:30</span></span></a><a href="clase4-talleres-estudiante.html#t2" class="" data-ini="3:30" data-fin="4:15"><span class="id">3:30</span><span><span class="nm">Taller 2: relaciones del PIA</span><span class="mn">hasta 4:15</span></span></a><a href="#m6" class="" data-ini="4:15" data-fin="4:40"><span class="id">4:15</span><span><span class="nm">Socialización</span><span class="mn">hasta 4:40</span></span></a><a href="clase4-evaluacion-estudiante.html#cuestionario" class="" data-ini="4:40" data-fin="5:00"><span class="id">4:40</span><span><span class="nm">Evaluación</span><span class="mn">hasta 5:00</span></span></a><a href="#m8" class="" data-ini="5:00" data-fin="5:10"><span class="id">5:00</span><span><span class="nm">Agenda de la próxima clase</span><span class="mn">hasta 5:10</span></span></a><a href="#m9" class="" data-ini="5:10" data-fin="5:30"><span class="id">5:10</span><span><span class="nm">Organización y aseo</span><span class="mn">hasta 5:30</span></span></a></nav>
+<main>
+
+<section class="hero" id="inicio">
+  <div class="eyebrow">Clase 4</div>
+  <h1>Relaciones y cardinalidad</h1>
+  <p class="lede">Ayer definimos de qué cosas guarda información su proyecto. Hoy definimos cómo se
+  conectan esas cosas entre sí, y cuántas de una corresponden a cuántas de la otra.</p>
+  <div class="pill-row">
+    <span class="pill">Jueves 13 de agosto de 2026</span>
+    <span class="pill">1:00 a 5:30 p. m.</span>
+    <span class="pill">Material del estudiante</span>
+  </div>
+</section>
+
+<section id="m1">
+  <div class="rot"><span class="hora">1:00 – 1:30</span><h2>Compromisos, agenda y repaso</h2></div>
+  <h3>Compromisos de aula</h3>
+  <ul class="l">
+    <li>El celular se usa únicamente para las actividades de la clase.</li>
+    <li>Respeto con el profesor y con los compañeros: se escucha al que tiene la palabra.</li>
+    <li>Se pregunta cuando algo no se entiende. Preguntar no atrasa la clase, la mejora.</li>
+    <li>El puesto de trabajo se entrega ordenado y con el equipo apagado.</li>
+    <li>El trabajo del proyecto PIA es del grupo: todos participan y todos sustentan.</li>
+  </ul>
+
+  <h3>Qué se lleva construido al final de hoy</h3>
+  <ul class="l">
+    <li>El informe individual del taller 1, impreso y entregado.</li>
+    <li>La tabla de relaciones de su proyecto, con la cardinalidad de cada una.</li>
+    <li>La evaluación de la sesión resuelta y enviada.</li>
+  </ul>
+
+  <h3>Repaso: lo que quedó de ayer</h3>
+  <p>Ayer cada grupo entregó su tabla de entidades y atributos. Vamos a revisar dos o tres de esas
+  tablas en el proyector, entre todos, con estas preguntas:</p>
+  <ol class="l">
+    <li>¿Cada entidad de la lista cumple las tres preguntas de control?</li>
+    <li>¿Cada entidad tiene identificador?</li>
+    <li>¿Hay algún atributo derivado que se esté guardando por error?</li>
+  </ol>
+  <div class="caja">
+    <h3 style="margin-top:0">La pregunta que abre la sesión</h3>
+    <p>En la tabla del grupo de biblioteca aparecen <span class="chip-e">libro</span>,
+    <span class="chip-e">usuario</span> y <span class="chip-e">préstamo</span>, cada una con sus
+    atributos. <strong>¿Qué le falta a esa lista para que el sistema sirva?</strong></p>
+  </div>
+  
+</section>
+
+<section id="m2">
+  <div class="rot"><span class="hora">1:30 – 2:30</span><h2>Relaciones y cardinalidad</h2></div>
+  <p>Nueve lecturas cortas, dos ejercicios y un diagrama. Cada lectura se lee en voz alta y luego se
+  comenta.</p>
+
+  <div class="lectura"><div class="et">Lectura 1</div><h3>Por qué no basta con la lista de ayer</h3><p>Ayer cada grupo salió con una lista de entidades y atributos. El grupo de biblioteca
+     escribió <span class="chip-e">libro</span>, <span class="chip-e">usuario</span> y
+     <span class="chip-e">préstamo</span>, cada una con sus datos. Esa lista, sin embargo, todavía no
+     describe un sistema: describe tres cosas sueltas.</p>
+     <p>Falta lo esencial. Un préstamo no existe por su cuenta: siempre es el préstamo <em>de</em> un
+     libro <em>a</em> un usuario. Si la base de datos guarda las tres tablas sin decir cómo se conectan,
+     el bibliotecario puede saber qué libros hay y qué usuarios hay, pero nunca quién tiene qué.</p>
+     <p>Cuando Peter Chen propuso su modelo en 1976, ese fue precisamente su aporte: no basta con
+     nombrar las cosas, hay que nombrar los vínculos entre ellas. A esos vínculos los llamó
+     <strong>relaciones</strong>.</p></div><div class="lectura"><div class="et">Lectura 2</div><h3>Qué es una relación</h3><p>Una <strong>relación</strong> es la asociación entre dos entidades: la forma en que una
+     tiene que ver con la otra.</p>
+     <p>Si las entidades son sustantivos, las relaciones son <strong>verbos</strong>. El usuario
+     <em>presta</em> un libro. El artículo <em>está en</em> una ubicación. El estudiante <em>recibe</em>
+     una observación. El vehículo <em>cubre</em> una ruta.</p>
+     <p>Y así como una entidad se convierte después en una tabla, una relación se convierte en la
+     conexión entre dos tablas. Todo lo que hoy decidamos en el tablero va a determinar cómo se
+     construye la base de datos, así que vale la pena discutirlo bien.</p>
+     <p>Una advertencia: no toda pareja de entidades tiene relación. Si en el proyecto de inventarios
+     nadie necesita saber qué ubicación tiene qué proveedor, esa relación no existe y no se dibuja.
+     Se relacionan las entidades que el sistema necesita conectar, no todas contra todas.</p></div><div class="lectura"><div class="et">Lectura 3</div><h3>Cómo se nombra una relación</h3><p>El nombre de la relación es un verbo en tercera persona, corto y en presente:
+     <span class="card">presta</span> <span class="card">está en</span>
+     <span class="card">recibe</span> <span class="card">incluye</span>.</p>
+     <p>El nombre importa más de lo que parece, porque obliga a decidir qué significa exactamente la
+     conexión. «Estudiante — ruta» no dice nada. «Estudiante <em>está asignado a</em> ruta» ya dice que
+     hay una asignación formal, con fecha y responsable. Otro grupo podría escribir «estudiante
+     <em>usa</em> ruta», que es otra cosa: significa que solo se registra el uso del día.</p>
+     <p>Regla práctica: si al leer en voz alta <strong>entidad + verbo + entidad</strong> la frase suena
+     como algo que alguien diría en el colegio, el nombre está bien. Si suena raro, la relación todavía
+     no está clara.</p></div>
+
+  <div class="ejer">
+    <h3 style="margin-top:0">Ejercicio 1 · ¿Cuál es el verbo?</h3>
+    <p class="ctx" id="ctxV"></p>
+    <p class="actual" id="actV"></p>
+    <div class="btns" id="opcV"></div>
+    <div class="btns"><button id="reV" type="button" class="sec">Reiniciar</button></div>
+    <p class="msj" id="msjV" role="status" aria-live="polite"></p>
+    <div class="marcador" id="marV"></div>
+    <div class="tablero" id="tabV"></div>
+  </div>
+
+  <div class="lectura"><div class="et">Lectura 4</div><h3>Qué es la cardinalidad</h3><p>Saber que dos entidades se relacionan no es suficiente. Falta lo que en modelado se llama
+     <strong>cardinalidad</strong>: cuántos ejemplares de una entidad pueden estar asociados a cuántos
+     de la otra.</p>
+     <p>La cardinalidad se averigua con <strong>dos preguntas</strong>, y hay que hacerlas siempre en
+     las dos direcciones. Ese es el error más común: mirar un solo lado y decidir con eso.</p>
+     <p>Tomemos <strong>usuario — presta — libro</strong>:</p>
+     <ol class="l">
+       <li>¿Un usuario puede tener <strong>varios</strong> libros prestados al tiempo? En nuestro
+       colegio, sí.</li>
+       <li>¿Un libro puede estar prestado a <strong>varios</strong> usuarios al mismo tiempo? Si
+       hablamos de la copia física, no: quien la tiene, la tiene.</li>
+     </ol>
+     <p>Un sí y un no. Eso define el tipo de relación, y hay solo tres posibles.</p></div><div class="lectura"><div class="et">Lectura 5</div><h3>Uno a uno</h3><p>Se escribe <span class="card">1 : 1</span>. Ocurre cuando la respuesta a las dos preguntas
+     es <strong>no</strong>.</p>
+     <p>Ejemplo del proyecto de movilidad: <strong>vehículo — tiene — tarjeta de operación</strong>.
+     Un vehículo tiene una sola tarjeta vigente, y esa tarjeta pertenece a un solo vehículo.</p>
+     <p>El uno a uno es el caso menos frecuente, y cuando aparece conviene preguntarse si de verdad son
+     dos entidades o si es una sola con más atributos. Muchas veces lo segundo. Se justifica separarlas
+     cuando una de las dos tiene muchos datos propios, o cuando puede existir sin la otra.</p></div><div class="lectura"><div class="et">Lectura 6</div><h3>Uno a muchos</h3><p>Se escribe <span class="card">1 : N</span>. Ocurre cuando una pregunta da sí y la otra no.
+     Es, con diferencia, el caso más común.</p>
+     <p>Ejemplo del proyecto de gestión comportamental: <strong>estudiante — recibe — observación</strong>.
+     Un estudiante puede recibir muchas observaciones durante el año; cada observación pertenece a un
+     solo estudiante.</p>
+     <p>Al escribirla hay que indicar de qué lado está el «muchos», porque la relación no es simétrica.
+     Se lee así: <em>un estudiante recibe muchas observaciones; una observación pertenece a un solo
+     estudiante</em>. Esa frase completa, dicha en voz alta, es la mejor prueba de que el grupo entendió.</p></div><div class="lectura"><div class="et">Lectura 7</div><h3>Muchos a muchos</h3><p>Se escribe <span class="card">N : M</span>. Ocurre cuando las dos preguntas dan
+     <strong>sí</strong>.</p>
+     <p>Ejemplo del bazar escolar: <strong>transacción — incluye — producto</strong>. Una transacción
+     puede incluir muchos productos, y un mismo producto aparece en muchas transacciones.</p>
+     <p>Este caso tiene una particularidad que lo hace el más interesante de los tres: hay datos que
+     <strong>no pertenecen a ninguna de las dos entidades</strong>. ¿Dónde se guarda cuántas unidades de
+     ese producto llevaba esa compra? No es un dato del producto, porque cambia en cada venta. Tampoco
+     es un dato de la transacción, porque hay una cantidad distinta por cada producto.</p>
+     <p>Ese dato pertenece a la relación misma. Y por eso el muchos a muchos necesita un tratamiento
+     especial, que es lo que viene en la siguiente lectura.</p></div>
+
+  <div class="ejer">
+    <h3 style="margin-top:0">Ejercicio 2 · ¿Qué cardinalidad es?</h3>
+    <div class="marcador" id="marC"></div>
+    <p class="ctx">Lea la frase completa antes de responder</p>
+    <p class="actual" id="actC" style="font-size:1.05rem;line-height:1.4"></p>
+    <div class="btns">
+      <button type="button" class="bcard" data-c="1:1">1 : 1</button>
+      <button type="button" class="bcard" data-c="1:N">1 : N</button>
+      <button type="button" class="bcard" data-c="N:M">N : M</button>
+      <button id="reC" type="button" class="sec">Reiniciar</button>
+    </div>
+    <p class="msj" id="msjC" role="status" aria-live="polite"></p>
+    <div class="tablero" id="tabC"></div>
+  </div>
+
+  <div class="lectura"><div class="et">Lectura 8</div><h3>La tabla intermedia, y la deuda de ayer</h3><p>Una base de datos no sabe guardar directamente una relación muchos a muchos. La solución es
+     crear una <strong>tabla intermedia</strong>: una tabla nueva que se pone en el medio y convierte
+     un <span class="card">N : M</span> en dos <span class="card">1 : N</span>.</p>
+     <p>En el bazar, entre <span class="chip-e">transacción</span> y
+     <span class="chip-e">producto</span> aparece <span class="chip-e">detalle de la transacción</span>.
+     Cada fila de esa tabla dice: en esta compra, este producto, esta cantidad, a este precio. La
+     cantidad y el precio del momento son <strong>atributos de la relación</strong>, y ahora tienen
+     dónde vivir.</p>
+     <p>Y aquí se salda la deuda de ayer. Quedó pendiente cómo se resuelve un atributo
+     <strong>multivaluado</strong>, como los teléfonos de un acudiente. La respuesta es la misma idea:
+     se saca a una tabla aparte. <span class="chip-e">acudiente</span> se relaciona
+     <span class="card">1 : N</span> con <span class="chip-e">teléfono</span>, y cada teléfono es una
+     fila. Un atributo que admite varios valores es, en realidad, una relación disfrazada.</p></div><div class="lectura"><div class="et">Lectura 9</div><h3>Cómo se dibuja: la notación de Chen</h3><p>Chen propuso tres figuras, y son las que usaremos hasta que veamos las herramientas
+     profesionales:</p>
+     <ul class="l">
+       <li><strong>Rectángulo</strong>: una entidad.</li>
+       <li><strong>Rombo</strong>: una relación. Adentro va el verbo.</li>
+       <li><strong>Óvalo</strong>: un atributo, unido con una línea a su entidad.</li>
+     </ul>
+     <p>Sobre las líneas que salen del rombo se escribe la cardinalidad: un <strong>1</strong> del lado
+     que admite uno solo, y una <strong>N</strong> o una <strong>M</strong> del lado que admite varios.</p>
+     <p>Hoy no vamos a dibujar el diagrama completo: eso es el miércoles 19. Hoy basta con reconocer las
+     figuras y saber leer un diagrama cuando lo vea.</p></div>
+
+  
+<div class="svgwrap">
+<svg viewBox="0 0 640 220" xmlns="http://www.w3.org/2000/svg" role="img"
+     aria-label="Diagrama de Chen: usuario presta libro, uno a muchos">
+  <g fill="none" stroke="#12457F" stroke-width="2">
+    <rect x="24" y="86" width="140" height="48" rx="4"/>
+    <rect x="476" y="86" width="140" height="48" rx="4"/>
+  </g>
+  <path d="M320 74 L392 110 L320 146 L248 110 Z" fill="#FFF4E0" stroke="#A76A00" stroke-width="2"/>
+  <g stroke="#12457F" stroke-width="2">
+    <line x1="164" y1="110" x2="248" y2="110"/>
+    <line x1="392" y1="110" x2="476" y2="110"/>
+    <line x1="94" y1="86" x2="94" y2="46"/>
+    <line x1="546" y1="134" x2="546" y2="174"/>
+  </g>
+  <ellipse cx="94" cy="30" rx="62" ry="17" fill="#E6F4F1" stroke="#0F7A6C" stroke-width="2"/>
+  <ellipse cx="546" cy="190" rx="62" ry="17" fill="#E6F4F1" stroke="#0F7A6C" stroke-width="2"/>
+  <g font-family="IBM Plex Sans, sans-serif" text-anchor="middle" fill="#06182E">
+    <text x="94" y="116" font-size="17" font-weight="600">usuario</text>
+    <text x="546" y="116" font-size="17" font-weight="600">libro</text>
+    <text x="320" y="116" font-size="16" font-weight="600" fill="#A76A00">presta</text>
+    <text x="94" y="35" font-size="13" fill="#0F7A6C">documento</text>
+    <text x="546" y="195" font-size="13" fill="#0F7A6C">isbn</text>
+    <text x="206" y="100" font-size="15" font-weight="700" fill="#1E6FB8">1</text>
+    <text x="434" y="100" font-size="15" font-weight="700" fill="#1E6FB8">N</text>
+  </g>
+</svg>
+<div class="leyenda">
+  <span><i></i> Entidad</span>
+  <span><i class="rombo"></i> Relación</span>
+  <span><i class="ovalo"></i> Atributo</span>
+</div>
+</div>
+<p style="font-size:.9rem;color:var(--gris);margin-top:8px">Se lee: un usuario presta muchos libros;
+un libro es prestado por un solo usuario a la vez.</p>
+
+
+  <h3>Síntesis del momento</h3>
+  <div class="caja">
+    <div class="tw">
+    <table>
+      <thead><tr><th>Pregunta</th><th>Respuesta</th><th>Se escribe</th></tr></thead>
+      <tbody>
+        <tr><td>¿Cómo se conectan dos entidades?</td><td>Con una relación, nombrada con un verbo</td><td>entidad — verbo — entidad</td></tr>
+        <tr><td>Las dos preguntas dan no</td><td>Uno a uno</td><td><span class="card">1 : 1</span></td></tr>
+        <tr><td>Una da sí y la otra no</td><td>Uno a muchos</td><td><span class="card">1 : N</span></td></tr>
+        <tr><td>Las dos dan sí</td><td>Muchos a muchos</td><td><span class="card">N : M</span></td></tr>
+        <tr><td>¿Y si es muchos a muchos?</td><td>Se crea una tabla intermedia</td><td>dos <span class="card">1 : N</span></td></tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+
+  
+</section>
+
+<section id="pausa">
+  <div class="rot"><span class="hora">2:30 – 3:00</span><h2>Descanso</h2></div>
+  <p>Treinta minutos. Los equipos quedan bloqueados, no apagados.</p>
+  <p>Al regresar se entra directamente al taller 1, que es individual.</p>
+  <a class="boton" href="clase4-talleres-estudiante.html">Ir a los talleres</a>
+</section>
+
+<section id="m6">
+  <div class="rot"><span class="hora">4:15 – 4:40</span><h2>Socialización</h2></div>
+  <p>Cada grupo presenta <strong>una sola relación</strong>: la que más le costó decidir.</p>
+  <ul class="l">
+    <li>Cómo la escribió: entidad, verbo, entidad.</li>
+    <li>Qué cardinalidad le puso.</li>
+    <li>Qué regla de su sistema la justifica.</li>
+  </ul>
+  <p>Los demás grupos pueden objetar, pero solo con las dos preguntas de control. «A mí me parece» no
+  es un argumento válido.</p>
+  
+  <a class="boton" href="clase4-evaluacion-estudiante.html">Ir a la evaluación</a>
+</section>
+
+<section id="m8">
+  <div class="rot"><span class="hora">5:00 – 5:10</span><h2>Agenda de la próxima clase</h2></div>
+  <h3>Qué se logró hoy</h3>
+  <ul class="l">
+    <li>Nombrar las relaciones entre las entidades del proyecto.</li>
+    <li>Determinar la cardinalidad con las dos preguntas de control.</li>
+    <li>Reconocer cuándo hace falta una tabla intermedia.</li>
+  </ul>
+  <h3>Miércoles 19 de agosto: el modelo entidad-relación</h3>
+  <p>Hoy quedaron las relaciones en una lista. El 19 se dibujan: entidades, atributos y relaciones en
+  un solo diagrama, con la notación de Chen. También veremos la participación obligatoria y opcional,
+  que hoy dejamos fuera a propósito.</p>
+  <div class="caja nota">
+    <p><strong>Fecha de entrega.</strong> El <strong>26 de agosto</strong> se entrega el modelo
+    entidad-relación normalizado del proyecto. Lo de ayer, lo de hoy y lo del 19 son las tres piezas
+    de esa entrega.</p>
+  </div>
+  <p>No hay trabajo en casa para esta sesión.</p>
+</section>
+
+<section id="m9">
+  <div class="rot"><span class="hora">5:10 – 5:30</span><h2>Cierre del aula</h2></div>
+  <h3>Organización de equipos · 5:10 a 5:20</h3>
+  <ul class="l">
+    <li>Cerrar las aplicaciones y apagar el equipo desde el sistema, no del botón.</li>
+    <li>Teclado, mouse y silla en su lugar.</li>
+    <li>Reportar al docente cualquier equipo con falla.</li>
+  </ul>
+  <h3>Aseo del salón · 5:20 a 5:30</h3>
+  <ul class="l">
+    <li>Recoger papeles y envases del puesto y del piso.</li>
+    <li>Tablero borrado y escritorio despejado.</li>
+    <li>Salir cuando el salón quede en las condiciones en que se recibió.</li>
+  </ul>
+  
+</section>
+
+</main>
+</div>
+<div class="pie">Clase 4 · Relaciones y cardinalidad · Bases de datos · Grado 11 · 2026 · Material del estudiante</div>
+<script>
+
+function relojYAgenda(){
+  const c=document.getElementById('crono'); if(!c)return;
+  const f=new Date();
+  const hh=String(f.getHours()).padStart(2,'0'), mm=String(f.getMinutes()).padStart(2,'0');
+  const min=f.getHours()*60+f.getMinutes();
+  let etiqueta=hh+':'+mm, rojo=false;
+  document.querySelectorAll('.rail a').forEach(a=>{
+    const p=x=>{const [h,m]=x.split(':').map(Number); return (h<8?h+12:h)*60+m;};
+    const i=p(a.dataset.ini), t=p(a.dataset.fin);
+    if(t>i&&min>=i&&min<t){a.classList.add('on');
+      const restan=t-min;
+      if(restan<=5) rojo=true;
+    } else a.classList.remove('on');
+  });
+  c.textContent=etiqueta; c.classList.toggle('rojo',rojo);
+}
+
+setInterval(relojYAgenda,15000);
+function esc(t){return String(t).replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));}
+function hoy(){return new Date().toLocaleDateString('es-CO',{year:'numeric',month:'long',day:'numeric'});}
+function imprimirHoja(html){
+  document.getElementById('hojaInforme').innerHTML=html;
+  document.body.classList.add('solo-informe');
+  const quitar=()=>document.body.classList.remove('solo-informe');
+  window.addEventListener('afterprint',quitar,{once:true});
+  window.print(); setTimeout(quitar,1500);
+}
+function baraja(a){const c=a.slice();for(let i=c.length-1;i>0;i--){
+  const j=Math.floor(Math.random()*(i+1));[c[i],c[j]]=[c[j],c[i]];}return c;}
+
+
+const EJV=[["usuario", "libro", "presta", ["presta", "contiene", "pertenece a"], "Biblioteca"], ["artículo", "ubicación", "está en", ["está en", "compra", "califica"], "Inventarios"], ["estudiante", "observación", "recibe", ["recibe", "publica", "corrige"], "Comportamental"], ["vehículo", "ruta", "cubre", ["cubre", "vende", "matricula"], "Movilidad"], ["transacción", "producto", "incluye", ["incluye", "fabrica", "devuelve"], "Bazar"], ["docente", "observación", "registra", ["registra", "hereda", "imprime"], "Comportamental"]], EJC=[["Un estudiante recibe muchas observaciones · una observación es de un solo estudiante", "1:N", "Un sí y un no: uno a muchos."], ["Una transacción incluye muchos productos · un producto aparece en muchas transacciones", "N:M", "Dos síes: muchos a muchos, y necesita tabla intermedia."], ["Un vehículo tiene una tarjeta de operación vigente · esa tarjeta es de un solo vehículo", "1:1", "Dos noes: uno a uno."], ["Una ubicación guarda muchos artículos · un artículo está en una sola ubicación", "1:N", "Un sí y un no: uno a muchos."], ["Una ruta lleva muchos estudiantes · un estudiante puede estar asignado a varias rutas", "N:M", "Dos síes: muchos a muchos."], ["Un usuario hace muchos préstamos · un préstamo es de un solo usuario", "1:N", "Un sí y un no: uno a muchos."], ["Un acudiente tiene varios teléfonos · un teléfono es de un solo acudiente", "1:N", "Es el atributo multivaluado convertido en relación."], ["Un docente registra muchas observaciones · una observación la registra un solo docente", "1:N", "Un sí y un no: uno a muchos."], ["Un estudiante tiene un solo documento de identidad · ese documento es de un solo estudiante", "1:1", "Dos noes: uno a uno. Casi siempre conviene dejarlo como atributo."], ["Un producto pertenece a muchas categorías · una categoría agrupa muchos productos", "N:M", "Dos síes: muchos a muchos."], ["Un salón guarda muchos artículos · un artículo está en un solo salón", "1:N", "Un sí y un no: uno a muchos."], ["Una falta corresponde a un solo estudiante · un estudiante puede tener muchas faltas", "1:N", "Un sí y un no: uno a muchos."]];
+let ov=[],iv=0,av=0,fv=0, oc=[],ic=0,ac=0,fc=0;
+
+function pintaV(){
+  const t=document.getElementById('tabV'); if(!t)return;
+  t.innerHTML='';
+  ov.forEach((f,k)=>{const d=document.createElement('div');
+    d.className='ficha'+(k===iv?' on':'')+(f.r===1?' ok':'')+(f.r===0?' mal':'');
+    d.textContent=f[0]+' — '+f[1]; t.appendChild(d);});
+  document.getElementById('marV').innerHTML='<span>Aciertos: '+av+'</span><span>Errores: '+fv+
+    '</span><span>Faltan: '+(ov.length-iv)+'</span>';
+  const zona=document.getElementById('opcV');
+  if(iv<ov.length){
+    document.getElementById('actV').textContent=ov[iv][0]+'  ·······  '+ov[iv][1];
+    document.getElementById('ctxV').textContent='Proyecto de '+ov[iv][4];
+    zona.innerHTML='';
+    baraja(ov[iv][3]).forEach(o=>{const b=document.createElement('button');
+      b.type='button'; b.textContent=o; b.addEventListener('click',()=>respV(o)); zona.appendChild(b);});
+  }else{document.getElementById('actV').textContent='Ejercicio terminado';
+    document.getElementById('ctxV').textContent=''; zona.innerHTML='';}
+}
+function respV(v){
+  if(iv>=ov.length)return;
+  const f=ov[iv], bien=(v===f[2]);
+  f.r=bien?1:0; bien?av++:fv++;
+  document.getElementById('msjV').textContent = bien
+    ? 'Correcto: «'+f[0]+' '+f[2]+' '+f[1]+'» se lee bien en voz alta.'
+    : 'No. El verbo que funciona es «'+f[2]+'»: '+f[0]+' '+f[2]+' '+f[1]+'.';
+  iv++; pintaV();
+}
+function reV(){ov=baraja(EJV).map(x=>{const y=x.slice();y.r=null;return y;});iv=0;av=0;fv=0;
+  document.getElementById('msjV').textContent='';pintaV();}
+
+function pintaC(){
+  const t=document.getElementById('tabC'); if(!t)return;
+  t.innerHTML='';
+  oc.forEach((f,k)=>{const d=document.createElement('div');
+    d.className='ficha'+(k===ic?' on':'')+(f.r===1?' ok':'')+(f.r===0?' mal':'');
+    d.textContent=(k+1); t.appendChild(d);});
+  document.getElementById('marC').innerHTML='<span>Aciertos: '+ac+'</span><span>Errores: '+fc+
+    '</span><span>Faltan: '+(oc.length-ic)+'</span>';
+  document.getElementById('actC').textContent = ic<oc.length? oc[ic][0] : 'Ejercicio terminado';
+}
+function respC(v){
+  if(ic>=oc.length)return;
+  const f=oc[ic], bien=(v===f[1]);
+  f.r=bien?1:0; bien?ac++:fc++;
+  document.getElementById('msjC').textContent=(bien?'Correcto. ':'No, es '+f[1]+'. ')+f[2];
+  ic++; pintaC();
+}
+function reC(){oc=baraja(EJC).map(x=>{const y=x.slice();y.r=null;return y;});ic=0;ac=0;fc=0;
+  document.getElementById('msjC').textContent='';pintaC();}
+
+document.addEventListener('DOMContentLoaded',()=>{
+  const e=document.getElementById('reV'); if(e)e.addEventListener('click',reV);
+  const g=document.getElementById('reC'); if(g)g.addEventListener('click',reC);
+  document.querySelectorAll('.bcard').forEach(b=>b.addEventListener('click',()=>respC(b.dataset.c)));
+  if(document.getElementById('tabV')){reV();reC();}
+});
+
+document.addEventListener('DOMContentLoaded',relojYAgenda);
+if(document.readyState!=='loading')relojYAgenda();
+</script>
+</body>
+</html>
