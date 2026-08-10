@@ -463,6 +463,7 @@ async function calificarYEnviar() {
   const URL_SCRIPT = "https://script.google.com/macros/s/AKfycbxvJ5SotGaJZssIRfrmp05v9NZGOyRvNUxZ1GD5HXqcSXLWpO_4AhnW2hhXHcALfI4zXg/exec"; 
   
   const formData = new FormData();
+  formData.append('origen', 'evaluacion');
   formData.append('nom', d.nom);
   formData.append('doc', d.doc);
   formData.append('gr', d.gr);
@@ -479,7 +480,7 @@ async function calificarYEnviar() {
     await fetch(URL_SCRIPT, { method: 'POST', body: formData, mode: 'no-cors' });
     document.getElementById('avisoEval').textContent = '¡Enviado correctamente a la base de datos!';
   } catch (error) {
-    document.getElementById('avisoEval').textContent = '¡Enviado correctamente a la base de datos!';
+    document.getElementById('avisoEval').textContent = 'Hubo un problema de conexión al enviar. Avise al docente y muestre el resumen en pantalla.';
     console.error(error);
   }
 }

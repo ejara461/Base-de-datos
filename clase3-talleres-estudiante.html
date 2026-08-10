@@ -40,7 +40,7 @@ h1,h2,h3,h4{font-family:var(--display);line-height:1.16;letter-spacing:-.012em}
 .paginas a.actual{background:#fff;color:var(--azul900);font-weight:700}
 
 /* rejilla */
-.marco{max-width:1400px;margin:0 auto;display:grid;grid-template-columns:262px 1fr;gap:26px;padding:26px 18px 80px}
+.marco{max-width:1400px;margin:0 auto;display:grid;grid-template-columns:grid-template-columns: 1fr}
 .rail{position:sticky;top:100px;align-self:start;background:var(--papel);border:1px solid var(--linea);
   border-radius:12px;overflow-y:auto;overflow-x:hidden;max-height:calc(100vh - 122px);
   overscroll-behavior:contain;scrollbar-width:thin;scrollbar-color:var(--azul300) var(--azul050)}
@@ -268,7 +268,6 @@ table.ti th{background:var(--azul050)}
 </header>
 <div class="hojainforme" id="hojaInforme" aria-hidden="true"></div>
 <div class="marco">
-<nav class="rail" aria-label="Agenda de la sesión"><h4>Agenda de la sesión</h4><a href="clase3-estudiante.html#m1" class="" data-ini="1:00" data-fin="1:30"><span class="id">1:00</span><span><span class="nm">Compromisos, agenda y repaso</span><span class="mn">hasta 1:30</span></span></a><a href="clase3-estudiante.html#m2" class="" data-ini="1:30" data-fin="2:30"><span class="id">1:30</span><span><span class="nm">Entidad, atributo y tipos</span><span class="mn">hasta 2:30</span></span></a><a href="clase3-estudiante.html#pausa" class="pausa" data-ini="2:30" data-fin="3:00"><span class="id">2:30</span><span><span class="nm">Descanso</span><span class="mn">hasta 3:00</span></span></a><a href="#t1" class="" data-ini="3:00" data-fin="3:30"><span class="id">3:00</span><span><span class="nm">Taller 1: clasificar</span><span class="mn">hasta 3:30</span></span></a><a href="#t2" class="" data-ini="3:30" data-fin="4:15"><span class="id">3:30</span><span><span class="nm">Taller 2: proyecto PIA</span><span class="mn">hasta 4:15</span></span></a><a href="clase3-estudiante.html#m6" class="" data-ini="4:15" data-fin="4:40"><span class="id">4:15</span><span><span class="nm">Socialización</span><span class="mn">hasta 4:40</span></span></a><a href="clase3-evaluacion-estudiante.html#cuestionario" class="" data-ini="4:40" data-fin="5:00"><span class="id">4:40</span><span><span class="nm">Evaluación</span><span class="mn">hasta 5:00</span></span></a><a href="clase3-estudiante.html#m8" class="" data-ini="5:00" data-fin="5:10"><span class="id">5:00</span><span><span class="nm">Agenda de la próxima clase</span><span class="mn">hasta 5:10</span></span></a><a href="clase3-estudiante.html#m9" class="" data-ini="5:10" data-fin="5:20"><span class="id">5:10</span><span><span class="nm">Organización de equipos</span><span class="mn">hasta 5:20</span></span></a><a href="clase3-estudiante.html#m9" class="" data-ini="5:20" data-fin="5:30"><span class="id">5:20</span><span><span class="nm">Aseo del salón</span><span class="mn">hasta 5:30</span></span></a></nav>
 <main>
 
 <section class="hero" id="inicio">
@@ -548,24 +547,21 @@ table.ti th{background:var(--azul050)}
 <script>
 
 function relojYAgenda(){
-  const c=document.getElementById('crono');
+  const c=document.getElementById('crono'); if(!c)return;
   const f=new Date();
   const hh=String(f.getHours()).padStart(2,'0'), mm=String(f.getMinutes()).padStart(2,'0');
   const min=f.getHours()*60+f.getMinutes();
-  let etiqueta=hh+':'+mm, rojo=false, activo=null;
+  let etiqueta=hh+':'+mm, rojo=false;
   document.querySelectorAll('.rail a').forEach(a=>{
     const p=x=>{const [h,m]=x.split(':').map(Number); return (h<8?h+12:h)*60+m;};
     const i=p(a.dataset.ini), t=p(a.dataset.fin);
-    if(min>=i&&min<t){a.classList.add('on'); activo=a; 
+    if(t>i&&min>=i&&min<t){a.classList.add('on');
       const restan=t-min;
-      etiqueta=hh+':'+mm+'  ·  '+restan+' min';
       if(restan<=5) rojo=true;
     } else a.classList.remove('on');
   });
-  c.textContent=etiqueta;
-  c.classList.toggle('rojo',rojo);
+  c.textContent=etiqueta; c.classList.toggle('rojo',rojo);
 }
-setInterval(relojYAgenda,15000);
 
 function esc(t){return String(t).replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));}
 function hoy(){return new Date().toLocaleDateString('es-CO',{year:'numeric',month:'long',day:'numeric'});}
@@ -579,6 +575,7 @@ function imprimirHoja(html){
 }
 
 
+const URL_SCRIPT = "https://script.google.com/macros/s/AKfycbxvJ5SotGaJZssIRfrmp05v9NZGOyRvNUxZ1GD5HXqcSXLWpO_4AhnW2hhXHcALfI4zXg/exec";
 const CASOS_INFO=[{"w": "número de copias", "p": "Biblioteca"}, {"w": "conductor", "p": "Movilidad"}, {"w": "observación", "p": "Comportamental"}, {"w": "grado", "p": "Comportamental"}, {"w": "bloque", "p": "Inventarios"}, {"w": "total de la compra", "p": "Bazar escolar"}];
 const FICHAS=[["Libro", 1, "Biblioteca"], ["ISBN", 0, "Biblioteca"], ["Préstamo", 1, "Biblioteca"], ["Fecha de devolución", 0, "Biblioteca"], ["Artículo", 1, "Inventarios"], ["Cantidad disponible", 0, "Inventarios"], ["Ubicación", 1, "Inventarios"], ["Número del salón", 0, "Inventarios"], ["Estudiante", 1, "Comportamental"], ["Documento de identidad", 0, "Comportamental"], ["Falta", 1, "Comportamental"], ["Tipo de falta", 0, "Comportamental"], ["Ruta", 1, "Movilidad"], ["Hora de salida", 0, "Movilidad"], ["Vehículo", 1, "Movilidad"], ["Placa", 0, "Movilidad"], ["Producto", 1, "Bazar"], ["Precio", 0, "Bazar"], ["Transacción", 1, "Bazar"], ["Saldo", 0, "Bazar"]];
 const TIPOS=["Identificador", "Simple", "Compuesto", "Multivaluado", "Derivado", "Opcional"];
@@ -656,11 +653,45 @@ function bloquear1(){
   document.getElementById('aviso1').textContent=
     'Taller 1 cerrado tras la impresión. Si necesita otra copia, vuelva a presionar Imprimir informe.';
 }
-function imprimir1(){
+async function enviarTaller1(){
+  const nom=document.getElementById('t1nombre').value.trim();
+  const doc=document.getElementById('t1doc').value.trim();
+  let faltanCasos=0,casosTxt='';
+  CASOS_INFO.forEach((c,i)=>{
+    const n=i+1;
+    const sel=document.querySelector('input[name="caso'+n+'"]:checked');
+    const just=document.getElementById('just'+n).value.trim();
+    if(!sel||!just)faltanCasos++;
+    casosTxt+='Caso '+n+' ['+c.p+' - '+c.w+']: '+(sel?sel.value:'sin responder')+' | '+(just||'sin justificar')+'; ';
+  });
+  const fd=new FormData();
+  fd.append('origen','taller1');
+  fd.append('nom',nom);
+  fd.append('doc',doc);
+  fd.append('aciertos',aciertos);
+  fd.append('errores',fallos);
+  fd.append('faltanFichas',orden.length-idx);
+  fd.append('faltanCasos',faltanCasos);
+  fd.append('casos',casosTxt);
+  try{
+    await fetch(URL_SCRIPT,{method:'POST',body:fd,mode:'no-cors'});
+    return true;
+  }catch(err){
+    console.error(err);
+    return false;
+  }
+}
+
+async function imprimir1(){
   if(!informe1){if(!generarInforme())return;}
   if(!bloq1){
-    if(!confirm('Al imprimir, el taller 1 queda cerrado y no podrá modificarlo. ¿Desea continuar?'))return;
+    if(!confirm('Al imprimir, el taller 1 queda cerrado, se envían sus respuestas a la hoja de resultados y no podrá modificarlo. ¿Desea continuar?'))return;
+    document.getElementById('aviso1').textContent='Enviando datos...';
+    const ok=await enviarTaller1();
     bloquear1();
+    document.getElementById('aviso1').textContent = ok
+      ? 'Taller 1 enviado y cerrado tras la impresión.'
+      : 'Taller 1 cerrado, pero hubo un problema de conexión al enviar. Avise al docente y muestre el informe impreso.';
   }
   imprimirHoja(informe1);
 }
@@ -741,11 +772,44 @@ function bloquear2(){
   document.getElementById('aviso2').textContent=
     'Taller 2 cerrado tras la impresión. Si necesita otra copia, vuelva a presionar Imprimir informe.';
 }
-function imprimir2(){
+async function enviarTaller2(){
+  const proy=document.getElementById('t2proyecto').value.trim();
+  const integ=document.getElementById('t2integrantes').value.trim();
+  const filas=[],ent=new Set(); let incompletas=0;
+  document.querySelectorAll('#cuerpo2 tr').forEach(tr=>{
+    const e=tr.querySelector('.c-ent').value.trim(), a=tr.querySelector('.c-atr').value.trim();
+    const t=tr.querySelector('.c-tipo').value, p=tr.querySelector('.c-por').value.trim();
+    if(!e&&!a&&!p)return;
+    if(!e||!a||!p)incompletas++;
+    if(e)ent.add(e.toLowerCase());
+    filas.push(e+'|'+a+'|'+t+'|'+p);
+  });
+  const fd=new FormData();
+  fd.append('origen','taller2');
+  fd.append('proy',proy);
+  fd.append('integ',integ);
+  fd.append('numEnt',ent.size);
+  fd.append('faltanFilas',incompletas);
+  fd.append('detalle',filas.join(' ; '));
+  try{
+    await fetch(URL_SCRIPT,{method:'POST',body:fd,mode:'no-cors'});
+    return true;
+  }catch(err){
+    console.error(err);
+    return false;
+  }
+}
+
+async function imprimir2(){
   if(!informe2){if(!generarInforme2())return;}
   if(!bloq2){
-    if(!confirm('Al imprimir, el taller 2 queda cerrado y no podrá modificarlo. ¿Desea continuar?'))return;
+    if(!confirm('Al imprimir, el taller 2 queda cerrado, se envían sus respuestas a la hoja de resultados y no podrá modificarlo. ¿Desea continuar?'))return;
+    document.getElementById('aviso2').textContent='Enviando datos...';
+    const ok=await enviarTaller2();
     bloquear2();
+    document.getElementById('aviso2').textContent = ok
+      ? 'Taller 2 enviado y cerrado tras la impresión.'
+      : 'Taller 2 cerrado, pero hubo un problema de conexión al enviar. Avise al docente y muestre el informe impreso.';
   }
   imprimirHoja(informe2);
 }
