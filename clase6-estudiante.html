@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Clase 6 · Modelo relacional: de diagrama a tablas</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;600;700&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --tinta:#06182E; --azul900:#0A2A52; --azul700:#12457F; --azul500:#1E6FB8;
+  --azul300:#6BAEDB; --azul050:#E8F1F9; --papel:#FFFFFF; --nieve:#F4F8FC;
+  --linea:#CFE0EF; --alerta:#C81E33; --alerta050:#FDECEE; --ok:#0F7A6C; --ok050:#E6F4F1;
+  --ambar:#A76A00; --ambar050:#FFF4E0; --gris:#5C7189;
+  --display:'Space Grotesk','Segoe UI',system-ui,sans-serif;
+  --cuerpo:'IBM Plex Sans','Segoe UI',system-ui,sans-serif;
+  --mono:'IBM Plex Mono','Consolas',monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;scroll-padding-top:96px}
+body{font-family:var(--cuerpo);color:var(--tinta);background:var(--nieve);line-height:1.62;font-size:16px}
+h1,h2,h3,h4{font-family:var(--display);line-height:1.16;letter-spacing:-.012em}
+.barra{position:sticky;top:0;z-index:50;background:linear-gradient(180deg,var(--azul900),var(--azul700));
+  color:#fff;border-bottom:3px solid var(--azul300);box-shadow:0 2px 14px rgba(6,24,46,.18)}
+.barra-in{max-width:1400px;margin:0 auto;padding:9px 18px;display:flex;gap:14px;align-items:center;flex-wrap:wrap}
+.barra img{height:38px;background:#fff;border-radius:6px;padding:3px}
+.barra .quien{flex:1;min-width:180px}
+.barra .quien b{display:block;font-family:var(--display);font-size:.94rem;line-height:1.25}
+.barra .quien span{font-size:.76rem;opacity:.85}
+.crono{font-family:var(--mono);font-size:1rem;background:rgba(255,255,255,.13);padding:5px 11px;
+  border-radius:8px;border:1px solid rgba(255,255,255,.22);white-space:nowrap}
+.crono.rojo{background:var(--alerta);border-color:var(--alerta)}
+.paginas{display:flex;gap:6px;flex-wrap:wrap}
+.paginas a{font-size:.78rem;text-decoration:none;color:#fff;border:1px solid rgba(255,255,255,.3);
+  padding:5px 11px;border-radius:7px;background:rgba(255,255,255,.08)}
+.paginas a:hover{background:rgba(255,255,255,.2)}
+.paginas a.actual{background:#fff;color:var(--azul900);font-weight:700}
+.marco{max-width:1400px;margin:0 auto;display:grid;grid-template-columns:262px 1fr;gap:26px;padding:26px 18px 80px}
+.rail{position:sticky;top:100px;align-self:start;background:var(--papel);border:1px solid var(--linea);
+  border-radius:12px;overflow-y:auto;overflow-x:hidden;max-height:calc(100vh - 122px);
+  overscroll-behavior:contain;scrollbar-width:thin;scrollbar-color:var(--azul300) var(--azul050)}
+.rail::-webkit-scrollbar{width:9px}
+.rail::-webkit-scrollbar-track{background:var(--azul050);border-radius:0 12px 12px 0}
+.rail::-webkit-scrollbar-thumb{background:var(--azul300);border-radius:9px;border:2px solid var(--azul050)}
+.rail h4{font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;color:var(--azul700);margin:0;
+  padding:12px 14px 8px;border-bottom:1px solid var(--linea);position:sticky;top:0;background:var(--papel);z-index:2}
+.rail a{display:grid;grid-template-columns:52px 1fr;gap:8px;padding:9px 12px;text-decoration:none;
+  color:var(--tinta);font-size:.83rem;border-bottom:1px solid #EDF3F9;align-items:center}
+.rail a .id{font-family:var(--mono);font-size:.68rem;color:var(--azul500);background:var(--azul050);
+  border-radius:5px;text-align:center;padding:2px 0}
+.rail a .mn{display:block;font-size:.7rem;color:var(--gris)}
+.rail a:hover{background:var(--azul050)}
+.rail a.on{background:var(--azul050);box-shadow:inset 3px 0 0 var(--azul500);font-weight:600}
+.rail a.pausa{background:var(--ambar050);color:#7A4E00}
+.rail a.pausa .id{background:#F5D9A8;color:#7A4E00}
+section{background:var(--papel);border:1px solid var(--linea);border-radius:14px;
+  padding:26px 28px;margin-bottom:20px}
+section.hero{background:linear-gradient(135deg,var(--azul900) 0%,var(--azul700) 55%,var(--azul500) 100%);
+  color:#fff;border:none}
+.eyebrow{font-size:.7rem;letter-spacing:.16em;text-transform:uppercase;color:var(--azul300);font-weight:700}
+.hero h1{font-family:var(--display);font-size:clamp(1.7rem,3.6vw,2.5rem);margin:8px 0 10px;font-weight:700}
+.hero .lede{font-size:1.02rem;opacity:.94;max-width:62ch}
+.pill-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+.pill{background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.26);padding:5px 12px;
+  border-radius:999px;font-size:.82rem}
+.rot{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;margin-bottom:8px}
+.rot .hora{font-family:var(--mono);font-size:.76rem;color:var(--azul500);background:var(--azul050);
+  padding:3px 10px;border-radius:999px;white-space:nowrap}
+section h2{font-size:clamp(1.25rem,2.5vw,1.65rem);color:var(--azul900)}
+h3{font-size:1.06rem;color:var(--azul700);margin:22px 0 6px}
+p{margin-bottom:9px;max-width:74ch}
+ul.l,ol.l{margin:8px 0 8px 22px}
+ul.l li,ol.l li{margin-bottom:6px}
+code{font-family:var(--mono);background:var(--azul050);padding:1px 6px;border-radius:4px;font-size:.88em}
+.caja{background:var(--nieve);border:1px solid var(--linea);border-radius:11px;padding:18px 20px;margin-top:16px}
+.caja.nota{background:var(--ambar050);border-color:var(--ambar);border-left:5px solid var(--ambar)}
+.caja.clave{background:var(--ok050);border-color:var(--ok);border-left:5px solid var(--ok)}
+.caja.video{background:var(--azul050);border-color:var(--azul500);border-left:5px solid var(--azul500)}
+.caja h3{margin-top:0}
+.chip-e,.chip-a{display:inline-block;padding:3px 11px;border-radius:7px;font-size:.87rem;
+  font-weight:600;margin:3px 4px 3px 0}
+.chip-e{background:var(--azul050);color:var(--azul900);border:1px solid var(--azul500)}
+.chip-a{background:var(--ambar050);color:var(--ambar);border:1px solid var(--ambar)}
+table{width:100%;border-collapse:collapse;margin-top:12px;font-size:.92rem;background:#fff}
+th,td{border:1px solid var(--linea);padding:9px 11px;text-align:left;vertical-align:top}
+th{background:var(--azul050);color:var(--azul900);font-weight:700}
+.tw{overflow-x:auto}
+button,.btn{font-family:var(--cuerpo);font-size:.94rem;font-weight:600;padding:10px 17px;border-radius:8px;
+  border:1px solid var(--azul700);background:var(--azul700);color:#fff;cursor:pointer}
+button.sec{background:#fff;color:var(--azul700)}
+button:hover:not(:disabled){filter:brightness(1.09)}
+button:focus-visible,a:focus-visible{outline:3px solid var(--ambar);outline-offset:2px}
+.btns{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px;align-items:center}
+.msj{margin-top:10px;font-weight:600;min-height:24px;font-size:.94rem}
+a.enlace{color:var(--azul700);font-weight:600}
+a.boton{display:inline-block;text-decoration:none;background:var(--azul700);color:#fff;
+  padding:11px 20px;border-radius:8px;font-weight:700;margin-top:12px}
+.ejer{background:#fff;border:2px solid var(--azul500);border-radius:12px;padding:20px;margin-top:18px}
+.ejer .marcador{display:flex;gap:16px;flex-wrap:wrap;font-weight:700;color:var(--azul900);
+  font-size:.9rem;margin-bottom:10px}
+.ejer .ctx{font-size:.88rem;color:var(--gris)}
+.tablero{display:flex;flex-wrap:wrap;gap:7px;margin-top:14px}
+.ficha{border:1px solid var(--linea);background:var(--nieve);border-radius:8px;padding:7px 12px;font-size:.86rem}
+.ficha.on{border-color:var(--azul500);background:#fff;box-shadow:0 0 0 3px var(--azul050)}
+.ficha.ok{border-color:var(--ok);background:var(--ok050);color:var(--ok)}
+.ficha.mal{border-color:var(--alerta);background:var(--alerta050);color:var(--alerta)}
+.arrastre{display:flex;gap:18px;flex-wrap:wrap;margin-top:16px;align-items:center;justify-content:center}
+.figura-rel{display:flex;align-items:center;gap:10px;flex-wrap:wrap;justify-content:center}
+.caja-ent{background:var(--azul050);border:2px solid var(--azul700);border-radius:8px;padding:10px 16px;
+  font-weight:700;color:var(--azul900);text-align:center;min-width:110px}
+.zona{border:2px dashed var(--azul300);border-radius:8px;padding:10px 14px;min-width:190px;text-align:center;
+  font-size:.86rem;color:var(--gris);background:var(--nieve);cursor:pointer}
+.zona.lleno{border-style:solid;color:var(--tinta);font-weight:700;background:#fff}
+.zona.sobre{border-color:var(--azul700);background:var(--azul050)}
+.fuentes{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-top:16px}
+.chipd{border:1px solid var(--azul700);background:#fff;color:var(--azul700);border-radius:8px;
+  padding:9px 16px;font-weight:700;font-size:.88rem;cursor:grab;user-select:none}
+.chipd.sel{background:var(--azul700);color:#fff}
+.chipd:active{cursor:grabbing}
+.verbo-txt{font-weight:700;color:var(--ambar);font-family:var(--mono);font-size:.85rem}
+.marcadores{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+.marc-btn{border:2px solid var(--azul300);background:#fff;color:var(--azul700);border-radius:999px;
+  width:34px;height:34px;font-weight:700;cursor:pointer;font-family:var(--mono)}
+.marc-btn.sel{background:var(--ambar);border-color:var(--ambar);color:#fff}
+.marc-btn.ok{background:var(--ok);border-color:var(--ok);color:#fff}
+.marc-btn.mal{background:var(--alerta);border-color:var(--alerta);color:#fff}
+.leyenda-marc{margin-top:10px;font-size:.85rem;color:var(--gris)}
+.leyenda-marc li{margin-bottom:3px}
+.ddl{background:var(--tinta);color:#DCEBFB;border-radius:10px;padding:16px 18px;margin-top:12px;
+  font-family:var(--mono);font-size:.86rem;overflow-x:auto}
+.ddl .ln{display:block;padding:2px 6px;border-radius:4px}
+.ddl .num{display:inline-block;width:22px;color:#6BAEDB;user-select:none}
+.lectura{background:#fff;border:1px solid var(--linea);border-left:5px solid var(--azul500);
+  border-radius:10px;padding:16px 18px;margin-top:14px}
+.lectura .et{font-family:var(--mono);font-size:.7rem;letter-spacing:.1em;color:var(--azul500);
+  text-transform:uppercase}
+.lectura h3{margin:4px 0 7px;font-size:1.05rem}
+.lectura p:last-child{margin-bottom:0}
+.guion{background:#fff;border:1px solid var(--azul500);border-left-width:5px;border-radius:10px;
+  padding:16px 18px;margin-top:14px}
+.guion h4{color:var(--azul900);font-size:.98rem;margin-bottom:6px}
+.paso{background:var(--nieve);border:1px solid var(--linea);border-radius:10px;padding:14px 16px;margin-top:12px}
+.paso .np{display:inline-block;font-family:var(--mono);font-weight:700;background:var(--azul700);color:#fff;
+  border-radius:999px;width:26px;height:26px;text-align:center;line-height:26px;margin-right:8px}
+.paso h4{display:inline;color:var(--azul900);font-size:1rem}
+.paso .tiempo{float:right;font-family:var(--mono);font-size:.76rem;color:var(--azul500);
+  background:var(--azul050);padding:2px 9px;border-radius:999px}
+.paso p{margin-top:8px}
+.card{display:inline-block;font-family:var(--mono);font-weight:600;background:var(--azul900);color:#fff;
+  padding:2px 9px;border-radius:6px;font-size:.85rem}
+.pie{max-width:1400px;margin:0 auto;padding:22px 18px 40px;color:var(--gris);font-size:.85rem}
+@media(max-width:980px){
+  .marco{grid-template-columns:1fr;padding:16px 12px 60px;gap:16px}
+  .rail{position:static;max-height:44vh;overflow-y:auto}
+  section{padding:20px 17px}
+  html{scroll-padding-top:150px}
+}
+@media(max-width:520px){
+  body{font-size:15px}
+  .barra-in{padding:8px 12px;gap:9px}
+  .barra img{height:32px}
+  .rail{max-height:38vh}
+}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+</style>
+</head>
+<body>
+
+<header class="barra">
+  <div class="barra-in">
+    <img src="data:image/png;base64,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" alt="Logo de la institución">
+    <div class="quien">
+      <b>Bases de datos · Grado 11</b>
+      <span>I. E. María de los Ángeles Cano Márquez</span>
+    </div>
+    <div class="paginas"><a class="actual" href="clase6-estudiante.html">Clase</a><a href="clase6-talleres-estudiante.html">Talleres</a><a href="clase6-evaluacion-estudiante.html">Evaluación</a></div>
+    <div class="crono" id="crono" aria-live="off">--:--</div>
+  </div>
+</header>
+<div class="marco">
+<nav class="rail" aria-label="Agenda de la sesión"><h4>Agenda de la sesión</h4><a href="#m1" data-ini="1:00" data-fin="1:30"><span class="id">1:00</span><span><span class="nm">Compromisos, agenda y repaso</span><span class="mn">hasta 1:30</span></span></a><a href="#m2" data-ini="1:30" data-fin="2:30"><span class="id">1:30</span><span><span class="nm">Modelo relacional: de diagrama a tablas</span><span class="mn">hasta 2:30</span></span></a><a href="#pausa" class="pausa" data-ini="2:30" data-fin="3:00"><span class="id">2:30</span><span><span class="nm">Descanso</span><span class="mn">hasta 3:00</span></span></a><a href="clase6-talleres-estudiante.html#t1" data-ini="3:00" data-fin="3:30"><span class="id">3:00</span><span><span class="nm">Taller 1: llaves foráneas</span><span class="mn">hasta 3:30</span></span></a><a href="clase6-talleres-estudiante.html#t2" data-ini="3:30" data-fin="4:15"><span class="id">3:30</span><span><span class="nm">Taller 2: tablas del proyecto</span><span class="mn">hasta 4:15</span></span></a><a href="#m6" data-ini="4:15" data-fin="4:40"><span class="id">4:15</span><span><span class="nm">Socialización</span><span class="mn">hasta 4:40</span></span></a><a href="clase6-evaluacion-estudiante.html#cuestionario" data-ini="4:40" data-fin="5:00"><span class="id">4:40</span><span><span class="nm">Evaluación</span><span class="mn">hasta 5:00</span></span></a><a href="#m8" data-ini="5:00" data-fin="5:10"><span class="id">5:00</span><span><span class="nm">Agenda de la próxima clase</span><span class="mn">hasta 5:10</span></span></a><a href="#m9" data-ini="5:10" data-fin="5:30"><span class="id">5:10</span><span><span class="nm">Organización y aseo</span><span class="mn">hasta 5:30</span></span></a></nav>
+<main>
+
+<section class="hero" id="inicio">
+  <div class="eyebrow">Clase 6</div>
+  <h1>Modelo relacional: de diagrama a tablas</h1>
+  <p class="lede">Ayer terminamos el diagrama entidad-relación completo. Hoy aprendemos la traducción
+  mecánica de ese diagrama a las tablas que una base de datos realmente guarda: llave primaria,
+  llave foránea y si esa llave admite valores nulos.</p>
+  <div class="pill-row">
+    <span class="pill">Jueves 20 de agosto de 2026</span>
+    <span class="pill">1:00 a 5:30 p. m.</span>
+    <span class="pill">Material del estudiante</span>
+  </div>
+</section>
+
+<section id="m1">
+  <div class="rot"><span class="hora">1:00 – 1:30</span><h2>Compromisos, agenda y repaso</h2></div>
+  <h3>Compromisos de aula</h3>
+  <ul class="l">
+    <li>El celular se usa únicamente para las actividades de la clase.</li>
+    <li>Respeto con el profesor y con los compañeros: se escucha al que tiene la palabra.</li>
+    <li>Se pregunta cuando algo no se entiende. Preguntar no atrasa la clase, la mejora.</li>
+    <li>El puesto de trabajo se entrega ordenado y con el equipo apagado.</li>
+    <li>El trabajo del proyecto PIA es del grupo: todos participan y todos sustentan.</li>
+  </ul>
+
+  <h3>Qué se lleva construido al final de hoy</h3>
+  <ul class="l">
+    <li>El taller 1 individual, enviado.</li>
+    <li>El taller 2 grupal: las tablas resultantes del diagrama de su proyecto, enviadas.</li>
+    <li>La evaluación de la sesión resuelta y enviada.</li>
+  </ul>
+
+  <h3>Repaso: lo que quedó de ayer</h3>
+  <p>Ayer cada grupo construyó el diagrama entidad-relación completo de su proyecto, con cardinalidad
+  y participación en cada relación. Antes de seguir, repasemos entre todos:</p>
+  <ol class="l">
+    <li>¿Qué diferencia hay entre cardinalidad y participación?</li>
+    <li>¿Cómo se dibuja la participación obligatoria? ¿Y la opcional?</li>
+    <li>¿Qué grupos tienen una relación N:M en su diagrama?</li>
+  </ol>
+  <div class="caja">
+    <h3 style="margin-top:0">La pregunta que abre la sesión</h3>
+    <p>Tenemos un diagrama completo, con rectángulos, rombos y óvalos. Pero MySQL no entiende
+    rectángulos ni rombos: <strong>una base de datos solo guarda tablas</strong>. ¿Cómo pasamos de un
+    diagrama a un conjunto de tablas?</p>
+  </div>
+</section>
+
+<section id="m2">
+  <div class="rot"><span class="hora">1:30 – 2:30</span><h2>Modelo relacional: de diagrama a tablas</h2></div>
+  <p>Cinco lecturas, dos ejercicios interactivos y, para cerrar, una construcción guiada en el
+  tablero. Cada lectura se lee en voz alta y luego se comenta.</p>
+
+  <div class="lectura"><div class="et">Lectura 1</div><h3>De diagrama a tablas</h3>
+  <p>Llevamos tres semanas construyendo el modelo entidad-relación por partes: entidades y atributos
+  (clase 3), relaciones y cardinalidad (clase 4), participación y diagrama completo (clase 5). Ese
+  diagrama es la herramienta de diseño, la que se dibuja en el papel o en PowerPoint.</p>
+  <p>Pero una base de datos real —la que construiremos en MySQL a partir del 27 de agosto— no guarda
+  diagramas: guarda <strong>tablas</strong>, con filas y columnas. Hoy aprendemos la traducción
+  mecánica de un diagrama de Chen a un conjunto de tablas. Esta traducción sigue reglas fijas, no es
+  cuestión de gusto.</p>
+  <p>Una aclaración importante: hoy <strong>no</strong> vemos normalización (1FN, 2FN, 3FN). Eso es
+  el tema del 26 de agosto. Hoy solo aprendemos a pasar el diagrama a tablas; el 26 revisamos si esas
+  tablas están bien construidas.</p></div>
+
+  <div class="lectura"><div class="et">Lectura 2</div><h3>Regla 1 · Entidad a tabla, atributo a columna, identificador a llave primaria</h3>
+  <p>Cada entidad del diagrama se convierte en una tabla. Cada atributo de esa entidad se convierte
+  en una columna de esa tabla. El atributo que estaba subrayado en el diagrama —el identificador— se
+  convierte en la <strong>llave primaria</strong> de la tabla: la columna que no se repite nunca y
+  que identifica cada fila de manera única. En inglés se abrevia <strong>PK</strong> (primary key).</p>
+  <p>Ejemplo del proyecto de inventarios: la entidad <span class="chip-e">artículo</span>, con
+  atributos <em>código</em> (identificador), <em>nombre</em> y <em>estado</em>, se convierte en la
+  tabla <code>articulo</code> con columnas <code>codigo</code> (PK), <code>nombre</code> y
+  <code>estado</code>.</p></div>
+
+  <div class="lectura"><div class="et">Lectura 3</div><h3>Regla 2 · Relaciones 1:N: la llave foránea va en el lado N</h3>
+  <p>Cuando dos entidades tienen una relación 1:N, la llave primaria del lado «1» viaja como columna
+  adicional a la tabla del lado «N». Esa columna nueva se llama <strong>llave foránea</strong>, en
+  inglés <strong>FK</strong> (foreign key): guarda el valor de la PK de la tabla a la que apunta.</p>
+  <p>Ejemplo del proyecto de bazar escolar: <span class="chip-e">categoría</span> (1) —
+  <span class="chip-e">producto</span> (N). La tabla <code>producto</code> recibe una columna nueva,
+  <code>id_categoria</code>, que es FK hacia <code>categoria.id_categoria</code>. La tabla
+  <code>categoria</code> no recibe nada de <code>producto</code>: el lado «1» nunca lleva la FK de
+  esa relación.</p></div>
+
+  <div class="ejer">
+    <h3 style="margin-top:0">Ejercicio 1 · Arrastre la decisión correcta</h3>
+    <p class="ctx" id="ctxP"></p>
+    <div class="marcador" id="marP"></div>
+    <div class="figura-rel" id="figP"></div>
+    <div class="fuentes">
+      <div class="chipd" draggable="true" data-val="sinfk" tabindex="0">sin FK · solo su PK</div>
+      <div class="chipd" draggable="true" data-val="fknotnull" tabindex="0">FK · NOT NULL</div>
+      <div class="chipd" draggable="true" data-val="fknull" tabindex="0">FK · admite NULL</div>
+    </div>
+    <p style="font-size:.82rem;color:var(--gris);margin-top:8px">Arrastre cada opción hasta la casilla
+    del lado que corresponda. En pantallas sin arrastre, toque primero la opción y luego la casilla.</p>
+    <div class="btns"><button id="compP" type="button">Comprobar</button>
+      <button id="reP" type="button" class="sec">Siguiente caso</button></div>
+    <p class="msj" id="msjP" role="status" aria-live="polite"></p>
+    <div class="tablero" id="tabP"></div>
+  </div>
+
+  <div class="lectura"><div class="et">Lectura 4</div><h3>Regla 3 · Relaciones N:M: se resuelven con una tabla intermedia</h3>
+  <p>Cuando la relación es N:M, ninguna de las dos tablas puede recibir la FK de la otra: una columna
+  no puede guardar varios valores a la vez. La solución, que ya se mencionó el 19 de agosto en el
+  ejemplo del tablero, es crear una <strong>tabla intermedia</strong> nueva.</p>
+  <p>Esa tabla intermedia tiene dos llaves foráneas, una hacia cada una de las entidades originales,
+  y las dos juntas forman su llave primaria (o se le agrega una PK propia, según el caso). Si la
+  relación tenía algún atributo propio —como <em>cantidad</em> o <em>fecha</em>— ese atributo también
+  vive en la tabla intermedia, porque no le pertenece a ninguna de las dos entidades por separado.</p>
+  <p>Ejemplo del proyecto de bazar escolar: <span class="chip-e">transacción</span> —
+  <span class="chip-e">producto</span> es N:M. La tabla intermedia <code>detalle_transaccion</code>
+  tiene <code>id_transaccion</code> (FK), <code>id_producto</code> (FK) y el atributo propio
+  <code>cantidad</code>.</p></div>
+
+  <div class="ejer">
+    <h3 style="margin-top:0">Ejercicio 2 · Detective de errores en el diseño de tablas</h3>
+    <p class="ctx">El siguiente diseño tiene tres errores. Haga clic en los números de las líneas que
+    crea que están mal, y luego presione «Revisar».</p>
+    <div class="ddl" id="ddlBox"></div>
+    <div class="marcadores" id="marcMarc"></div>
+    <ul class="leyenda-marc">
+      <li><strong>1</strong> — línea 2: <code>id_categoria</code> en <code>categoria</code></li>
+      <li><strong>2</strong> — línea 4: <code>id_producto</code> en <code>categoria</code></li>
+      <li><strong>3</strong> — línea 8: <code>id_producto</code> en <code>producto</code></li>
+      <li><strong>4</strong> — línea 9: <code>nombre</code> en <code>producto</code></li>
+      <li><strong>5</strong> — línea 10: <code>id_categoria</code> en <code>producto</code></li>
+      <li><strong>6</strong> — línea 11: la sentencia <code>FOREIGN KEY</code> en <code>producto</code></li>
+    </ul>
+    <div class="btns"><button id="revisarMarc" type="button">Revisar</button>
+      <button id="reMarc" type="button" class="sec">Reiniciar</button></div>
+    <p class="msj" id="msjMarc" role="status" aria-live="polite"></p>
+  </div>
+
+  <div class="lectura"><div class="et">Lectura 5</div><h3>Regla 4 · La participación decide si la FK admite NULL</h3>
+  <p>El 19 de agosto aprendimos que cada entidad participa de forma obligatoria u opcional en una
+  relación. Esa decisión, que entonces se dibujaba con línea sencilla o doble, hoy se traduce
+  directamente a la columna FK: si la participación era <strong>obligatoria</strong>, la columna FK
+  se declara <strong>NOT NULL</strong> (no puede quedar vacía). Si era <strong>opcional</strong>, la
+  columna FK <strong>admite NULL</strong> (puede quedar vacía).</p>
+  <p>Dos ejemplos que ya conocemos del 19 de agosto. En inventarios, un artículo siempre debe estar
+  en algún lugar del colegio —participación obligatoria—, así que <code>articulo.id_ubicacion</code>
+  es <strong>NOT NULL</strong>. En movilidad, un estudiante puede existir en el sistema sin usar
+  ninguna ruta —participación opcional—, así que <code>estudiante.id_ruta</code>
+  <strong>admite NULL</strong>.</p>
+  <p>La regla en una frase: <strong>obligatoria → NOT NULL, opcional → NULL</strong>. Es la misma
+  decisión de siempre, solo que ahora se escribe en la tabla en lugar de dibujarse en el diagrama.</p></div>
+
+  <div class="caja video">
+    <h3 style="margin-top:0">Para complementar: un video corto</h3>
+    <p><strong>Transformación de entidad-relación al Modelo Relacional (tablas)</strong>, canal
+    Pepe Lluyot.</p>
+    <p><a class="enlace" href="https://www.youtube.com/watch?v=Ki6HDNP9-Rk" target="_blank"
+    rel="noopener">https://www.youtube.com/watch?v=Ki6HDNP9-Rk</a></p>
+    <p style="font-size:.88rem;color:var(--gris)">Repasa la misma traducción de entidades y relaciones
+    a tablas que acabamos de ver. Es un complemento opcional, no reemplaza la lectura 5.</p>
+  </div>
+
+  <div class="lectura"><div class="et">Lectura 6</div><h3>Ahora lo construimos juntos</h3>
+  <p>En vez de leer una lectura más, vamos a construir tres tablas completas entre todos, en el
+  tablero, con un ejemplo que no tiene nada que ver con ninguno de los cinco proyectos PIA, para que
+  nadie confunda esta práctica con la respuesta de su propio taller 2.</p>
+  <p>Tome nota mientras se construye: el taller 2 de hoy les pide hacer exactamente esto, pero con
+  las tablas que resultan del diagrama de su propio proyecto, el que construyeron el 19 de agosto.</p></div>
+
+  <div class="guion">
+    <h4>Construcción en el tablero · Receta, chef e ingrediente</h4>
+    <p>Tres piezas ajenas a cualquier proyecto PIA: <strong>receta</strong>, <strong>chef</strong> e
+    <strong>ingrediente</strong>. Una receta es de un solo chef (1:N). Una receta lleva varios
+    ingredientes, y un ingrediente aparece en varias recetas (N:M).</p>
+    <p>Al final quedan tres tablas construidas en el tablero: <code>chef</code>, <code>receta</code>
+    (con su FK <code>id_chef</code>) y la tabla intermedia <code>receta_ingrediente</code> (con sus
+    dos FK y el atributo propio <code>cantidad</code>).</p>
+  </div>
+
+  <h3>Síntesis del momento</h3>
+  <div class="caja">
+    <div class="tw">
+    <table>
+      <thead><tr><th>Pieza del diagrama</th><th>Se convierte en</th></tr></thead>
+      <tbody>
+        <tr><td>Entidad</td><td>Tabla</td></tr>
+        <tr><td>Atributo</td><td>Columna</td></tr>
+        <tr><td>Identificador subrayado</td><td>Llave primaria (PK)</td></tr>
+        <tr><td>Relación 1:N</td><td>Llave foránea (FK) en la tabla del lado N</td></tr>
+        <tr><td>Relación N:M</td><td>Tabla intermedia con dos FK y sus atributos propios</td></tr>
+        <tr><td>Participación obligatoria del lado N</td><td>Columna FK NOT NULL</td></tr>
+        <tr><td>Participación opcional del lado N</td><td>Columna FK admite NULL</td></tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+</section>
+
+<section id="pausa">
+  <div class="rot"><span class="hora">2:30 – 3:00</span><h2>Descanso</h2></div>
+  <p>Treinta minutos. Los equipos quedan bloqueados, no apagados.</p>
+  <p>Al regresar se entra directamente al taller 1, que es individual.</p>
+  <a class="boton" href="clase6-talleres-estudiante.html">Ir a los talleres</a>
+</section>
+
+<section id="m6">
+  <div class="rot"><span class="hora">4:15 – 4:40</span><h2>Socialización</h2></div>
+  <p>Cada grupo muestra <strong>una tabla de su proyecto</strong> y explica en voz alta: cuál es su
+  llave primaria, qué llaves foráneas tiene, y si esas llaves foráneas admiten NULL o no, según la
+  participación definida el 19 de agosto.</p>
+  <ul class="l">
+    <li>¿Cuál es la llave primaria de esta tabla?</li>
+    <li>¿Qué llaves foráneas tiene y hacia qué tabla apuntan?</li>
+    <li>¿Admiten NULL? ¿Por qué, según la participación de esa entidad?</li>
+  </ul>
+  <p>Los demás grupos pueden objetar, pero solo señalando la regla que no se aplicó correctamente.</p>
+  <a class="boton" href="clase6-evaluacion-estudiante.html">Ir a la evaluación</a>
+</section>
+
+<section id="m8">
+  <div class="rot"><span class="hora">5:00 – 5:10</span><h2>Agenda de la próxima clase</h2></div>
+  <h3>Qué se logró hoy</h3>
+  <ul class="l">
+    <li>Traducir un diagrama entidad-relación a un conjunto de tablas.</li>
+    <li>Decidir en qué tabla va cada llave foránea y si admite NULL.</li>
+    <li>Resolver una relación N:M con una tabla intermedia.</li>
+    <li>Producir las tablas del propio proyecto PIA.</li>
+  </ul>
+  <h3>Miércoles 26 de agosto: normalización</h3>
+  <p>Hoy tradujimos el diagrama a tablas, pero no revisamos si esas tablas están bien diseñadas. El
+  26 de agosto aprendemos las reglas de normalización (1FN, 2FN, 3FN): cómo detectar y corregir
+  columnas repetidas, dependencias mal puestas y datos duplicados.</p>
+  <div class="caja nota">
+    <p><strong>Fecha de entrega.</strong> El <strong>26 de agosto</strong> se entrega el modelo
+    entidad-relación normalizado del proyecto: es el <strong>Hito 1</strong>. Lo de las clases 3, 4,
+    5 y 6 son las piezas de esa entrega; el 26 se suma la normalización y se revisa todo junto.</p>
+  </div>
+  <p>No hay trabajo en casa para esta sesión.</p>
+</section>
+
+<section id="m9">
+  <div class="rot"><span class="hora">5:10 – 5:30</span><h2>Cierre del aula</h2></div>
+  <h3>Organización de equipos · 5:10 a 5:20</h3>
+  <ul class="l">
+    <li>Cerrar las aplicaciones y apagar el equipo desde el sistema, no del botón.</li>
+    <li>Teclado, mouse y silla en su lugar.</li>
+    <li>Reportar al docente cualquier equipo con falla.</li>
+  </ul>
+  <h3>Aseo del salón · 5:20 a 5:30</h3>
+  <ul class="l">
+    <li>Recoger papeles y envases del puesto y del piso.</li>
+    <li>Tablero borrado y escritorio despejado.</li>
+    <li>Salir cuando el salón quede en las condiciones en que se recibió.</li>
+  </ul>
+</section>
+
+</main>
+</div>
+<div class="pie">Clase 6 · Modelo relacional: de diagrama a tablas · Bases de datos · Grado 11 · 2026 · Material del estudiante</div>
+<script>
+function relojYAgenda(){
+  const c=document.getElementById('crono'); if(!c)return;
+  const f=new Date();
+  const hh=String(f.getHours()).padStart(2,'0'), mm=String(f.getMinutes()).padStart(2,'0');
+  const min=f.getHours()*60+f.getMinutes();
+  document.querySelectorAll('.rail a').forEach(a=>{
+    const p=x=>{const [h,m]=x.split(':').map(Number); return (h<8?h+12:h)*60+m;};
+    const i=p(a.dataset.ini), t=p(a.dataset.fin);
+    if(t>i&&min>=i&&min<t)a.classList.add('on'); else a.classList.remove('on');
+  });
+  c.textContent=hh+':'+mm;
+}
+setInterval(relojYAgenda,15000);
+function esc(t){return String(t).replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));}
+function baraja(a){const c=a.slice();for(let i=c.length-1;i>0;i--){
+  const j=Math.floor(Math.random()*(i+1));[c[i],c[j]]=[c[j],c[i]];}return c;}
+
+/* Ejercicio 1: arrastrar FK / nulabilidad */
+const ETQ={sinfk:'sin FK · solo su PK',fknotnull:'FK · NOT NULL',fknull:'FK · admite NULL'};
+const CASOSP=[
+  ["producto","pertenece a","categoría","Bazar escolar","fknotnull","sinfk"],
+  ["artículo","está en","ubicación","Inventarios","fknotnull","sinfk"],
+  ["tarjeta de operación","tiene","vehículo","Movilidad","fknotnull","sinfk"],
+  ["observación","es recibida por","estudiante","Comportamental","fknotnull","sinfk"],
+  ["observación","es registrada por","docente","Comportamental","fknotnull","sinfk"],
+  ["estudiante","usa","ruta","Movilidad","fknull","sinfk"]
+];
+let ordP=[],iP=0,acP=0,erP=0;
+function pintaFigP(){
+  const c=ordP[iP]; if(!c){document.getElementById('figP').innerHTML='<p>Ejercicio terminado.</p>';return;}
+  document.getElementById('ctxP').textContent='Proyecto de '+c[3];
+  document.getElementById('figP').innerHTML=
+    '<div class="caja-ent">'+esc(c[0])+'</div>'+
+    '<div class="zona" id="zonaA" data-lado="A"></div>'+
+    '<span class="verbo-txt">'+esc(c[1])+'</span>'+
+    '<div class="zona" id="zonaB" data-lado="B"></div>'+
+    '<div class="caja-ent">'+esc(c[2])+'</div>';
+  ['zonaA','zonaB'].forEach(id=>{
+    const z=document.getElementById(id);
+    z.textContent='Suelte aquí';
+    z.addEventListener('dragover',e=>{e.preventDefault();z.classList.add('sobre');});
+    z.addEventListener('dragleave',()=>z.classList.remove('sobre'));
+    z.addEventListener('drop',e=>{e.preventDefault();z.classList.remove('sobre');
+      const v=e.dataTransfer.getData('text/plain'); asignarZona(z,v);});
+    z.addEventListener('click',()=>{if(selChip)asignarZona(z,selChip);});
+  });
+}
+let selChip=null;
+function asignarZona(z,v){ z.dataset.val=v; z.classList.add('lleno'); z.textContent=ETQ[v]; }
+function pintaMarP(){
+  document.getElementById('marP').innerHTML='<span>Aciertos: '+acP+'</span><span>Errores: '+erP+
+    '</span><span>Faltan: '+(ordP.length-iP)+'</span>';
+}
+function pintaTabP(){
+  const t=document.getElementById('tabP'); t.innerHTML='';
+  ordP.forEach((f,k)=>{const d=document.createElement('div');
+    d.className='ficha'+(k===iP?' on':'')+(f.r===1?' ok':'')+(f.r===0?' mal':'');
+    d.textContent=(k+1); t.appendChild(d);});
+}
+function comprobarP(){
+  const c=ordP[iP]; if(!c)return;
+  const zA=document.getElementById('zonaA'), zB=document.getElementById('zonaB');
+  if(!zA.dataset.val||!zB.dataset.val){document.getElementById('msjP').textContent=
+    'Complete los dos lados antes de comprobar.';return;}
+  const bienA=zA.dataset.val===c[4], bienB=zB.dataset.val===c[5];
+  const bien=bienA&&bienB;
+  c.r=bien?1:0; bien?acP++:erP++;
+  document.getElementById('msjP').textContent = bien
+    ? 'Correcto: las dos casillas quedaron bien marcadas.'
+    : 'No del todo. Lado de '+c[0]+': '+ETQ[c[4]]+'. Lado de '+c[2]+': '+ETQ[c[5]]+'.';
+  pintaMarP(); pintaTabP();
+}
+function siguienteP(){
+  iP++; if(iP>=ordP.length){document.getElementById('msjP').textContent='Ejercicio terminado.';}
+  else document.getElementById('msjP').textContent='';
+  pintaFigP();
+}
+function reiniciarP(){
+  ordP=baraja(CASOSP).map(x=>{const y=x.slice();y.r=null;return y;});
+  iP=0;acP=0;erP=0; document.getElementById('msjP').textContent='';
+  pintaFigP(); pintaMarP(); pintaTabP();
+}
+
+/* Ejercicio 2: detective de errores en DDL */
+const DDL=[
+"CREATE TABLE categoria (",
+"  id_categoria INT,",
+"  nombre VARCHAR(60),",
+"  id_producto INT",
+");",
+"",
+"CREATE TABLE producto (",
+"  id_producto INT PRIMARY KEY,",
+"  nombre VARCHAR(80),",
+"  id_categoria INT NULL,",
+"  FOREIGN KEY (id_categoria) REFERENCES categoria(id_categoria)",
+");"
+];
+const ERRORES=[1,2,5];
+let selMarc=new Set(), revisadoMarc=false;
+function pintaDDL(){
+  const b=document.getElementById('ddlBox'); if(!b)return;
+  let html='';
+  DDL.forEach((linea,i)=>{ html+='<span class="ln">'+String(i+1).padStart(2,' ')+'  '+esc(linea)+'</span>'; });
+  b.innerHTML=html;
+}
+function pintaMarc(){
+  const cont=document.getElementById('marcMarc'); cont.innerHTML='';
+  for(let n=1;n<=6;n++){
+    const b=document.createElement('button');
+    b.type='button'; b.className='marc-btn'+(selMarc.has(n)?' sel':''); b.textContent=n; b.dataset.n=n;
+    b.addEventListener('click',()=>{
+      if(revisadoMarc)return;
+      if(selMarc.has(n))selMarc.delete(n); else selMarc.add(n);
+      pintaMarc();
+    });
+    cont.appendChild(b);
+  }
+}
+function revisarMarc(){
+  revisadoMarc=true;
+  document.querySelectorAll('.marc-btn').forEach(b=>{
+    const n=Number(b.dataset.n), esErr=ERRORES.includes(n), marc=selMarc.has(n);
+    b.classList.remove('sel');
+    if(esErr&&marc)b.classList.add('ok');
+    else if(esErr&&!marc)b.classList.add('mal');
+    else if(!esErr&&marc)b.classList.add('mal');
+  });
+  const aciertos=ERRORES.filter(n=>selMarc.has(n)).length;
+  const falsos=[...selMarc].filter(n=>!ERRORES.includes(n)).length;
+  document.getElementById('msjMarc').textContent=
+    'Encontró '+aciertos+' de 3 errores reales'+(falsos?' y marcó '+falsos+' parte(s) que sí estaban bien.':'.');
+}
+function reiniciarMarc(){ selMarc=new Set(); revisadoMarc=false;
+  document.getElementById('msjMarc').textContent=''; pintaMarc(); }
+
+document.addEventListener('DOMContentLoaded',()=>{
+  document.querySelectorAll('.chipd').forEach(ch=>{
+    ch.addEventListener('dragstart',e=>{e.dataTransfer.setData('text/plain',ch.dataset.val);});
+    ch.addEventListener('click',()=>{
+      document.querySelectorAll('.chipd').forEach(x=>x.classList.remove('sel'));
+      ch.classList.add('sel'); selChip=ch.dataset.val;
+    });
+  });
+  document.getElementById('compP').addEventListener('click',comprobarP);
+  document.getElementById('reP').addEventListener('click',siguienteP);
+  reiniciarP();
+
+  pintaDDL();
+  document.getElementById('revisarMarc').addEventListener('click',revisarMarc);
+  document.getElementById('reMarc').addEventListener('click',reiniciarMarc);
+  pintaMarc();
+});
+document.addEventListener('DOMContentLoaded',relojYAgenda);
+if(document.readyState!=='loading')relojYAgenda();
+</script>
+</body>
+</html>
