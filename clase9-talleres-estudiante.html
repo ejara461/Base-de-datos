@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Clase 9 · Talleres</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;600;700&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --tinta:#06182E; --azul900:#0A2A52; --azul700:#12457F; --azul500:#1E6FB8;
+  --azul300:#6BAEDB; --azul050:#E8F1F9; --papel:#FFFFFF; --nieve:#F4F8FC;
+  --linea:#CFE0EF; --alerta:#C81E33; --alerta050:#FDECEE; --ok:#0F7A6C; --ok050:#E6F4F1;
+  --ambar:#A76A00; --ambar050:#FFF4E0; --gris:#5C7189;
+  --display:'Space Grotesk','Segoe UI',system-ui,sans-serif;
+  --cuerpo:'IBM Plex Sans','Segoe UI',system-ui,sans-serif;
+  --mono:'IBM Plex Mono','Consolas',monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;scroll-padding-top:96px}
+body{font-family:var(--cuerpo);color:var(--tinta);background:var(--nieve);line-height:1.62;font-size:16px}
+h1,h2,h3,h4{font-family:var(--display);line-height:1.16;letter-spacing:-.012em}
+.barra{position:sticky;top:0;z-index:50;background:linear-gradient(180deg,var(--azul900),var(--azul700));
+  color:#fff;border-bottom:3px solid var(--azul300);box-shadow:0 2px 14px rgba(6,24,46,.18)}
+.barra-in{max-width:1400px;margin:0 auto;padding:9px 18px;display:flex;gap:14px;align-items:center;flex-wrap:wrap}
+.barra img{height:38px;background:#fff;border-radius:6px;padding:3px}
+.barra .quien{flex:1;min-width:180px}
+.barra .quien b{display:block;font-family:var(--display);font-size:.94rem;line-height:1.25}
+.barra .quien span{font-size:.76rem;opacity:.85}
+.crono{font-family:var(--mono);font-size:1rem;background:rgba(255,255,255,.13);padding:5px 11px;
+  border-radius:8px;border:1px solid rgba(255,255,255,.22);white-space:nowrap}
+.paginas{display:flex;gap:6px;flex-wrap:wrap}
+.paginas a{font-size:.78rem;text-decoration:none;color:#fff;border:1px solid rgba(255,255,255,.3);
+  padding:5px 11px;border-radius:7px;background:rgba(255,255,255,.08)}
+.paginas a:hover{background:rgba(255,255,255,.2)}
+.paginas a.actual{background:#fff;color:var(--azul900);font-weight:700}
+.marco{max-width:1400px;margin:0 auto;display:grid;grid-template-columns:262px 1fr;gap:26px;padding:26px 18px 80px}
+.rail{position:sticky;top:100px;align-self:start;background:var(--papel);border:1px solid var(--linea);
+  border-radius:12px;overflow-y:auto;overflow-x:hidden;max-height:calc(100vh - 122px)}
+.rail h4{font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;color:var(--azul700);margin:0;
+  padding:12px 14px 8px;border-bottom:1px solid var(--linea);position:sticky;top:0;background:var(--papel);z-index:2}
+.rail a{display:grid;grid-template-columns:52px 1fr;gap:8px;padding:9px 12px;text-decoration:none;
+  color:var(--tinta);font-size:.83rem;border-bottom:1px solid #EDF3F9;align-items:center}
+.rail a .id{font-family:var(--mono);font-size:.68rem;color:var(--azul500);background:var(--azul050);
+  border-radius:5px;text-align:center;padding:2px 0}
+.rail a .mn{display:block;font-size:.7rem;color:var(--gris)}
+.rail a:hover{background:var(--azul050)}
+.rail a.on{background:var(--azul050);box-shadow:inset 3px 0 0 var(--azul500);font-weight:600}
+.rail a.pausa{background:var(--ambar050);color:#7A4E00}
+.rail a.pausa .id{background:#F5D9A8;color:#7A4E00}
+section{background:var(--papel);border:1px solid var(--linea);border-radius:14px;
+  padding:26px 28px;margin-bottom:20px;position:relative}
+section.hero{background:linear-gradient(135deg,var(--azul900) 0%,var(--azul700) 55%,var(--azul500) 100%);
+  color:#fff;border:none}
+.eyebrow{font-size:.7rem;letter-spacing:.16em;text-transform:uppercase;color:var(--azul300);font-weight:700}
+.hero h1{font-family:var(--display);font-size:clamp(1.7rem,3.6vw,2.5rem);margin:8px 0 10px;font-weight:700}
+.hero .lede{font-size:1.02rem;opacity:.94;max-width:62ch}
+.rot{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;margin-bottom:8px}
+.rot .hora{font-family:var(--mono);font-size:.76rem;color:var(--azul500);background:var(--azul050);
+  padding:3px 10px;border-radius:999px;white-space:nowrap}
+section h2{font-size:clamp(1.25rem,2.5vw,1.65rem);color:var(--azul900)}
+h3{font-size:1.06rem;color:var(--azul700);margin:18px 0 6px}
+p{margin-bottom:9px;max-width:74ch}
+ul.l,ol.l{margin:8px 0 8px 22px}
+ul.l li,ol.l li{margin-bottom:6px}
+code{font-family:var(--mono);background:var(--azul050);padding:1px 6px;border-radius:4px;font-size:.88em}
+.caja{background:var(--nieve);border:1px solid var(--linea);border-radius:11px;padding:18px 20px;margin-top:16px}
+.caja.nota{background:var(--ambar050);border-color:var(--ambar);border-left:5px solid var(--ambar)}
+table{width:100%;border-collapse:collapse;margin-top:12px;font-size:.9rem;background:#fff}
+th,td{border:1px solid var(--linea);padding:8px 10px;text-align:left;vertical-align:top}
+th{background:var(--azul050);color:var(--azul900);font-weight:700}
+.tw{overflow-x:auto}
+button,.btn{font-family:var(--cuerpo);font-size:.94rem;font-weight:600;padding:10px 17px;border-radius:8px;
+  border:1px solid var(--azul700);background:var(--azul700);color:#fff;cursor:pointer}
+button:hover{background:var(--azul900)}
+button:disabled{opacity:.5;cursor:not-allowed}
+.pie{max-width:1400px;margin:0 auto;padding:22px 18px 40px;color:var(--gris);font-size:.85rem}
+@media(max-width:980px){
+  .marco{grid-template-columns:1fr;padding:16px 12px 60px;gap:16px}
+  .rail{position:static;max-height:44vh;overflow-y:auto}
+  section{padding:20px 17px}
+}
+label{display:block;font-weight:600;font-size:.88rem;margin-top:12px;margin-bottom:4px}
+input[type=text],select,textarea{width:100%;padding:9px 11px;border:1px solid var(--linea);
+  border-radius:8px;font-family:var(--cuerpo);font-size:.94rem;background:#fff}
+textarea{font-family:var(--mono);font-size:.86rem;min-height:100px;resize:vertical}
+.identidad{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:640px){.identidad{grid-template-columns:1fr}}
+.tabladeref{white-space:pre-wrap;font-family:var(--mono);font-size:.8rem;background:var(--tinta);
+  color:#DCEBFB;border-radius:9px;padding:12px 14px;margin-top:8px;line-height:1.6}
+.checklist label{display:flex;align-items:center;gap:8px;font-weight:500;margin-top:8px}
+.bloqueado{opacity:.6;pointer-events:none}
+.confirmacion{background:var(--ok050);border:1px solid var(--ok);border-radius:9px;padding:14px 16px;
+  margin-top:14px;display:none}
+.tema-asignado{background:var(--azul050);border:1px solid var(--azul300);border-radius:9px;
+  padding:10px 14px;margin-top:10px;font-weight:600;color:var(--azul900);display:none}
+.consigna{margin-top:8px}
+.candado{position:absolute;inset:0;background:rgba(244,248,252,.96);border-radius:14px;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;
+  padding:30px;z-index:5}
+.candado .icono{font-size:2.4rem;margin-bottom:10px}
+.candado h3{margin-top:0;color:var(--azul900)}
+.candado p{max-width:46ch}
+.candado .estado{font-family:var(--mono);font-size:.8rem;color:var(--gris);margin-top:10px}
+@media print{.no-imprimir{display:none!important}.candado{display:none!important}}
+</style>
+</head>
+<body>
+
+<header class="barra">
+  <div class="barra-in">
+    <img src="data:image/png;base64,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" alt="Logo de la institución">
+    <div class="quien">
+      <b>Bases de datos · Grado 11</b>
+      <span>I. E. María de los Ángeles Cano Márquez</span>
+    </div>
+    <div class="paginas"><a href="clase9-estudiante.html">Clase</a><a class="actual" href="clase9-talleres-estudiante.html">Talleres</a><a href="clase9-evaluacion-estudiante.html">Evaluación</a></div>
+    <div class="crono" id="crono" aria-live="off">--:--</div>
+  </div>
+</header>
+<div class="marco">
+<nav class="rail" aria-label="Agenda de la sesión"><h4>Agenda de la sesión</h4><a href="clase9-estudiante.html#m1" data-ini="1:00" data-fin="1:30"><span class="id">1:00</span><span><span class="nm">Compromisos, agenda y repaso</span><span class="mn">hasta 1:30</span></span></a><a href="clase9-estudiante.html#m2" data-ini="1:30" data-fin="2:30"><span class="id">1:30</span><span><span class="nm">INSERT y SELECT simple</span><span class="mn">hasta 2:30</span></span></a><a href="clase9-estudiante.html#pausa" class="pausa" data-ini="2:30" data-fin="3:00"><span class="id">2:30</span><span><span class="nm">Descanso</span><span class="mn">hasta 3:00</span></span></a><a href="#t1" data-ini="3:00" data-fin="3:50"><span class="id">3:00</span><span><span class="nm">Taller 1 (individual, tema por documento)</span><span class="mn">hasta 3:50</span></span></a><a href="#t2" data-ini="3:50" data-fin="4:35"><span class="id">3:50</span><span><span class="nm">Taller 2: consultas del proyecto PIA</span><span class="mn">hasta 4:35</span></span></a><a href="clase9-estudiante.html#m6" data-ini="4:35" data-fin="5:00"><span class="id">4:35</span><span><span class="nm">Socialización</span><span class="mn">hasta 5:00</span></span></a><a href="clase9-evaluacion-estudiante.html#cuestionario" data-ini="5:00" data-fin="5:20"><span class="id">5:00</span><span><span class="nm">Evaluación</span><span class="mn">hasta 5:20</span></span></a><a href="clase9-estudiante.html#m8" data-ini="5:20" data-fin="5:27"><span class="id">5:20</span><span><span class="nm">Agenda de la próxima clase</span><span class="mn">hasta 5:27</span></span></a><a href="clase9-estudiante.html#m9" data-ini="5:27" data-fin="5:40"><span class="id">5:27</span><span><span class="nm">Organización y aseo</span><span class="mn">hasta 5:40</span></span></a></nav>
+<main>
+
+<section class="hero" id="inicio">
+  <div class="eyebrow">Clase 9</div>
+  <h1>Talleres</h1>
+  <p class="lede">Taller 1 individual, con un tema distinto según su documento (para que nadie
+  trabaje el mismo caso que su compañero de al lado). Taller 2 grupal, sobre su propio proyecto
+  PIA. Los dos se activan cuando el docente lo indique — no antes.</p>
+</section>
+
+<section id="t1">
+  <div class="rot"><span class="hora">3:00 – 3:50</span><h2>Taller 1 · Caso asignado por documento (individual)</h2></div>
+
+  <div id="candadoT1" class="candado">
+    <div class="icono">🔒</div>
+    <h3>Esperando activación del docente</h3>
+    <p>Este taller se desbloquea automáticamente cuando el docente lo active desde su panel de
+    control. No necesita hacer nada más que esperar.</p>
+    <div class="estado" id="estadoT1">Sin conexión con el panel de control todavía…</div>
+  </div>
+
+  <form id="form1" class="no-imprimir">
+    <div class="identidad">
+      <div><label for="nombre1">Nombre completo</label><input type="text" id="nombre1" data-field="nombre_completo" required></div>
+      <div><label for="doc1">Número de documento</label><input type="text" id="doc1" data-field="documento" required placeholder="Escríbalo completo, sin puntos"></div>
+    </div>
+    <input type="hidden" id="temaCalculado" data-field="tema">
+    <div class="tema-asignado" id="temaAsignado"></div>
+
+    <div class="caja nota">
+      <p><strong>Cómo se asigna su tema:</strong> se toman los dos últimos dígitos de su documento
+      y se calcula el resto de dividir ese número entre 4. Resto 0 → Tema A (tienda de música).
+      Resto 1 → Tema B (taller mecánico). Resto 2 → Tema C (clínica veterinaria). Resto 3 → Tema D
+      (torneo deportivo). Escriba su documento arriba para ver su tema.</p>
+    </div>
+
+    <!-- TEMA A -->
+    <div class="temabloque" id="temaA" style="display:none">
+      <h3>Tema A · Tienda de música</h3>
+      <p>Tres tablas encadenadas: un artista tiene varios discos, y cada disco tiene varias ventas.</p>
+      <div class="tabladeref">artista: id_artista (PK, auto), nombre, genero, pais
+disco: id_disco (PK, auto), titulo, anio_lanzamiento, precio, id_artista [FK]
+venta: id_venta (PK, auto), fecha, cantidad, id_disco [FK]</div>
+      <ol class="l consigna">
+        <li>Escriba el <code>CREATE DATABASE</code> y los tres <code>CREATE TABLE</code>, en el
+        orden correcto, con llaves primarias y foráneas.</li>
+        <li>Escriba los <code>INSERT</code> necesarios para poblar cada tabla con datos ficticios:
+        mínimo 15 artistas, 15 discos y 15 ventas.</li>
+        <li>Escriba tres consultas <code>SELECT</code>: (a) los discos con precio mayor a un valor
+        que usted elija, (b) los discos ordenados por año de lanzamiento del más reciente al más
+        antiguo, (c) la cantidad total vendida por disco, agrupada por <code>id_disco</code>.</li>
+      </ol>
+    </div>
+
+    <!-- TEMA B -->
+    <div class="temabloque" id="temaB" style="display:none">
+      <h3>Tema B · Taller mecánico</h3>
+      <p>Tres tablas encadenadas: un cliente tiene varios vehículos, y cada vehículo tiene varias
+      órdenes de servicio.</p>
+      <div class="tabladeref">cliente: id_cliente (PK, auto), nombre, telefono
+vehiculo: id_vehiculo (PK, auto), placa, marca, modelo, id_cliente [FK]
+orden_servicio: id_orden (PK, auto), fecha, descripcion, costo, id_vehiculo [FK]</div>
+      <ol class="l consigna">
+        <li>Escriba el <code>CREATE DATABASE</code> y los tres <code>CREATE TABLE</code>, en el
+        orden correcto, con llaves primarias y foráneas.</li>
+        <li>Escriba los <code>INSERT</code> necesarios para poblar cada tabla con datos ficticios:
+        mínimo 15 clientes, 15 vehículos y 15 órdenes de servicio.</li>
+        <li>Escriba tres consultas <code>SELECT</code>: (a) las órdenes con costo mayor a un valor
+        que usted elija, (b) los vehículos ordenados alfabéticamente por marca, (c) el costo total
+        facturado por vehículo, agrupado por <code>id_vehiculo</code>.</li>
+      </ol>
+    </div>
+
+    <!-- TEMA C -->
+    <div class="temabloque" id="temaC" style="display:none">
+      <h3>Tema C · Clínica veterinaria</h3>
+      <p>Tres tablas encadenadas: un dueño tiene varias mascotas, y cada mascota tiene varias
+      consultas.</p>
+      <div class="tabladeref">dueno: id_dueno (PK, auto), nombre, telefono
+mascota: id_mascota (PK, auto), nombre, especie, edad, id_dueno [FK]
+consulta: id_consulta (PK, auto), fecha, motivo, costo, id_mascota [FK]</div>
+      <ol class="l consigna">
+        <li>Escriba el <code>CREATE DATABASE</code> y los tres <code>CREATE TABLE</code>, en el
+        orden correcto, con llaves primarias y foráneas.</li>
+        <li>Escriba los <code>INSERT</code> necesarios para poblar cada tabla con datos ficticios:
+        mínimo 15 dueños, 15 mascotas y 15 consultas.</li>
+        <li>Escriba tres consultas <code>SELECT</code>: (a) las mascotas de una especie
+        específica que usted elija, (b) las consultas ordenadas por fecha de la más reciente a la
+        más antigua, (c) el número de consultas por mascota, agrupado por <code>id_mascota</code>.</li>
+      </ol>
+    </div>
+
+    <!-- TEMA D -->
+    <div class="temabloque" id="temaD" style="display:none">
+      <h3>Tema D · Torneo deportivo</h3>
+      <p>Tres tablas encadenadas: un equipo tiene varios jugadores, y cada jugador tiene varios
+      goles registrados.</p>
+      <div class="tabladeref">equipo: id_equipo (PK, auto), nombre, ciudad
+jugador: id_jugador (PK, auto), nombre, posicion, numero, id_equipo [FK]
+gol: id_gol (PK, auto), fecha_partido, rival, minuto, id_jugador [FK]</div>
+      <ol class="l consigna">
+        <li>Escriba el <code>CREATE DATABASE</code> y los tres <code>CREATE TABLE</code>, en el
+        orden correcto, con llaves primarias y foráneas.</li>
+        <li>Escriba los <code>INSERT</code> necesarios para poblar cada tabla con datos ficticios:
+        mínimo 15 equipos, 15 jugadores y 15 goles.</li>
+        <li>Escriba tres consultas <code>SELECT</code>: (a) los jugadores de una posición
+        específica que usted elija, (b) los goles ordenados por fecha del partido, (c) el número
+        de goles por jugador, agrupado por <code>id_jugador</code>.</li>
+      </ol>
+    </div>
+
+    <h3>Parte 1 · CREATE DATABASE y CREATE TABLE</h3>
+    <textarea data-field="create_sql" rows="10" placeholder="CREATE DATABASE ...
+USE ...
+CREATE TABLE ..."></textarea>
+
+    <h3>Parte 2 · INSERT (mínimo 15 filas por tabla)</h3>
+    <textarea data-field="insert_sql" rows="10" placeholder="INSERT INTO ... VALUES ..."></textarea>
+
+    <h3>Parte 3 · Consultas SELECT</h3>
+    <textarea data-field="consultas_sql" rows="8" placeholder="-- consulta (a)
+SELECT ...
+
+-- consulta (b)
+SELECT ...
+
+-- consulta (c)
+SELECT ..."></textarea>
+
+    <h3>Parte 4 · Investigue estos tres comandos SQL</h3>
+    <p>Sin usar links: explique en sus palabras qué hace cada uno y escriba un ejemplo propio con
+    las tablas de su tema.</p>
+    <textarea data-field="investigacion" rows="6" placeholder="DISTINCT: ...
+Ejemplo: ...
+
+LIKE: ...
+Ejemplo: ...
+
+LIMIT: ...
+Ejemplo: ..."></textarea>
+
+    <h3>Parte 5 · Pregunta abierta</h3>
+    <label>¿Cuál de las tres partes anteriores (crear las tablas, insertar los datos o escribir
+    las consultas) le resultó más difícil, y por qué?</label>
+    <textarea data-field="pregunta_abierta" rows="3"></textarea>
+
+    <button type="button" id="btnImprimir1" style="margin-top:18px">Generar informe e imprimir</button>
+    <div class="confirmacion" id="conf1">Informe generado y enviado. El taller queda bloqueado.</div>
+  </form>
+</section>
+
+<section id="t2">
+  <div class="rot"><span class="hora">3:50 – 4:35</span><h2>Taller 2 · Consultas de su proyecto PIA (grupal)</h2></div>
+
+  <div id="candadoT2" class="candado">
+    <div class="icono">🔒</div>
+    <h3>Esperando activación del docente</h3>
+    <p>Este taller se desbloquea automáticamente cuando el docente lo active desde su panel de
+    control.</p>
+    <div class="estado" id="estadoT2">Sin conexión con el panel de control todavía…</div>
+  </div>
+
+  <form id="form2" class="no-imprimir">
+    <div class="identidad">
+      <div><label for="nombre2">Nombre de quien entrega (representa al grupo)</label><input type="text" id="nombre2" data-field="nombre_completo" required></div>
+      <div><label for="doc2">Número de documento</label><input type="text" id="doc2" data-field="documento" required></div>
+    </div>
+    <label for="integrantes">Integrantes del grupo</label>
+    <input type="text" id="integrantes" data-field="integrantes" placeholder="Nombres de todos los integrantes">
+
+    <label for="proyecto">Proyecto</label>
+    <select id="proyecto" data-field="proyecto_elegido">
+      <option value="">— elija su proyecto —</option>
+      <option value="biblioteca">Gestión de biblioteca</option>
+      <option value="inventarios">Gestión de inventarios</option>
+      <option value="comportamental">Gestión comportamental</option>
+      <option value="asistencia_permisos">Gestión Asistencia y Permisos</option>
+      <option value="bazar">Gestión de bazar escolar</option>
+    </select>
+
+    <div id="refTabla" class="tabladeref" style="display:none"></div>
+    <div id="notaBazar" class="caja nota" style="display:none">
+      <p><strong>Grupo de Bazar:</strong> su tabla <code>compra</code> se agregó la clase pasada
+      justamente para esto. Pueblen <code>compra</code> y <code>detalle_venta</code> con datos
+      ficticios y calculen el stock disponible por producto:
+      <code>SUM(compra.cantidad) - SUM(detalle_venta.cantidad)</code>, agrupado por producto.</p>
+    </div>
+
+    <h3>INSERT: poblar sus tablas con datos ficticios</h3>
+    <p>Peguen aquí el script completo que ejecutaron en phpMyAdmin para poblar todas las tablas de
+    su proyecto (mínimo 15 filas por tabla, todos los datos ficticios — ninguno real, Ley 1581 de
+    2012).</p>
+    <textarea data-field="insert_sql" rows="10" placeholder="INSERT INTO ... VALUES ..."></textarea>
+
+    <h3>Consultas SELECT ejecutadas</h3>
+    <p>Peguen las consultas que ejecutaron sobre su proyecto. Si son del grupo de Bazar, incluyan
+    la consulta de stock.</p>
+    <textarea data-field="consultas_sql" rows="8" placeholder="SELECT ..."></textarea>
+
+    <h3>Checklist</h3>
+    <div class="checklist">
+      <label><input type="checkbox" data-field="check_poblado"> Todas las tablas tienen mínimo 15 filas de datos ficticios</label>
+      <label><input type="checkbox" data-field="check_ejecutado"> El INSERT se ejecutó sin error en phpMyAdmin</label>
+      <label><input type="checkbox" data-field="check_consultas"> Las consultas SELECT devolvieron resultados coherentes</label>
+      <label><input type="checkbox" data-field="check_stock"> (Solo Bazar) La consulta de stock disponible quedó correcta</label>
+    </div>
+
+    <label for="obs2">Observaciones del grupo</label>
+    <textarea data-field="observaciones_grupo" rows="3"></textarea>
+
+    <button type="button" id="btnImprimir2" style="margin-top:18px">Generar informe e imprimir</button>
+    <div class="confirmacion" id="conf2">Informe generado y enviado. El taller queda bloqueado.</div>
+  </form>
+</section>
+
+</main>
+</div>
+<div class="pie">Clase 9 · Talleres · Bases de datos · Grado 11 · 2026</div>
+<script>
+const SHEETS_ACTION_URL = "https://script.google.com/macros/s/AKfycbwdPHWheG8qIMj4E6cNxLopPuhrgBdhb-X3i6z2NEnz8eV2qr4A8Ict2-8mESfrS78oNQ/exec";
+
+function relojYAgenda(){
+  const c=document.getElementById('crono'); if(!c)return;
+  const f=new Date();
+  const hh=String(f.getHours()).padStart(2,'0'), mm=String(f.getMinutes()).padStart(2,'0');
+  const min=f.getHours()*60+f.getMinutes();
+  document.querySelectorAll('.rail a').forEach(a=>{
+    const p=x=>{const [h,m]=x.split(':').map(Number); return (h<8?h+12:h)*60+m;};
+    const i=p(a.dataset.ini), t=p(a.dataset.fin);
+    if(t>i&&min>=i&&min<t)a.classList.add('on'); else a.classList.remove('on');
+  });
+  c.textContent=hh+':'+mm;
+}
+setInterval(relojYAgenda,15000);
+document.addEventListener('DOMContentLoaded',relojYAgenda);
+if(document.readyState!=='loading')relojYAgenda();
+
+// --- Asignación de tema por documento ---
+const nombresTema = {0:'A · Tienda de música', 1:'B · Taller mecánico', 2:'C · Clínica veterinaria', 3:'D · Torneo deportivo'};
+document.getElementById('doc1').addEventListener('input', function(){
+  const digitos = this.value.replace(/\D/g,'');
+  document.querySelectorAll('.temabloque').forEach(b=> b.style.display='none');
+  const asignado = document.getElementById('temaAsignado');
+  if(digitos.length < 2){ asignado.style.display='none'; document.getElementById('temaCalculado').value=''; return; }
+  const ultimosDos = parseInt(digitos.slice(-2), 10);
+  const resto = ultimosDos % 4;
+  const letra = ['A','B','C','D'][resto];
+  document.getElementById('temaCalculado').value = letra;
+  document.getElementById('tema'+letra).style.display = 'block';
+  asignado.style.display = 'block';
+  asignado.textContent = 'Su tema asignado: ' + nombresTema[resto] + ' (últimos dos dígitos: ' + digitos.slice(-2) + ', resto ' + resto + ')';
+});
+
+// --- Referencia de tablas del proyecto (taller 2) ---
+const referencias = {
+  biblioteca: `BIBLIOTECA
+usuario: id_usuario (PK), nombre, correo
+categoria: id_categoria (PK), nombre
+libro: id_libro (PK), titulo, isbn, anio_publicacion, autor, id_categoria [FK]
+prestamo: id_prestamo (PK), fecha_prestamo, fecha_devolucion, estado, id_usuario [FK], id_libro [FK]`,
+  inventarios: `INVENTARIOS
+categoria: id_categoria (PK), nombre
+administrador: id_administrador (PK), nombre, apellido
+ubicacion: id_ubicacion (PK), bloques, nombre
+articulo: id_articulo (PK), nombre, descripcion, estado, id_ubicacion [FK], id_categoria [FK], id_administrador [FK]`,
+  comportamental: `COMPORTAMENTAL
+acudiente: id_acudiente (PK), nombre, apellido, telefono, contacto, tipo_documento, documento
+estudiante: id_estudiante (PK), nombre, apellido, documento, tipo_documento, contacto, id_acudiente [FK]
+personal_docente: id_docente (PK), tipo_documento, apellido, nombre, contacto
+observacion: id_observacion (PK), tipo_de_situacion, fecha, otro, acciones, firma_docente, firma_estudiante, id_estudiante [FK], id_docente [FK]`,
+  asistencia_permisos: `GESTIÓN ASISTENCIA Y PERMISOS
+estudiante: documento (PK), clave_institucional, nombre_completo, grado_grupo
+superiores: documento (PK), clave_institucional, cargo, autoridad
+espacio: id_espacio (PK), bloque, zona_acceso, tipo_de_acceso, lugar
+asistencia: numero_registro (PK), fecha, estado, documento_estudiante [FK], documento_superior [FK]
+permisos: numero_permiso (PK), lugar_del_permiso, documento_estudiante [FK], documento_superior [FK], id_espacio [FK]`,
+  bazar: `BAZAR ESCOLAR
+usuario: id_usuario (PK), p_nombre, apellido, rol, telefono, correo
+puesto: id_puesto (PK), nombre, ubicacion, categoria, id_usuario [FK]
+producto: id_producto (PK), nombre, precio, descripcion, id_puesto [FK]
+compra: id_compra (PK), fecha, cantidad, id_producto [FK]
+venta: id_venta (PK), fecha_hora, id_puesto [FK]
+detalle_venta: id_detalle (PK), cantidad, precio_unitario, id_venta [FK], id_producto [FK]`
+};
+document.getElementById('proyecto').addEventListener('change', function(){
+  const ref = document.getElementById('refTabla');
+  const notaBazar = document.getElementById('notaBazar');
+  if(this.value && referencias[this.value]){
+    ref.textContent = referencias[this.value];
+    ref.style.display = 'block';
+  } else {
+    ref.style.display = 'none';
+  }
+  notaBazar.style.display = (this.value === 'bazar') ? 'block' : 'none';
+});
+
+// --- Activación remota (JSONP contra la pestaña Control de Apps Script) ---
+window.recibirEstadoControlT9 = function(estados){
+  const marcaEstado = (id, texto) => { const el=document.getElementById(id); if(el) el.textContent = texto; };
+  if(estados.Taller1 === 'ACTIVO'){
+    document.getElementById('candadoT1').style.display = 'none';
+  } else {
+    marcaEstado('estadoT1', 'Estado actual: bloqueado. Última consulta: ' + new Date().toLocaleTimeString('es-CO'));
+  }
+  if(estados.Taller2 === 'ACTIVO'){
+    document.getElementById('candadoT2').style.display = 'none';
+  } else {
+    marcaEstado('estadoT2', 'Estado actual: bloqueado. Última consulta: ' + new Date().toLocaleTimeString('es-CO'));
+  }
+};
+function sondearControl(){
+  if(!SHEETS_ACTION_URL || SHEETS_ACTION_URL.indexOf('PENDIENTE') !== -1) return;
+  const s = document.createElement('script');
+  s.src = SHEETS_ACTION_URL + '?accion=estado&callback=recibirEstadoControlT9&_=' + Date.now();
+  s.onload = () => s.remove();
+  s.onerror = () => s.remove();
+  document.body.appendChild(s);
+}
+sondearControl();
+setInterval(sondearControl, 6000);
+
+function recogerCampos(form){
+  const datos = {};
+  form.querySelectorAll('[data-field]').forEach(el=>{
+    if(el.type === 'checkbox'){ datos[el.dataset.field] = el.checked ? 'si' : 'no'; }
+    else { datos[el.dataset.field] = el.value || ''; }
+  });
+  return datos;
+}
+
+function armarInformeImprimible(titulo, datos){
+  let html = `<div style="font-family:sans-serif;padding:24px"><h2>${titulo}</h2>`;
+  html += `<p><strong>Fecha:</strong> ${new Date().toLocaleDateString('es-CO')}</p>`;
+  for(const k in datos){
+    html += `<p><strong>${k}:</strong> ${(datos[k]||'').toString().replace(/</g,'&lt;')}</p>`;
+  }
+  html += `</div>`;
+  return html;
+}
+
+function enviarYBloquear(formId, btnId, confId, tituloInforme, origen){
+  const form = document.getElementById(formId);
+  const btn = document.getElementById(btnId);
+  const conf = document.getElementById(confId);
+  btn.addEventListener('click', function(){
+    if(!confirm('¿Ya revisaron todo? Después de imprimir el taller queda bloqueado y no se puede editar.')) return;
+    const datos = recogerCampos(form);
+    datos.origen = origen;
+    if(SHEETS_ACTION_URL && SHEETS_ACTION_URL.indexOf('PENDIENTE')===-1){
+      fetch(SHEETS_ACTION_URL, {method:'POST', mode:'no-cors', headers:{'Content-Type':'text/plain'}, body: JSON.stringify(datos)});
+    }
+    const w = window.open('', '_blank');
+    w.document.write(armarInformeImprimible(tituloInforme, datos));
+    w.document.close();
+    w.print();
+    form.querySelectorAll('input,select,textarea,button').forEach(el=> el.disabled = true);
+    form.classList.add('bloqueado');
+    conf.style.display = 'block';
+  });
+}
+
+enviarYBloquear('form1','btnImprimir1','conf1','Clase 9 · Taller 1 · Caso asignado','taller1');
+enviarYBloquear('form2','btnImprimir2','conf2','Clase 9 · Taller 2 · Consultas de su proyecto','taller2');
+</script>
+</body>
+</html>
