@@ -347,7 +347,7 @@ ORDER BY tiempo_preparacion_minutos DESC;</div>
 </section>
 
   <section id="m3">
-  <div class="rot"><span class="hora">2:00 – 2:30</span><h2>ejercicio</h2></div>
+  <div class="rot"><span class="hora">2:00 – 2:30</span><h2>Ejercicio</h2></div>
   <h3>Realizaremos un ejercicio práctico</h3>
   <ul class="l">
    Copie el siguiente script en SQL de Myphp.
@@ -373,84 +373,143 @@ fecha_adquisicion DATE,
 estado VARCHAR(30) NOT NULL
 ;
 <br>
-<br>INSERT INTO equipo (id_equipo, nombre_equipo, marca, ubicacion, fecha_adquisicion, estado) VALUES (1, 'Aire acondicionado SKF 101', 'SKF', 'Subestación eléctrica', '2022-09-28', 'Activo');
-<br>INSERT INTO equipo (id_equipo, nombre_equipo, marca, ubicacion, fecha_adquisicion, estado) VALUES (2, 'Montacargas Ingersoll Rand 102', 'Ingersoll Rand', 'Subestación eléctrica', '2024-03-04', 'Activo');
-<br>INSERT INTO equipo (id_equipo, nombre_equipo, marca, ubicacion, fecha_adquisicion, estado) VALUES (3, 'Caldera Ingersoll Rand 103', 'Ingersoll Rand', 'Planta 1 - Nave B', '2023-12-21', 'Activo');
-<br>INSERT INTO equipo (id_equipo, nombre_equipo, marca, ubicacion, fecha_adquisicion, estado) VALUES (4, 'Soldadora Bosch 104', 'Bosch', 'Subestación eléctrica', '2024-11-06', 'Activo');
-<br>INSERT INTO equipo (id_equipo, nombre_equipo, marca, ubicacion, fecha_adquisicion, estado) VALUES (5, 'Compresor SKF 105', 'SKF', 'Planta 1 - Nave B', '2015-01-07', 'En reparación');
-<br>INSERT INTO equipo (id_equipo, nombre_equipo, marca, ubicacion, fecha_adquisicion, estado) VALUES (6, 'Soldadora Siemens 106', 'Siemens', 'Subestación eléctrica', '2020-08-19', 'En reparación');
-<br>INSERT INTO equipo (id_equipo, nombre_equipo, marca, ubicacion, fecha_adquisicion, estado) VALUES (7, 'Generador eléctrico Grundfos 107', 'Grundfos', 'Taller de mantenimiento', '2022-01-22', 'Activo');
-<br>INSERT INTO equipo (id_equipo, nombre_equipo, marca, ubicacion, fecha_adquisicion, estado) VALUES (8, 'Aire acondicionado Caterpillar 108', 'Caterpillar', 'Zona de carga', '2023-02-23', 'Fuera de servicio');
-<br>INSERT INTO equipo (id_equipo, nombre_equipo, marca, ubicacion, fecha_adquisicion, estado) VALUES (9, 'Torno Grundfos 109', 'Grundfos', 'Taller de mantenimiento', '2015-02-19', 'Activo');
-<br>INSERT INTO equipo (id_equipo, nombre_equipo, marca, ubicacion, fecha_adquisicion, estado) VALUES (10, 'Cinta transportadora ABB 110', 'ABB', 'Taller de mantenimiento', '2021-02-01', 'Activo');
-<br>INSERT INTO equipo (id_equipo, nombre_equipo, marca, ubicacion, fecha_adquisicion, estado) VALUES (11, 'Montacargas Grundfos 111', 'Grundfos', 'Planta 1 - Nave A', '2022-07-23', 'Activo');
-<br>INSERT INTO equipo (id_equipo, nombre_equipo, marca, ubicacion, fecha_adquisicion, estado) VALUES (12, 'Cinta transportadora ABB 112', 'ABB', 'Planta 2 - Bodega', '2019-06-03', 'Fuera de servicio');
-<br>INSERT INTO equipo (id_equipo, nombre_equipo, marca, ubicacion, fecha_adquisicion, estado) VALUES (13, 'Torno Siemens 113', 'Siemens', 'Zona de carga', '2016-03-08', 'Activo');
-<br>INSERT INTO equipo (id_equipo, nombre_equipo, marca, ubicacion, fecha_adquisicion, estado) VALUES (14, 'Compresor Siemens 114', 'Siemens', 'Subestación eléctrica', '2022-03-22', 'Activo');
-<br>INSERT INTO equipo (id_equipo, nombre_equipo, marca, ubicacion, fecha_adquisicion, estado) VALUES (15, 'Montacargas Schneider Electric 115', 'Schneider Electric', 'Planta 2 - Bodega', '2017-07-21', 'Activo');
-<br>INSERT INTO equipo (id_equipo, nombre_equipo, marca, ubicacion, fecha_adquisicion, estado) VALUES (16, 'Motor eléctrico Bosch 116', 'Bosch', 'Zona de carga', '2018-01-09', 'Activo');
-<br>INSERT INTO equipo (id_equipo, nombre_equipo, marca, ubicacion, fecha_adquisicion, estado) VALUES (17, 'Caldera Siemens 117', 'Siemens', 'Planta 2 - Bodega', '2017-07-28', 'Activo');
-<br>INSERT INTO equipo (id_equipo, nombre_equipo, marca, ubicacion, fecha_adquisicion, estado) VALUES (18, 'Soldadora ABB 118', 'ABB', 'Planta 1 - Nave A', '2017-04-15', 'Fuera de servicio');
-<br>INSERT INTO equipo (id_equipo, nombre_equipo, marca, ubicacion, fecha_adquisicion, estado) VALUES (19, 'Compresor Weg 119', 'Weg', 'Cuarto de máquinas', '2019-07-03', 'Activo');
-<br>INSERT INTO equipo (id_equipo, nombre_equipo, marca, ubicacion, fecha_adquisicion, estado) VALUES (20, 'Motor eléctrico Grundfos 120', 'Grundfos', 'Planta 2 - Bodega', '2015-10-12', 'Fuera de servicio');
+INSERT INTO equipo (id_equipo, nombre_equipo, marca, ubicacion, fecha_adquisicion, estado) 
+    VALUES (1, 'Aire acondicionado SKF 101', 'SKF', 'Subestación eléctrica', '2022-09-28', 'Activo');
+INSERT INTO equipo (id_equipo, nombre_equipo, marca, ubicacion, fecha_adquisicion, estado) 
+    VALUES (2, 'Montacargas Ingersoll Rand 102', 'Ingersoll Rand', 'Subestación eléctrica', '2024-03-04', 'Activo');
+INSERT INTO equipo (id_equipo, nombre_equipo, marca, ubicacion, fecha_adquisicion, estado) 
+    VALUES (3, 'Caldera Ingersoll Rand 103', 'Ingersoll Rand', 'Planta 1 - Nave B', '2023-12-21', 'Activo');
+INSERT INTO equipo (id_equipo, nombre_equipo, marca, ubicacion, fecha_adquisicion, estado) 
+    VALUES (4, 'Soldadora Bosch 104', 'Bosch', 'Subestación eléctrica', '2024-11-06', 'Activo');
+INSERT INTO equipo (id_equipo, nombre_equipo, marca, ubicacion, fecha_adquisicion, estado) 
+    VALUES (5, 'Compresor SKF 105', 'SKF', 'Planta 1 - Nave B', '2015-01-07', 'En reparación');
+INSERT INTO equipo (id_equipo, nombre_equipo, marca, ubicacion, fecha_adquisicion, estado) 
+    VALUES (6, 'Soldadora Siemens 106', 'Siemens', 'Subestación eléctrica', '2020-08-19', 'En reparación');
+INSERT INTO equipo (id_equipo, nombre_equipo, marca, ubicacion, fecha_adquisicion, estado) 
+    VALUES (7, 'Generador eléctrico Grundfos 107', 'Grundfos', 'Taller de mantenimiento', '2022-01-22', 'Activo');
+INSERT INTO equipo (id_equipo, nombre_equipo, marca, ubicacion, fecha_adquisicion, estado) 
+    VALUES (8, 'Aire acondicionado Caterpillar 108', 'Caterpillar', 'Zona de carga', '2023-02-23', 'Fuera de servicio');
+INSERT INTO equipo (id_equipo, nombre_equipo, marca, ubicacion, fecha_adquisicion, estado) 
+    VALUES (9, 'Torno Grundfos 109', 'Grundfos', 'Taller de mantenimiento', '2015-02-19', 'Activo');
+INSERT INTO equipo (id_equipo, nombre_equipo, marca, ubicacion, fecha_adquisicion, estado) 
+    VALUES (10, 'Cinta transportadora ABB 110', 'ABB', 'Taller de mantenimiento', '2021-02-01', 'Activo');
+INSERT INTO equipo (id_equipo, nombre_equipo, marca, ubicacion, fecha_adquisicion, estado) 
+    VALUES (11, 'Montacargas Grundfos 111', 'Grundfos', 'Planta 1 - Nave A', '2022-07-23', 'Activo');
+INSERT INTO equipo (id_equipo, nombre_equipo, marca, ubicacion, fecha_adquisicion, estado) 
+    VALUES (12, 'Cinta transportadora ABB 112', 'ABB', 'Planta 2 - Bodega', '2019-06-03', 'Fuera de servicio');
+INSERT INTO equipo (id_equipo, nombre_equipo, marca, ubicacion, fecha_adquisicion, estado) 
+    VALUES (13, 'Torno Siemens 113', 'Siemens', 'Zona de carga', '2016-03-08', 'Activo');
+INSERT INTO equipo (id_equipo, nombre_equipo, marca, ubicacion, fecha_adquisicion, estado) 
+    VALUES (14, 'Compresor Siemens 114', 'Siemens', 'Subestación eléctrica', '2022-03-22', 'Activo');
+INSERT INTO equipo (id_equipo, nombre_equipo, marca, ubicacion, fecha_adquisicion, estado) 
+    VALUES (15, 'Montacargas Schneider Electric 115', 'Schneider Electric', 'Planta 2 - Bodega', '2017-07-21', 'Activo');
+INSERT INTO equipo (id_equipo, nombre_equipo, marca, ubicacion, fecha_adquisicion, estado) 
+    VALUES (16, 'Motor eléctrico Bosch 116', 'Bosch', 'Zona de carga', '2018-01-09', 'Activo');
+INSERT INTO equipo (id_equipo, nombre_equipo, marca, ubicacion, fecha_adquisicion, estado) 
+    VALUES (17, 'Caldera Siemens 117', 'Siemens', 'Planta 2 - Bodega', '2017-07-28', 'Activo');
+INSERT INTO equipo (id_equipo, nombre_equipo, marca, ubicacion, fecha_adquisicion, estado) 
+    VALUES (18, 'Soldadora ABB 118', 'ABB', 'Planta 1 - Nave A', '2017-04-15', 'Fuera de servicio');
+INSERT INTO equipo (id_equipo, nombre_equipo, marca, ubicacion, fecha_adquisicion, estado) 
+    VALUES (19, 'Compresor Weg 119', 'Weg', 'Cuarto de máquinas', '2019-07-03', 'Activo');
+INSERT INTO equipo (id_equipo, nombre_equipo, marca, ubicacion, fecha_adquisicion, estado) 
+    VALUES (20, 'Motor eléctrico Grundfos 120', 'Grundfos', 'Planta 2 - Bodega', '2015-10-12', 'Fuera de servicio');
 <br>
-<br>CREATE TABLE tecnico (
- <br> id_tecnico INT AUTO_INCREMENT PRIMARY KEY,
- <br> nombres VARCHAR(60) NOT NULL,
-<br>apellidos VARCHAR(60) NOT NULL,
-  <br>especialidad VARCHAR(60),
-  <br>telefono VARCHAR(20)
-<br>);
+CREATE TABLE tecnico (
+id_tecnico INT AUTO_INCREMENT PRIMARY KEY,
+nombres VARCHAR(60) NOT NULL,
+apellidos VARCHAR(60) NOT NULL,
+especialidad VARCHAR(60),
+telefono VARCHAR(20)
+);
 <br>
-<br>INSERT INTO tecnico (id_tecnico, nombres, apellidos, especialidad, telefono) VALUES (1, 'Paula', 'Correa', 'Electricidad industrial', '3273277304');
-<br>INSERT INTO tecnico (id_tecnico, nombres, apellidos, especialidad, telefono) VALUES (2, 'Santiago', 'Pérez', 'Refrigeración', '3044831637');
-<br>INSERT INTO tecnico (id_tecnico, nombres, apellidos, especialidad, telefono) VALUES (3, 'Paula', 'Torres', 'Refrigeración', '3024298229');
-<br>INSERT INTO tecnico (id_tecnico, nombres, apellidos, especialidad, telefono) VALUES (4, 'Santiago', 'Giraldo', 'Soldadura', '3061795266');
-<br>INSERT INTO tecnico (id_tecnico, nombres, apellidos, especialidad, telefono) VALUES (5, 'Laura', 'López', 'Mecánica industrial', '3244999808');
-<br>INSERT INTO tecnico (id_tecnico, nombres, apellidos, especialidad, telefono) VALUES (6, 'Santiago', 'Flórez', 'Hidráulica y neumática', '3275923028');
-<br>INSERT INTO tecnico (id_tecnico, nombres, apellidos, especialidad, telefono) VALUES (7, 'Nicolás', 'Pérez', 'Refrigeración', '3024831854');
-<br>INSERT INTO tecnico (id_tecnico, nombres, apellidos, especialidad, telefono) VALUES (8, 'Sara', 'Cardona', 'Refrigeración', '3292243864');
-<br>INSERT INTO tecnico (id_tecnico, nombres, apellidos, especialidad, telefono) VALUES (9, 'Diego', 'Ramírez', 'Electricidad industrial', '3202160217');
-<br>INSERT INTO tecnico (id_tecnico, nombres, apellidos, especialidad, telefono) VALUES (10, 'Diego', 'Zapata', 'Hidráulica y neumática', '3001781787');
-<br>INSERT INTO tecnico (id_tecnico, nombres, apellidos, especialidad, telefono) VALUES (11, 'Camila', 'Vargas', 'Instrumentación', '3293207521');
-<br>INSERT INTO tecnico (id_tecnico, nombres, apellidos, especialidad, telefono) VALUES (12, 'Andrés', 'Muñoz', 'Electricidad industrial', '3159756682');
-<br>INSERT INTO tecnico (id_tecnico, nombres, apellidos, especialidad, telefono) VALUES (13, 'David', 'García', 'Soldadura', '3008965702');
-<br>INSERT INTO tecnico (id_tecnico, nombres, apellidos, especialidad, telefono) VALUES (14, 'Daniela', 'Vargas', 'Mecánica industrial', '3092255500');
-<br>INSERT INTO tecnico (id_tecnico, nombres, apellidos, especialidad, telefono) VALUES (15, 'Sara', 'Martínez', 'Refrigeración', '3153291865');
-<br>INSERT INTO tecnico (id_tecnico, nombres, apellidos, especialidad, telefono) VALUES (16, 'Andrés', 'Martínez', 'Hidráulica y neumática', '3251745997');
-<br>INSERT INTO tecnico (id_tecnico, nombres, apellidos, especialidad, telefono) VALUES (17, 'Julián', 'Castaño', 'Instrumentación', '3072303074');
-<br>INSERT INTO tecnico (id_tecnico, nombres, apellidos, especialidad, telefono) VALUES (18, 'Isabella', 'Gómez', 'Hidráulica y neumática', '3207414492');
-<br>INSERT INTO tecnico (id_tecnico, nombres, apellidos, especialidad, telefono) VALUES (19, 'Santiago', 'Arias', 'Mecánica industrial', '3212345566');
-<br>INSERT INTO tecnico (id_tecnico, nombres, apellidos, especialidad, telefono) VALUES (20, 'Andrés', 'López', 'Instrumentación', '3157516880');
+INSERT INTO tecnico (id_tecnico, nombres, apellidos, especialidad, telefono) 
+    VALUES (1, 'Paula', 'Correa', 'Electricidad industrial', '3273277304');
+INSERT INTO tecnico (id_tecnico, nombres, apellidos, especialidad, telefono) 
+    VALUES (2, 'Santiago', 'Pérez', 'Refrigeración', '3044831637');
+INSERT INTO tecnico (id_tecnico, nombres, apellidos, especialidad, telefono) 
+    VALUES (3, 'Paula', 'Torres', 'Refrigeración', '3024298229');
+INSERT INTO tecnico (id_tecnico, nombres, apellidos, especialidad, telefono) 
+    VALUES (4, 'Santiago', 'Giraldo', 'Soldadura', '3061795266');
+INSERT INTO tecnico (id_tecnico, nombres, apellidos, especialidad, telefono) 
+    VALUES (5, 'Laura', 'López', 'Mecánica industrial', '3244999808');
+INSERT INTO tecnico (id_tecnico, nombres, apellidos, especialidad, telefono) 
+    VALUES (6, 'Santiago', 'Flórez', 'Hidráulica y neumática', '3275923028');
+INSERT INTO tecnico (id_tecnico, nombres, apellidos, especialidad, telefono) 
+    VALUES (7, 'Nicolás', 'Pérez', 'Refrigeración', '3024831854');
+INSERT INTO tecnico (id_tecnico, nombres, apellidos, especialidad, telefono) 
+    VALUES (8, 'Sara', 'Cardona', 'Refrigeración', '3292243864');
+INSERT INTO tecnico (id_tecnico, nombres, apellidos, especialidad, telefono) 
+    VALUES (9, 'Diego', 'Ramírez', 'Electricidad industrial', '3202160217');
+INSERT INTO tecnico (id_tecnico, nombres, apellidos, especialidad, telefono) 
+    VALUES (10, 'Diego', 'Zapata', 'Hidráulica y neumática', '3001781787');
+INSERT INTO tecnico (id_tecnico, nombres, apellidos, especialidad, telefono) 
+    VALUES (11, 'Camila', 'Vargas', 'Instrumentación', '3293207521');
+INSERT INTO tecnico (id_tecnico, nombres, apellidos, especialidad, telefono) 
+    VALUES (12, 'Andrés', 'Muñoz', 'Electricidad industrial', '3159756682');
+INSERT INTO tecnico (id_tecnico, nombres, apellidos, especialidad, telefono) 
+    VALUES (13, 'David', 'García', 'Soldadura', '3008965702');
+INSERT INTO tecnico (id_tecnico, nombres, apellidos, especialidad, telefono) 
+    VALUES (14, 'Daniela', 'Vargas', 'Mecánica industrial', '3092255500');
+INSERT INTO tecnico (id_tecnico, nombres, apellidos, especialidad, telefono) 
+    VALUES (15, 'Sara', 'Martínez', 'Refrigeración', '3153291865');
+INSERT INTO tecnico (id_tecnico, nombres, apellidos, especialidad, telefono) 
+    VALUES (16, 'Andrés', 'Martínez', 'Hidráulica y neumática', '3251745997');
+INSERT INTO tecnico (id_tecnico, nombres, apellidos, especialidad, telefono) 
+    VALUES (17, 'Julián', 'Castaño', 'Instrumentación', '3072303074');
+INSERT INTO tecnico (id_tecnico, nombres, apellidos, especialidad, telefono) 
+    VALUES (18, 'Isabella', 'Gómez', 'Hidráulica y neumática', '3207414492');
+INSERT INTO tecnico (id_tecnico, nombres, apellidos, especialidad, telefono) 
+    VALUES (19, 'Santiago', 'Arias', 'Mecánica industrial', '3212345566');
+INSERT INTO tecnico (id_tecnico, nombres, apellidos, especialidad, telefono)
+    VALUES (20, 'Andrés', 'López', 'Instrumentación', '3157516880');
 <br>
-<br>CREATE TABLE tipo_mantenimiento (
-<br>  id_tipo INT AUTO_INCREMENT PRIMARY KEY,
-<br>  nombre_tipo VARCHAR(60) NOT NULL,
-<br>  descripcion VARCHAR(150),
-<br>  periodicidad_dias INT NOT NULL
-<br>);
+CREATE TABLE tipo_mantenimiento (
+  id_tipo INT AUTO_INCREMENT PRIMARY KEY,
+  nombre_tipo VARCHAR(60) NOT NULL,
+  descripcion VARCHAR(150),
+  periodicidad_dias INT NOT NULL
+);
 <br>
-<br>INSERT INTO tipo_mantenimiento (id_tipo, nombre_tipo, descripcion, periodicidad_dias) VALUES (1, 'Lubricación', 'Cambio o reposición de lubricantes en partes móviles', 30);
-<br>INSERT INTO tipo_mantenimiento (id_tipo, nombre_tipo, descripcion, periodicidad_dias) VALUES (2, 'Inspección visual', 'Revisión general de condiciones externas y de seguridad', 15);
-<br>INSERT INTO tipo_mantenimiento (id_tipo, nombre_tipo, descripcion, periodicidad_dias) VALUES (3, 'Calibración', 'Ajuste de parámetros de operación según ficha técnica', 90);
-<br>INSERT INTO tipo_mantenimiento (id_tipo, nombre_tipo, descripcion, periodicidad_dias) VALUES (4, 'Cambio de filtros', 'Reemplazo de filtros de aire, aceite o agua', 60);
-<br>INSERT INTO tipo_mantenimiento (id_tipo, nombre_tipo, descripcion, periodicidad_dias) VALUES (5, 'Revisión eléctrica', 'Verificación de conexiones, aislamiento y consumo', 120);
-<br>INSERT INTO tipo_mantenimiento (id_tipo, nombre_tipo, descripcion, periodicidad_dias) VALUES (6, 'Overhaul', 'Reconstrucción mayor de componentes internos', 365);
-<br>INSERT INTO tipo_mantenimiento (id_tipo, nombre_tipo, descripcion, periodicidad_dias) VALUES (7, 'Lubricación (variante 2)', 'Cambio o reposición de lubricantes en partes móviles', 60);
-<br>INSERT INTO tipo_mantenimiento (id_tipo, nombre_tipo, descripcion, periodicidad_dias) VALUES (8, 'Inspección visual (variante 2)', 'Revisión general de condiciones externas y de seguridad', 45);
-<br>INSERT INTO tipo_mantenimiento (id_tipo, nombre_tipo, descripcion, periodicidad_dias) VALUES (9, 'Calibración (variante 2)', 'Ajuste de parámetros de operación según ficha técnica', 120);
-<br>INSERT INTO tipo_mantenimiento (id_tipo, nombre_tipo, descripcion, periodicidad_dias) VALUES (10, 'Cambio de filtros (variante 2)', 'Reemplazo de filtros de aire, aceite o agua', 45);
-<br>INSERT INTO tipo_mantenimiento (id_tipo, nombre_tipo, descripcion, periodicidad_dias) VALUES (11, 'Revisión eléctrica (variante 2)', 'Verificación de conexiones, aislamiento y consumo', 105);
-<br>INSERT INTO tipo_mantenimiento (id_tipo, nombre_tipo, descripcion, periodicidad_dias) VALUES (12, 'Overhaul (variante 2)', 'Reconstrucción mayor de componentes internos', 380);
-<br>INSERT INTO tipo_mantenimiento (id_tipo, nombre_tipo, descripcion, periodicidad_dias) VALUES (13, 'Lubricación (variante 3)', 'Cambio o reposición de lubricantes en partes móviles', 15);
-<br>INSERT INTO tipo_mantenimiento (id_tipo, nombre_tipo, descripcion, periodicidad_dias) VALUES (14, 'Inspección visual (variante 3)', 'Revisión general de condiciones externas y de seguridad', 45);
-<br>INSERT INTO tipo_mantenimiento (id_tipo, nombre_tipo, descripcion, periodicidad_dias) VALUES (15, 'Calibración (variante 3)', 'Ajuste de parámetros de operación según ficha técnica', 75);
-<br>INSERT INTO tipo_mantenimiento (id_tipo, nombre_tipo, descripcion, periodicidad_dias) VALUES (16, 'Cambio de filtros (variante 3)', 'Reemplazo de filtros de aire, aceite o agua', 60);
-<br>INSERT INTO tipo_mantenimiento (id_tipo, nombre_tipo, descripcion, periodicidad_dias) VALUES (17, 'Revisión eléctrica (variante 3)', 'Verificación de conexiones, aislamiento y consumo', 105);
-<br>INSERT INTO tipo_mantenimiento (id_tipo, nombre_tipo, descripcion, periodicidad_dias) VALUES (18, 'Overhaul (variante 3)', 'Reconstrucción mayor de componentes internos', 395);
-<br>INSERT INTO tipo_mantenimiento (id_tipo, nombre_tipo, descripcion, periodicidad_dias) VALUES (19, 'Lubricación (variante 4)', 'Cambio o reposición de lubricantes en partes móviles', 60);
-<br>INSERT INTO tipo_mantenimiento (id_tipo, nombre_tipo, descripcion, periodicidad_dias) VALUES (20, 'Inspección visual (variante 4)', 'Revisión general de condiciones externas y de seguridad', 30);
-<br>
+INSERT INTO tipo_mantenimiento (id_tipo, nombre_tipo, descripcion, periodicidad_dias) 
+    VALUES (1, 'Lubricación', 'Cambio o reposición de lubricantes en partes móviles', 30);
+INSERT INTO tipo_mantenimiento (id_tipo, nombre_tipo, descripcion, periodicidad_dias)
+    VALUES (2, 'Inspección visual', 'Revisión general de condiciones externas y de seguridad', 15);
+INSERT INTO tipo_mantenimiento (id_tipo, nombre_tipo, descripcion, periodicidad_dias) 
+    VALUES (3, 'Calibración', 'Ajuste de parámetros de operación según ficha técnica', 90);
+INSERT INTO tipo_mantenimiento (id_tipo, nombre_tipo, descripcion, periodicidad_dias) 
+    VALUES (4, 'Cambio de filtros', 'Reemplazo de filtros de aire, aceite o agua', 60);
+INSERT INTO tipo_mantenimiento (id_tipo, nombre_tipo, descripcion, periodicidad_dias) 
+    VALUES (5, 'Revisión eléctrica', 'Verificación de conexiones, aislamiento y consumo', 120);
+INSERT INTO tipo_mantenimiento (id_tipo, nombre_tipo, descripcion, periodicidad_dias) 
+    VALUES (6, 'Overhaul', 'Reconstrucción mayor de componentes internos', 365);
+INSERT INTO tipo_mantenimiento (id_tipo, nombre_tipo, descripcion, periodicidad_dias) 
+    VALUES (7, 'Lubricación (variante 2)', 'Cambio o reposición de lubricantes en partes móviles', 60);
+INSERT INTO tipo_mantenimiento (id_tipo, nombre_tipo, descripcion, periodicidad_dias) 
+    VALUES (8, 'Inspección visual (variante 2)', 'Revisión general de condiciones externas y de seguridad', 45);
+INSERT INTO tipo_mantenimiento (id_tipo, nombre_tipo, descripcion, periodicidad_dias) 
+    VALUES (9, 'Calibración (variante 2)', 'Ajuste de parámetros de operación según ficha técnica', 120);
+INSERT INTO tipo_mantenimiento (id_tipo, nombre_tipo, descripcion, periodicidad_dias) 
+    VALUES (10, 'Cambio de filtros (variante 2)', 'Reemplazo de filtros de aire, aceite o agua', 45);
+INSERT INTO tipo_mantenimiento (id_tipo, nombre_tipo, descripcion, periodicidad_dias) 
+    VALUES (11, 'Revisión eléctrica (variante 2)', 'Verificación de conexiones, aislamiento y consumo', 105);
+INSERT INTO tipo_mantenimiento (id_tipo, nombre_tipo, descripcion, periodicidad_dias) 
+    VALUES (12, 'Overhaul (variante 2)', 'Reconstrucción mayor de componentes internos', 380);
+INSERT INTO tipo_mantenimiento (id_tipo, nombre_tipo, descripcion, periodicidad_dias) 
+    VALUES (13, 'Lubricación (variante 3)', 'Cambio o reposición de lubricantes en partes móviles', 15);
+INSERT INTO tipo_mantenimiento (id_tipo, nombre_tipo, descripcion, periodicidad_dias) 
+    VALUES (14, 'Inspección visual (variante 3)', 'Revisión general de condiciones externas y de seguridad', 45);
+INSERT INTO tipo_mantenimiento (id_tipo, nombre_tipo, descripcion, periodicidad_dias) 
+    VALUES (15, 'Calibración (variante 3)', 'Ajuste de parámetros de operación según ficha técnica', 75);
+INSERT INTO tipo_mantenimiento (id_tipo, nombre_tipo, descripcion, periodicidad_dias) 
+    VALUES (16, 'Cambio de filtros (variante 3)', 'Reemplazo de filtros de aire, aceite o agua', 60);
+INSERT INTO tipo_mantenimiento (id_tipo, nombre_tipo, descripcion, periodicidad_dias) 
+    VALUES (17, 'Revisión eléctrica (variante 3)', 'Verificación de conexiones, aislamiento y consumo', 105);
+INSERT INTO tipo_mantenimiento (id_tipo, nombre_tipo, descripcion, periodicidad_dias) 
+    VALUES (18, 'Overhaul (variante 3)', 'Reconstrucción mayor de componentes internos', 395);
+INSERT INTO tipo_mantenimiento (id_tipo, nombre_tipo, descripcion, periodicidad_dias)
+    VALUES (19, 'Lubricación (variante 4)', 'Cambio o reposición de lubricantes en partes móviles', 60);
+INSERT INTO tipo_mantenimiento (id_tipo, nombre_tipo, descripcion, periodicidad_dias) 
+    VALUES (20, 'Inspección visual (variante 4)', 'Revisión general de condiciones externas y de seguridad', 30);
 <br>
 <br>CREATE TABLE plan_mantenimiento (
 <br>  id_plan INT AUTO_INCREMENT PRIMARY KEY,
@@ -462,89 +521,149 @@ estado VARCHAR(30) NOT NULL
 <br>  FOREIGN KEY (id_tipo) REFERENCES tipo_mantenimiento(id_tipo)
 <br>);
 <br>
-<br>INSERT INTO plan_mantenimiento (id_plan, id_equipo, id_tipo, fecha_programada, estado) VALUES (1, 1, 12, '2026-03-22', 'Ejecutado');
-<br>INSERT INTO plan_mantenimiento (id_plan, id_equipo, id_tipo, fecha_programada, estado) VALUES (2, 17, 6, '2026-11-15', 'Vencido');
-<br>INSERT INTO plan_mantenimiento (id_plan, id_equipo, id_tipo, fecha_programada, estado) VALUES (3, 8, 11, '2026-11-09', 'Ejecutado');
-<br>INSERT INTO plan_mantenimiento (id_plan, id_equipo, id_tipo, fecha_programada, estado) VALUES (4, 14, 7, '2026-07-08', 'Reprogramado');
-<br>INSERT INTO plan_mantenimiento (id_plan, id_equipo, id_tipo, fecha_programada, estado) VALUES (5, 7, 5, '2026-08-12', 'Programado');
-<br>INSERT INTO plan_mantenimiento (id_plan, id_equipo, id_tipo, fecha_programada, estado) VALUES (6, 3, 9, '2026-02-15', 'Vencido');
-<br>INSERT INTO plan_mantenimiento (id_plan, id_equipo, id_tipo, fecha_programada, estado) VALUES (7, 9, 7, '2026-07-21', 'Vencido');
-<br>INSERT INTO plan_mantenimiento (id_plan, id_equipo, id_tipo, fecha_programada, estado) VALUES (8, 11, 20, '2026-06-03', 'Programado');
-<br>INSERT INTO plan_mantenimiento (id_plan, id_equipo, id_tipo, fecha_programada, estado) VALUES (9, 9, 20, '2026-11-23', 'Reprogramado');
-<br>INSERT INTO plan_mantenimiento (id_plan, id_equipo, id_tipo, fecha_programada, estado) VALUES (10, 19, 12, '2026-11-26', 'Programado');
-<br>INSERT INTO plan_mantenimiento (id_plan, id_equipo, id_tipo, fecha_programada, estado) VALUES (11, 5, 13, '2026-04-01', 'Reprogramado');
-<br>INSERT INTO plan_mantenimiento (id_plan, id_equipo, id_tipo, fecha_programada, estado) VALUES (12, 8, 5, '2026-11-04', 'Vencido');
-<br>INSERT INTO plan_mantenimiento (id_plan, id_equipo, id_tipo, fecha_programada, estado) VALUES (13, 4, 18, '2026-02-22', 'Ejecutado');
-<br>INSERT INTO plan_mantenimiento (id_plan, id_equipo, id_tipo, fecha_programada, estado) VALUES (14, 7, 16, '2026-03-23', 'Programado');
-<br>INSERT INTO plan_mantenimiento (id_plan, id_equipo, id_tipo, fecha_programada, estado) VALUES (15, 16, 18, '2026-03-08', 'Reprogramado');
-<br>INSERT INTO plan_mantenimiento (id_plan, id_equipo, id_tipo, fecha_programada, estado) VALUES (16, 12, 18, '2026-07-28', 'Ejecutado');
-<br>INSERT INTO plan_mantenimiento (id_plan, id_equipo, id_tipo, fecha_programada, estado) VALUES (17, 3, 14, '2026-03-15', 'Vencido');
-<br>INSERT INTO plan_mantenimiento (id_plan, id_equipo, id_tipo, fecha_programada, estado) VALUES (18, 7, 1, '2026-09-19', 'Reprogramado');
-<br>INSERT INTO plan_mantenimiento (id_plan, id_equipo, id_tipo, fecha_programada, estado) VALUES (19, 15, 11, '2026-02-24', 'Programado');
-<br>INSERT INTO plan_mantenimiento (id_plan, id_equipo, id_tipo, fecha_programada, estado) VALUES (20, 7, 8, '2026-02-10', 'Reprogramado');
+INSERT INTO plan_mantenimiento (id_plan, id_equipo, id_tipo, fecha_programada, estado) 
+    VALUES (1, 1, 12, '2026-03-22', 'Ejecutado');
+INSERT INTO plan_mantenimiento (id_plan, id_equipo, id_tipo, fecha_programada, estado) 
+    VALUES (2, 17, 6, '2026-11-15', 'Vencido');
+INSERT INTO plan_mantenimiento (id_plan, id_equipo, id_tipo, fecha_programada, estado) 
+    VALUES (3, 8, 11, '2026-11-09', 'Ejecutado');
+INSERT INTO plan_mantenimiento (id_plan, id_equipo, id_tipo, fecha_programada, estado) 
+    VALUES (4, 14, 7, '2026-07-08', 'Reprogramado');
+INSERT INTO plan_mantenimiento (id_plan, id_equipo, id_tipo, fecha_programada, estado) 
+    VALUES (5, 7, 5, '2026-08-12', 'Programado');
+INSERT INTO plan_mantenimiento (id_plan, id_equipo, id_tipo, fecha_programada, estado)
+    VALUES (6, 3, 9, '2026-02-15', 'Vencido');
+INSERT INTO plan_mantenimiento (id_plan, id_equipo, id_tipo, fecha_programada, estado) 
+    VALUES (7, 9, 7, '2026-07-21', 'Vencido');
+INSERT INTO plan_mantenimiento (id_plan, id_equipo, id_tipo, fecha_programada, estado) 
+    VALUES (8, 11, 20, '2026-06-03', 'Programado');
+INSERT INTO plan_mantenimiento (id_plan, id_equipo, id_tipo, fecha_programada, estado) 
+    VALUES (9, 9, 20, '2026-11-23', 'Reprogramado');
+INSERT INTO plan_mantenimiento (id_plan, id_equipo, id_tipo, fecha_programada, estado) 
+    VALUES (10, 19, 12, '2026-11-26', 'Programado');
+INSERT INTO plan_mantenimiento (id_plan, id_equipo, id_tipo, fecha_programada, estado) 
+    VALUES (11, 5, 13, '2026-04-01', 'Reprogramado');
+INSERT INTO plan_mantenimiento (id_plan, id_equipo, id_tipo, fecha_programada, estado) 
+    VALUES (12, 8, 5, '2026-11-04', 'Vencido');
+INSERT INTO plan_mantenimiento (id_plan, id_equipo, id_tipo, fecha_programada, estado) 
+    VALUES (13, 4, 18, '2026-02-22', 'Ejecutado');
+INSERT INTO plan_mantenimiento (id_plan, id_equipo, id_tipo, fecha_programada, estado) 
+    VALUES (14, 7, 16, '2026-03-23', 'Programado');
+INSERT INTO plan_mantenimiento (id_plan, id_equipo, id_tipo, fecha_programada, estado) 
+    VALUES (15, 16, 18, '2026-03-08', 'Reprogramado');
+INSERT INTO plan_mantenimiento (id_plan, id_equipo, id_tipo, fecha_programada, estado) 
+    VALUES (16, 12, 18, '2026-07-28', 'Ejecutado');
+INSERT INTO plan_mantenimiento (id_plan, id_equipo, id_tipo, fecha_programada, estado) 
+    VALUES (17, 3, 14, '2026-03-15', 'Vencido');
+INSERT INTO plan_mantenimiento (id_plan, id_equipo, id_tipo, fecha_programada, estado) 
+    VALUES (18, 7, 1, '2026-09-19', 'Reprogramado');
+INSERT INTO plan_mantenimiento (id_plan, id_equipo, id_tipo, fecha_programada, estado) 
+    VALUES (19, 15, 11, '2026-02-24', 'Programado');
+INSERT INTO plan_mantenimiento (id_plan, id_equipo, id_tipo, fecha_programada, estado) 
+    VALUES (20, 7, 8, '2026-02-10', 'Reprogramado');
 <br>
-<br>CREATE TABLE orden_trabajo (
-<br>  id_orden INT AUTO_INCREMENT PRIMARY KEY,
-<br>  id_plan INT NOT NULL,
-<br>  id_tecnico INT NOT NULL,
-<br>  fecha_ejecucion DATE,
-<br>  horas_trabajadas DECIMAL(4,1),
-<br>  costo_repuestos DECIMAL(10,2),
-<br>  observaciones VARCHAR(150),
-<br>  FOREIGN KEY (id_plan) REFERENCES plan_mantenimiento(id_plan),
-<br>  FOREIGN KEY (id_tecnico) REFERENCES tecnico(id_tecnico)
-<br>);
+CREATE TABLE orden_trabajo (
+  id_orden INT AUTO_INCREMENT PRIMARY KEY,
+  id_plan INT NOT NULL,
+  id_tecnico INT NOT NULL,
+  fecha_ejecucion DATE,
+  horas_trabajadas DECIMAL(4,1),
+  costo_repuestos DECIMAL(10,2),
+  observaciones VARCHAR(150),
+  FOREIGN KEY (id_plan) REFERENCES plan_mantenimiento(id_plan),
+  FOREIGN KEY (id_tecnico) REFERENCES tecnico(id_tecnico)
+);
 
-<br>INSERT INTO orden_trabajo (id_orden, id_plan, id_tecnico, fecha_ejecucion, horas_trabajadas, costo_repuestos, observaciones) VALUES (1, 9, 1, '2026-09-03', 0.8, 290745.97, 'Equipo quedó operativo tras el ajuste.');
-<br>INSERT INTO orden_trabajo (id_orden, id_plan, id_tecnico, fecha_ejecucion, horas_trabajadas, costo_repuestos, observaciones) VALUES (2, 9, 16, '2026-04-26', 7.0, 364594.16, 'Se realizó el mantenimiento sin novedad.');
-<br>INSERT INTO orden_trabajo (id_orden, id_plan, id_tecnico, fecha_ejecucion, horas_trabajadas, costo_repuestos, observaciones) VALUES (3, 6, 18, '2026-11-26', 7.4, 399977.69, 'Se requiere repuesto adicional para próxima intervención.');
-<br>INSERT INTO orden_trabajo (id_orden, id_plan, id_tecnico, fecha_ejecucion, horas_trabajadas, costo_repuestos, observaciones) VALUES (4, 17, 15, '2026-10-23', 1.1, 188202.04, 'Se requiere repuesto adicional para próxima intervención.');
-<br>INSERT INTO orden_trabajo (id_orden, id_plan, id_tecnico, fecha_ejecucion, horas_trabajadas, costo_repuestos, observaciones) VALUES (5, 18, 10, '2026-09-17', 6.8, 475975.43, 'Se reemplazó pieza menor durante la intervención.');
-<br>INSERT INTO orden_trabajo (id_orden, id_plan, id_tecnico, fecha_ejecucion, horas_trabajadas, costo_repuestos, observaciones) VALUES (6, 13, 20, '2026-05-28', 1.6, 463005.22, 'Se reemplazó pieza menor durante la intervención.');
-<br>INSERT INTO orden_trabajo (id_orden, id_plan, id_tecnico, fecha_ejecucion, horas_trabajadas, costo_repuestos, observaciones) VALUES (7, 19, 16, '2026-07-18', 1.4, 4195.43, 'Equipo quedó operativo tras el ajuste.');
-<br>INSERT INTO orden_trabajo (id_orden, id_plan, id_tecnico, fecha_ejecucion, horas_trabajadas, costo_repuestos, observaciones) VALUES (8, 1, 18, '2026-09-13', 4.6, 840991.38, 'Se realizó el mantenimiento sin novedad.');
-<br>INSERT INTO orden_trabajo (id_orden, id_plan, id_tecnico, fecha_ejecucion, horas_trabajadas, costo_repuestos, observaciones) VALUES (9, 16, 3, '2026-02-18', 3.9, 782665.54, 'Equipo quedó operativo tras el ajuste.');
-<br>INSERT INTO orden_trabajo (id_orden, id_plan, id_tecnico, fecha_ejecucion, horas_trabajadas, costo_repuestos, observaciones) VALUES (10, 9, 8, '2026-08-05', 3.0, 765760.52, 'Equipo quedó operativo tras el ajuste.');
-<br>INSERT INTO orden_trabajo (id_orden, id_plan, id_tecnico, fecha_ejecucion, horas_trabajadas, costo_repuestos, observaciones) VALUES (11, 17, 11, '2026-04-14', 5.1, 786480.08, 'Se detectó desgaste leve, se recomienda seguimiento.');
-<br>INSERT INTO orden_trabajo (id_orden, id_plan, id_tecnico, fecha_ejecucion, horas_trabajadas, costo_repuestos, observaciones) VALUES (12, 1, 2, '2026-03-08', 0.6, 241468.87, 'Mantenimiento ejecutado dentro del tiempo estimado.');
-<br>INSERT INTO orden_trabajo (id_orden, id_plan, id_tecnico, fecha_ejecucion, horas_trabajadas, costo_repuestos, observaciones) VALUES (13, 12, 8, '2026-02-16', 6.0, 104365.84, 'Se requiere repuesto adicional para próxima intervención.');
-<br>INSERT INTO orden_trabajo (id_orden, id_plan, id_tecnico, fecha_ejecucion, horas_trabajadas, costo_repuestos, observaciones) VALUES (14, 20, 9, '2026-12-17', 7.1, 19762.51, 'Mantenimiento ejecutado dentro del tiempo estimado.');
-<br>INSERT INTO orden_trabajo (id_orden, id_plan, id_tecnico, fecha_ejecucion, horas_trabajadas, costo_repuestos, observaciones) VALUES (15, 14, 17, '2026-09-07', 7.0, 453904.05, 'Se detectó desgaste leve, se recomienda seguimiento.');
-<br>INSERT INTO orden_trabajo (id_orden, id_plan, id_tecnico, fecha_ejecucion, horas_trabajadas, costo_repuestos, observaciones) VALUES (16, 17, 7, '2026-04-24', 5.2, 295456.44, 'Se detectó desgaste leve, se recomienda seguimiento.');
-<br>INSERT INTO orden_trabajo (id_orden, id_plan, id_tecnico, fecha_ejecucion, horas_trabajadas, costo_repuestos, observaciones) VALUES (17, 11, 20, '2026-04-07', 6.3, 165360.65, 'Se realizó el mantenimiento sin novedad.');
-<br>INSERT INTO orden_trabajo (id_orden, id_plan, id_tecnico, fecha_ejecucion, horas_trabajadas, costo_repuestos, observaciones) VALUES (18, 5, 8, '2026-12-03', 2.4, 82463.49, 'Equipo quedó operativo tras el ajuste.');
-<br>INSERT INTO orden_trabajo (id_orden, id_plan, id_tecnico, fecha_ejecucion, horas_trabajadas, costo_repuestos, observaciones) VALUES (19, 18, 5, '2026-07-21', 5.6, 15094.87, 'Se detectó desgaste leve, se recomienda seguimiento.');
-<br>INSERT INTO orden_trabajo (id_orden, id_plan, id_tecnico, fecha_ejecucion, horas_trabajadas, costo_repuestos, observaciones) VALUES (20, 19, 12, '2026-02-23', 4.3, 644431.27, 'Se requiere repuesto adicional para próxima intervención.');
+INSERT INTO orden_trabajo (id_orden, id_plan, id_tecnico, fecha_ejecucion, horas_trabajadas, costo_repuestos, observaciones) 
+    VALUES (1, 9, 1, '2026-09-03', 0.8, 290745.97, 'Equipo quedó operativo tras el ajuste.');
+INSERT INTO orden_trabajo (id_orden, id_plan, id_tecnico, fecha_ejecucion, horas_trabajadas, costo_repuestos, observaciones) 
+    VALUES (2, 9, 16, '2026-04-26', 7.0, 364594.16, 'Se realizó el mantenimiento sin novedad.');
+INSERT INTO orden_trabajo (id_orden, id_plan, id_tecnico, fecha_ejecucion, horas_trabajadas, costo_repuestos, observaciones) 
+    VALUES (3, 6, 18, '2026-11-26', 7.4, 399977.69, 'Se requiere repuesto adicional para próxima intervención.');
+INSERT INTO orden_trabajo (id_orden, id_plan, id_tecnico, fecha_ejecucion, horas_trabajadas, costo_repuestos, observaciones) 
+    VALUES (4, 17, 15, '2026-10-23', 1.1, 188202.04, 'Se requiere repuesto adicional para próxima intervención.');
+INSERT INTO orden_trabajo (id_orden, id_plan, id_tecnico, fecha_ejecucion, horas_trabajadas, costo_repuestos, observaciones) 
+    VALUES (5, 18, 10, '2026-09-17', 6.8, 475975.43, 'Se reemplazó pieza menor durante la intervención.');
+INSERT INTO orden_trabajo (id_orden, id_plan, id_tecnico, fecha_ejecucion, horas_trabajadas, costo_repuestos, observaciones) 
+    VALUES (6, 13, 20, '2026-05-28', 1.6, 463005.22, 'Se reemplazó pieza menor durante la intervención.');
+INSERT INTO orden_trabajo (id_orden, id_plan, id_tecnico, fecha_ejecucion, horas_trabajadas, costo_repuestos, observaciones) 
+    VALUES (7, 19, 16, '2026-07-18', 1.4, 4195.43, 'Equipo quedó operativo tras el ajuste.');
+INSERT INTO orden_trabajo (id_orden, id_plan, id_tecnico, fecha_ejecucion, horas_trabajadas, costo_repuestos, observaciones) 
+    VALUES (8, 1, 18, '2026-09-13', 4.6, 840991.38, 'Se realizó el mantenimiento sin novedad.');
+INSERT INTO orden_trabajo (id_orden, id_plan, id_tecnico, fecha_ejecucion, horas_trabajadas, costo_repuestos, observaciones) 
+    VALUES (9, 16, 3, '2026-02-18', 3.9, 782665.54, 'Equipo quedó operativo tras el ajuste.');
+INSERT INTO orden_trabajo (id_orden, id_plan, id_tecnico, fecha_ejecucion, horas_trabajadas, costo_repuestos, observaciones) 
+    VALUES (10, 9, 8, '2026-08-05', 3.0, 765760.52, 'Equipo quedó operativo tras el ajuste.');
+INSERT INTO orden_trabajo (id_orden, id_plan, id_tecnico, fecha_ejecucion, horas_trabajadas, costo_repuestos, observaciones) 
+    VALUES (11, 17, 11, '2026-04-14', 5.1, 786480.08, 'Se detectó desgaste leve, se recomienda seguimiento.');
+INSERT INTO orden_trabajo (id_orden, id_plan, id_tecnico, fecha_ejecucion, horas_trabajadas, costo_repuestos, observaciones) 
+    VALUES (12, 1, 2, '2026-03-08', 0.6, 241468.87, 'Mantenimiento ejecutado dentro del tiempo estimado.');
+INSERT INTO orden_trabajo (id_orden, id_plan, id_tecnico, fecha_ejecucion, horas_trabajadas, costo_repuestos, observaciones) 
+    VALUES (13, 12, 8, '2026-02-16', 6.0, 104365.84, 'Se requiere repuesto adicional para próxima intervención.');
+INSERT INTO orden_trabajo (id_orden, id_plan, id_tecnico, fecha_ejecucion, horas_trabajadas, costo_repuestos, observaciones) 
+    VALUES (14, 20, 9, '2026-12-17', 7.1, 19762.51, 'Mantenimiento ejecutado dentro del tiempo estimado.');
+INSERT INTO orden_trabajo (id_orden, id_plan, id_tecnico, fecha_ejecucion, horas_trabajadas, costo_repuestos, observaciones) 
+    VALUES (15, 14, 17, '2026-09-07', 7.0, 453904.05, 'Se detectó desgaste leve, se recomienda seguimiento.');
+INSERT INTO orden_trabajo (id_orden, id_plan, id_tecnico, fecha_ejecucion, horas_trabajadas, costo_repuestos, observaciones) 
+    VALUES (16, 17, 7, '2026-04-24', 5.2, 295456.44, 'Se detectó desgaste leve, se recomienda seguimiento.');
+INSERT INTO orden_trabajo (id_orden, id_plan, id_tecnico, fecha_ejecucion, horas_trabajadas, costo_repuestos, observaciones) 
+    VALUES (17, 11, 20, '2026-04-07', 6.3, 165360.65, 'Se realizó el mantenimiento sin novedad.');
+INSERT INTO orden_trabajo (id_orden, id_plan, id_tecnico, fecha_ejecucion, horas_trabajadas, costo_repuestos, observaciones) 
+    VALUES (18, 5, 8, '2026-12-03', 2.4, 82463.49, 'Equipo quedó operativo tras el ajuste.');
+INSERT INTO orden_trabajo (id_orden, id_plan, id_tecnico, fecha_ejecucion, horas_trabajadas, costo_repuestos, observaciones) 
+    VALUES (19, 18, 5, '2026-07-21', 5.6, 15094.87, 'Se detectó desgaste leve, se recomienda seguimiento.');
+INSERT INTO orden_trabajo (id_orden, id_plan, id_tecnico, fecha_ejecucion, horas_trabajadas, costo_repuestos, observaciones) 
+    VALUES (20, 19, 12, '2026-02-23', 4.3, 644431.27, 'Se requiere repuesto adicional para próxima intervención.');
 <br>
-<br>CREATE TABLE repuesto (
-<br>  id_repuesto INT AUTO_INCREMENT PRIMARY KEY,
-<br>  nombre_repuesto VARCHAR(80) NOT NULL,
-<br>  categoria VARCHAR(50),
-<br>  cantidad_stock INT NOT NULL,
-<br>  stock_minimo INT NOT NULL,
-<br>  precio_unitario DECIMAL(10,2) NOT NULL
-<br>);
+CREATE TABLE repuesto (
+  id_repuesto INT AUTO_INCREMENT PRIMARY KEY,
+  nombre_repuesto VARCHAR(80) NOT NULL,
+  categoria VARCHAR(50),
+  cantidad_stock INT NOT NULL,
+  stock_minimo INT NOT NULL,
+  precio_unitario DECIMAL(10,2) NOT NULL
+);
 <br>
-<br>INSERT INTO repuesto (id_repuesto, nombre_repuesto, categoria, cantidad_stock, stock_minimo, precio_unitario) VALUES (1, 'Rodamiento 6205', 'Eléctrico', 18, 35, 50459.47);
-<br>INSERT INTO repuesto (id_repuesto, nombre_repuesto, categoria, cantidad_stock, stock_minimo, precio_unitario) VALUES (2, 'Correa en V A-42', 'Mecánico', 195, 40, 277173.46);
-<br>INSERT INTO repuesto (id_repuesto, nombre_repuesto, categoria, cantidad_stock, stock_minimo, precio_unitario) VALUES (3, 'Filtro de aceite', 'Consumible', 123, 14, 87738.3);
-<br>INSERT INTO repuesto (id_repuesto, nombre_repuesto, categoria, cantidad_stock, stock_minimo, precio_unitario) VALUES (4, 'Filtro de aire', 'Mecánico', 52, 16, 378575.79);
-<br>INSERT INTO repuesto (id_repuesto, nombre_repuesto, categoria, cantidad_stock, stock_minimo, precio_unitario) VALUES (5, 'Empaque de culata', 'Hidráulico', 172, 11, 262161.11);
-<br>INSERT INTO repuesto (id_repuesto, nombre_repuesto, categoria, cantidad_stock, stock_minimo, precio_unitario) VALUES (6, 'Sello mecánico', 'Eléctrico', 174, 34, 37689.73);
-<br>INSERT INTO repuesto (id_repuesto, nombre_repuesto, categoria, cantidad_stock, stock_minimo, precio_unitario) VALUES (7, 'Válvula de retención', 'Mecánico', 83, 30, 211731.06);
-<br>INSERT INTO repuesto (id_repuesto, nombre_repuesto, categoria, cantidad_stock, stock_minimo, precio_unitario) VALUES (8, 'Manguera hidráulica 1/2"', 'Consumible', 90, 32, 96908.06);
-<br>INSERT INTO repuesto (id_repuesto, nombre_repuesto, categoria, cantidad_stock, stock_minimo, precio_unitario) VALUES (9, 'Contactor 40A', 'Hidráulico', 3, 45, 316360.45);
-<br>INSERT INTO repuesto (id_repuesto, nombre_repuesto, categoria, cantidad_stock, stock_minimo, precio_unitario) VALUES (10, 'Fusible 20A', 'Eléctrico', 46, 31, 205916.09);
-<br>INSERT INTO repuesto (id_repuesto, nombre_repuesto, categoria, cantidad_stock, stock_minimo, precio_unitario) VALUES (11, 'Termostato industrial', 'Hidráulico', 103, 17, 273377.9);
-<br>INSERT INTO repuesto (id_repuesto, nombre_repuesto, categoria, cantidad_stock, stock_minimo, precio_unitario) VALUES (12, 'Bomba de engranajes', 'Mecánico', 131, 5, 147692.43);
-<br>INSERT INTO repuesto (id_repuesto, nombre_repuesto, categoria, cantidad_stock, stock_minimo, precio_unitario) VALUES (13, 'Cable eléctrico THHN 12 AWG', 'Mecánico', 180, 45, 422995.2);
-<br>INSERT INTO repuesto (id_repuesto, nombre_repuesto, categoria, cantidad_stock, stock_minimo, precio_unitario) VALUES (14, 'Grasa industrial EP-2 (kg)', 'Consumible', 153, 17, 228417.04);
-<br>INSERT INTO repuesto (id_repuesto, nombre_repuesto, categoria, cantidad_stock, stock_minimo, precio_unitario) VALUES (15, 'Aceite hidráulico ISO 68 (gal)', 'Hidráulico', 195, 21, 127943.55);
-<br>INSERT INTO repuesto (id_repuesto, nombre_repuesto, categoria, cantidad_stock, stock_minimo, precio_unitario) VALUES (16, 'Banda transportadora (m)', 'Mecánico', 190, 15, 367144.85);
-<br>INSERT INTO repuesto (id_repuesto, nombre_repuesto, categoria, cantidad_stock, stock_minimo, precio_unitario) VALUES (17, 'Chumacera de pie', 'Neumático', 34, 26, 396289.16);
-<br>INSERT INTO repuesto (id_repuesto, nombre_repuesto, categoria, cantidad_stock, stock_minimo, precio_unitario) VALUES (18, 'Sensor de temperatura', 'Hidráulico', 196, 32, 345057.42);
-<br>INSERT INTO repuesto (id_repuesto, nombre_repuesto, categoria, cantidad_stock, stock_minimo, precio_unitario) VALUES (19, 'Relé térmico', 'Neumático', 52, 16, 34536.59);
-<br>INSERT INTO repuesto (id_repuesto, nombre_repuesto, categoria, cantidad_stock, stock_minimo, precio_unitario) VALUES (20, 'Acople flexible', 'Hidráulico', 77, 35, 48085.85);
+INSERT INTO repuesto (id_repuesto, nombre_repuesto, categoria, cantidad_stock, stock_minimo, precio_unitario) 
+    VALUES (1, 'Rodamiento 6205', 'Eléctrico', 18, 35, 50459.47);
+INSERT INTO repuesto (id_repuesto, nombre_repuesto, categoria, cantidad_stock, stock_minimo, precio_unitario) 
+    VALUES (2, 'Correa en V A-42', 'Mecánico', 195, 40, 277173.46);
+INSERT INTO repuesto (id_repuesto, nombre_repuesto, categoria, cantidad_stock, stock_minimo, precio_unitario) 
+    VALUES (3, 'Filtro de aceite', 'Consumible', 123, 14, 87738.3);
+INSERT INTO repuesto (id_repuesto, nombre_repuesto, categoria, cantidad_stock, stock_minimo, precio_unitario)
+    VALUES (4, 'Filtro de aire', 'Mecánico', 52, 16, 378575.79);
+INSERT INTO repuesto (id_repuesto, nombre_repuesto, categoria, cantidad_stock, stock_minimo, precio_unitario) 
+    VALUES (5, 'Empaque de culata', 'Hidráulico', 172, 11, 262161.11);
+INSERT INTO repuesto (id_repuesto, nombre_repuesto, categoria, cantidad_stock, stock_minimo, precio_unitario) 
+    VALUES (6, 'Sello mecánico', 'Eléctrico', 174, 34, 37689.73);
+INSERT INTO repuesto (id_repuesto, nombre_repuesto, categoria, cantidad_stock, stock_minimo, precio_unitario) 
+    VALUES (7, 'Válvula de retención', 'Mecánico', 83, 30, 211731.06);
+INSERT INTO repuesto (id_repuesto, nombre_repuesto, categoria, cantidad_stock, stock_minimo, precio_unitario) 
+    VALUES (8, 'Manguera hidráulica 1/2"', 'Consumible', 90, 32, 96908.06);
+INSERT INTO repuesto (id_repuesto, nombre_repuesto, categoria, cantidad_stock, stock_minimo, precio_unitario) 
+    VALUES (9, 'Contactor 40A', 'Hidráulico', 3, 45, 316360.45);
+INSERT INTO repuesto (id_repuesto, nombre_repuesto, categoria, cantidad_stock, stock_minimo, precio_unitario) 
+    VALUES (10, 'Fusible 20A', 'Eléctrico', 46, 31, 205916.09);
+INSERT INTO repuesto (id_repuesto, nombre_repuesto, categoria, cantidad_stock, stock_minimo, precio_unitario) 
+    VALUES (11, 'Termostato industrial', 'Hidráulico', 103, 17, 273377.9);
+INSERT INTO repuesto (id_repuesto, nombre_repuesto, categoria, cantidad_stock, stock_minimo, precio_unitario) 
+    VALUES (12, 'Bomba de engranajes', 'Mecánico', 131, 5, 147692.43);
+INSERT INTO repuesto (id_repuesto, nombre_repuesto, categoria, cantidad_stock, stock_minimo, precio_unitario) 
+    VALUES (13, 'Cable eléctrico THHN 12 AWG', 'Mecánico', 180, 45, 422995.2);
+INSERT INTO repuesto (id_repuesto, nombre_repuesto, categoria, cantidad_stock, stock_minimo, precio_unitario) 
+    VALUES (14, 'Grasa industrial EP-2 (kg)', 'Consumible', 153, 17, 228417.04);
+INSERT INTO repuesto (id_repuesto, nombre_repuesto, categoria, cantidad_stock, stock_minimo, precio_unitario) 
+    VALUES (15, 'Aceite hidráulico ISO 68 (gal)', 'Hidráulico', 195, 21, 127943.55);
+INSERT INTO repuesto (id_repuesto, nombre_repuesto, categoria, cantidad_stock, stock_minimo, precio_unitario) 
+    VALUES (16, 'Banda transportadora (m)', 'Mecánico', 190, 15, 367144.85);
+INSERT INTO repuesto (id_repuesto, nombre_repuesto, categoria, cantidad_stock, stock_minimo, precio_unitario) 
+    VALUES (17, 'Chumacera de pie', 'Neumático', 34, 26, 396289.16);
+INSERT INTO repuesto (id_repuesto, nombre_repuesto, categoria, cantidad_stock, stock_minimo, precio_unitario) 
+    VALUES (18, 'Sensor de temperatura', 'Hidráulico', 196, 32, 345057.42);
+INSERT INTO repuesto (id_repuesto, nombre_repuesto, categoria, cantidad_stock, stock_minimo, precio_unitario) 
+    VALUES (19, 'Relé térmico', 'Neumático', 52, 16, 34536.59);
+INSERT INTO repuesto (id_repuesto, nombre_repuesto, categoria, cantidad_stock, stock_minimo, precio_unitario) 
+    VALUES (20, 'Acople flexible', 'Hidráulico', 77, 35, 48085.85);
     </div>
   <h3>Qué se lleva construido al final de hoy</h3>
   <ul class="l">
