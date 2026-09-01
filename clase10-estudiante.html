@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Clase 10 · Bases de datos</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;600;700&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --tinta:#06182E; --azul900:#0A2A52; --azul700:#12457F; --azul500:#1E6FB8;
+  --azul300:#6BAEDB; --azul050:#E8F1F9; --papel:#FFFFFF; --nieve:#F4F8FC;
+  --linea:#CFE0EF; --alerta:#C81E33; --alerta050:#FDECEE; --ok:#0F7A6C; --ok050:#E6F4F1;
+  --ambar:#A76A00; --ambar050:#FFF4E0; --gris:#5C7189;
+  --display:'Space Grotesk','Segoe UI',system-ui,sans-serif;
+  --cuerpo:'IBM Plex Sans','Segoe UI',system-ui,sans-serif;
+  --mono:'IBM Plex Mono','Consolas',monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;scroll-padding-top:96px}
+body{font-family:var(--cuerpo);color:var(--tinta);background:var(--nieve);line-height:1.62;font-size:16px}
+h1,h2,h3,h4{font-family:var(--display);line-height:1.16;letter-spacing:-.012em}
+.barra{position:sticky;top:0;z-index:50;background:linear-gradient(180deg,var(--azul900),var(--azul700));
+  color:#fff;border-bottom:3px solid var(--azul300);box-shadow:0 2px 14px rgba(6,24,46,.18)}
+.barra-in{max-width:1400px;margin:0 auto;padding:9px 18px;display:flex;gap:14px;align-items:center;flex-wrap:wrap}
+.barra img{height:38px;background:#fff;border-radius:6px;padding:3px}
+.barra .quien{flex:1;min-width:180px}
+.barra .quien b{display:block;font-family:var(--display);font-size:.94rem;line-height:1.25}
+.barra .quien span{font-size:.76rem;opacity:.85}
+.crono{font-family:var(--mono);font-size:1rem;background:rgba(255,255,255,.13);padding:5px 11px;
+  border-radius:8px;border:1px solid rgba(255,255,255,.22);white-space:nowrap}
+.paginas{display:flex;gap:6px;flex-wrap:wrap}
+.paginas a{font-size:.78rem;text-decoration:none;color:#fff;border:1px solid rgba(255,255,255,.3);
+  padding:5px 11px;border-radius:7px;background:rgba(255,255,255,.08)}
+.paginas a:hover{background:rgba(255,255,255,.2)}
+.paginas a.actual{background:#fff;color:var(--azul900);font-weight:700}
+.marco{max-width:1400px;margin:0 auto;display:grid;grid-template-columns:262px 1fr;gap:26px;padding:26px 18px 80px}
+.rail{position:sticky;top:100px;align-self:start;background:var(--papel);border:1px solid var(--linea);
+  border-radius:12px;overflow-y:auto;overflow-x:hidden;max-height:calc(100vh - 122px)}
+.rail h4{font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;color:var(--azul700);margin:0;
+  padding:12px 14px 8px;border-bottom:1px solid var(--linea);position:sticky;top:0;background:var(--papel);z-index:2}
+.rail a{display:grid;grid-template-columns:52px 1fr;gap:8px;padding:9px 12px;text-decoration:none;
+  color:var(--tinta);font-size:.83rem;border-bottom:1px solid #EDF3F9;align-items:center}
+.rail a .id{font-family:var(--mono);font-size:.68rem;color:var(--azul500);background:var(--azul050);
+  border-radius:5px;text-align:center;padding:2px 0}
+.rail a .mn{display:block;font-size:.7rem;color:var(--gris)}
+.rail a:hover{background:var(--azul050)}
+.rail a.on{background:var(--azul050);box-shadow:inset 3px 0 0 var(--azul500);font-weight:600}
+.rail a.pausa{background:var(--ambar050);color:#7A4E00}
+.rail a.pausa .id{background:#F5D9A8;color:#7A4E00}
+section{background:var(--papel);border:1px solid var(--linea);border-radius:14px;
+  padding:26px 28px;margin-bottom:20px}
+section.hero{background:linear-gradient(135deg,var(--azul900) 0%,var(--azul700) 55%,var(--azul500) 100%);
+  color:#fff;border:none}
+.eyebrow{font-size:.7rem;letter-spacing:.16em;text-transform:uppercase;color:var(--azul300);font-weight:700}
+.hero h1{font-family:var(--display);font-size:clamp(1.7rem,3.6vw,2.5rem);margin:8px 0 10px;font-weight:700}
+.hero .lede{font-size:1.02rem;opacity:.94;max-width:62ch}
+.pill-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+.pill{background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.26);padding:5px 12px;
+  border-radius:999px;font-size:.82rem}
+.rot{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;margin-bottom:8px}
+.rot .hora{font-family:var(--mono);font-size:.76rem;color:var(--azul500);background:var(--azul050);
+  padding:3px 10px;border-radius:999px;white-space:nowrap}
+section h2{font-size:clamp(1.25rem,2.5vw,1.65rem);color:var(--azul900)}
+h3{font-size:1.06rem;color:var(--azul700);margin:22px 0 6px}
+p{margin-bottom:9px;max-width:74ch}
+ul.l,ol.l{margin:8px 0 8px 22px}
+ul.l li,ol.l li{margin-bottom:6px}
+code{font-family:var(--mono);background:var(--azul050);padding:1px 6px;border-radius:4px;font-size:.88em}
+.caja{background:var(--nieve);border:1px solid var(--linea);border-radius:11px;padding:18px 20px;margin-top:16px}
+.caja.nota{background:var(--ambar050);border-color:var(--ambar);border-left:5px solid var(--ambar)}
+.caja.alerta{background:var(--alerta050);border-color:var(--alerta);border-left:5px solid var(--alerta)}
+table{width:100%;border-collapse:collapse;margin-top:12px;font-size:.92rem;background:#fff}
+th,td{border:1px solid var(--linea);padding:9px 11px;text-align:left;vertical-align:top}
+th{background:var(--azul050);color:var(--azul900);font-weight:700}
+.tw{overflow-x:auto}
+.ddl{background:var(--tinta);color:#DCEBFB;border-radius:10px;padding:14px 16px;margin-top:12px;
+  font-family:var(--mono);font-size:.86rem;line-height:1.7;overflow-x:auto;white-space:pre}
+.lectura{counter-increment:lect}
+.lectura h3::before{content:"Lectura " counter(lect) " · "}
+main{counter-reset:lect}
+.ejercicio{background:var(--nieve);border:2px solid var(--azul300);border-radius:12px;padding:18px 20px;margin-top:18px}
+.ejercicio h4{color:var(--azul700);font-size:.98rem;margin-bottom:10px}
+.opcion{display:block;margin:8px 0;padding:9px 12px;border:1px solid var(--linea);border-radius:8px;
+  cursor:pointer;background:#fff}
+.opcion:hover{background:var(--azul050)}
+.opcion input{margin-right:8px}
+.feedback{margin-top:12px;padding:10px 14px;border-radius:8px;font-size:.92rem;display:none}
+.feedback.ok{background:var(--ok050);border:1px solid var(--ok);display:block}
+.feedback.mal{background:var(--alerta050);border:1px solid var(--alerta);display:block}
+button.chequear{font-family:var(--cuerpo);font-size:.9rem;font-weight:600;padding:9px 16px;border-radius:8px;
+  border:1px solid var(--azul700);background:var(--azul700);color:#fff;cursor:pointer;margin-top:6px}
+button.chequear:hover{background:var(--azul900)}
+.pie{max-width:1400px;margin:0 auto;padding:22px 18px 40px;color:var(--gris);font-size:.85rem}
+@media(max-width:980px){
+  .marco{grid-template-columns:1fr;padding:16px 12px 60px;gap:16px}
+  .rail{position:static;max-height:44vh;overflow-y:auto}
+  section{padding:20px 17px}
+  html{scroll-padding-top:150px}
+}
+</style>
+</head>
+<body>
+
+<header class="barra">
+  <div class="barra-in">
+    <img src="data:image/png;base64,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" alt="Logo de la institución">
+    <div class="quien">
+      <b>Bases de datos · Grado 11</b>
+      <span>I. E. María de los Ángeles Cano Márquez</span>
+    </div>
+    <div class="paginas"><a class="actual" href="clase10-estudiante.html">Clase</a><a href="clase10-talleres-estudiante.html">Talleres</a><a href="clase10-evaluacion-estudiante.html">Evaluación</a></div>
+    <div class="crono" id="crono" aria-live="off">--:--</div>
+  </div>
+</header>
+<div class="marco">
+<nav class="rail" aria-label="Agenda de la sesión"><h4>Agenda de la sesión</h4><a href="#m1" data-ini="1:00" data-fin="1:30"><span class="id">1:00</span><span><span class="nm">Compromisos, agenda y repaso</span><span class="mn">hasta 1:30</span></span></a><a href="#m2" data-ini="1:30" data-fin="2:30"><span class="id">1:30</span><span><span class="nm">UPDATE y DELETE</span><span class="mn">hasta 2:30</span></span></a><a href="#pausa" class="pausa" data-ini="2:30" data-fin="3:00"><span class="id">2:30</span><span><span class="nm">Descanso</span><span class="mn">hasta 3:00</span></span></a><a href="clase10-talleres-estudiante.html#t1" data-ini="3:00" data-fin="3:30"><span class="id">3:00</span><span><span class="nm">Taller 1 (individual)</span><span class="mn">hasta 3:30</span></span></a><a href="clase10-talleres-estudiante.html#t2" data-ini="3:30" data-fin="4:25"><span class="id">3:30</span><span><span class="nm">Taller 2: entrega Hito 2</span><span class="mn">hasta 4:25</span></span></a><a href="#m6" data-ini="4:25" data-fin="4:50"><span class="id">4:25</span><span><span class="nm">Socialización</span><span class="mn">hasta 4:50</span></span></a><a href="clase10-evaluacion-estudiante.html#cuestionario" data-ini="4:50" data-fin="5:10"><span class="id">4:50</span><span><span class="nm">Evaluación</span><span class="mn">hasta 5:10</span></span></a><a href="#m8" data-ini="5:10" data-fin="5:20"><span class="id">5:10</span><span><span class="nm">Agenda próxima clase</span><span class="mn">hasta 5:20</span></span></a><a href="#m9" data-ini="5:20" data-fin="5:40"><span class="id">5:20</span><span><span class="nm">Organización y aseo</span><span class="mn">hasta 5:40</span></span></a></nav>
+<main>
+
+<section class="hero" id="inicio">
+  <div class="eyebrow">Clase 10 · Cierre del módulo</div>
+  <h1>UPDATE y DELETE — CRUD completo</h1>
+  <p class="lede">Última sesión del módulo de Bases de datos. 
+    <br>CRUD es el acrónimo de las cuatro operaciones básicas sobre datos en una base de datos: 
+    Create (crear, con INSERT), Read (leer, con SELECT), Update (actualizar, con UPDATE) 
+    y Delete (eliminar, con DELETE).
+
+<br>En el recorrido del curso: CREATE se vio en clases 7 y 8 (creación de la base y las tablas), 
+INSERT y SELECT en clase 9, y UPDATE y DELETE en clase 10 — con eso se completa el ciclo.
+    <br>Hoy cierran el CRUD (ya tienen CREATE,
+  INSERT y SELECT) con las dos operaciones que faltan, y entregan la base de datos completa de su
+  proyecto PIA: Hito 2.</p>
+  <div class="pill-row">
+    <span class="pill">Jueves 3 de septiembre de 2026</span>
+    <span class="pill">1:00 a 5:40 p. m. (+10 min sobre el horario fijo)</span>
+    <span class="pill">Hito 2 · Base de datos construida</span>
+  </div>
+</section>
+
+<section id="m1">
+  <div class="rot"><span class="hora">1:00 – 1:30</span><h2>Compromisos, agenda y repaso</h2></div>
+  <p>Repaso rápido de INSERT y SELECT (clase 9) antes de entrar a lo nuevo. Recuerden el nombre de
+  la base de datos de su proyecto — la van a necesitar abierta en phpMyAdmin toda la sesión.</p>
+</section>
+
+<section id="m2">
+
+<div class="lectura">
+<h3>UPDATE: modificar filas que ya existen</h3>
+<p><code>UPDATE</code> cambia el valor de una o más columnas en las filas que cumplen una
+condición. La estructura es <code>UPDATE tabla SET columna = valor WHERE condicion;</code>. Sin
+la cláusula <code>SET</code>, MySQL no sabe qué cambiar; sin la cláusula <code>WHERE</code>,
+cambia esa columna en todas las filas de la tabla, no solo en la que ustedes querían.</p>
+<p>Ejemplo sobre el proyecto de Gestión de biblioteca: cuando un estudiante devuelve un libro, no
+se crea una fila nueva — se actualiza la fila existente del préstamo.</p>
+<div class="ddl">UPDATE prestamo
+SET estado = 'devuelto', fecha_devolucion = '2026-09-03'
+WHERE id_prestamo = 14;</div>
+</div>
+
+<div class="lectura">
+<h3>Por qué el WHERE en UPDATE no es opcional</h3>
+<p>Si alguien ejecuta <code>UPDATE articulo SET estado = 'dado de baja';</code> sin
+<code>WHERE</code>, todos los artículos del inventario quedan marcados como dados de baja, no solo
+el que se quería retirar. MySQL no pregunta ni avisa: ejecuta exactamente lo que se escribió.</p>
+<p>Ejemplo correcto sobre el proyecto de Gestión de inventarios, retirando un solo artículo:</p>
+<div class="ddl">UPDATE articulo
+SET estado = 'dado de baja'
+WHERE id_articulo = 7;</div>
+<div class="caja nota">
+  <p><strong>Buena práctica:</strong> antes de un <code>UPDATE</code>, ejecuten primero un
+  <code>SELECT</code> con la misma condición del <code>WHERE</code>, para ver exactamente qué
+  filas van a cambiar antes de cambiarlas.</p>
+</div>
+</div>
+
+<div class="lectura">
+<h3>DELETE: eliminar filas completas</h3>
+<p><code>DELETE FROM tabla WHERE condicion;</code> elimina filas enteras, no valores de columnas.
+Igual que con <code>UPDATE</code>, omitir el <code>WHERE</code> borra todas las filas de la
+tabla — y a diferencia de <code>UPDATE</code>, no hay forma de recuperar los datos borrados si no
+había una copia de seguridad.</p>
+<p>Ejemplo sobre el proyecto de Gestión comportamental: eliminar una observación que se registró
+por error y que el docente anuló:</p>
+<div class="ddl">DELETE FROM observacion
+WHERE id_observacion = 22;</div>
+</div>
+
+<div class="lectura">
+<h3>DELETE y las llaves foráneas: por qué a veces MySQL se niega a borrar</h3>
+<p>Si una tabla tiene una llave foránea apuntando a otra, MySQL no deja borrar la fila "padre"
+mientras existan filas "hijas" que dependan de ella — es la misma protección de integridad
+referencial que exige que un <code>INSERT</code> apunte a una fila que sí existe. En el proyecto
+de Gestión Asistencia y Permisos, no se puede borrar un estudiante de la tabla
+<code>estudiante</code> si esa persona ya tiene registros en <code>asistencia</code> o en
+<code>permisos</code>: MySQL responde con un error de restricción de llave foránea.</p>
+<div class="ddl">-- Esto falla si el estudiante tiene registros relacionados:
+DELETE FROM estudiante WHERE documento = '1017123456';
+-- Error: Cannot delete or update a parent row: a foreign key constraint fails</div>
+<p>Esa restricción no es un defecto: protege la base de datos de quedar con registros de asistencia
+huérfanos, sin estudiante al que pertenecerle. Si de verdad hay que borrar al padre, primero se
+borran (o reasignan) las filas hijas relacionadas.</p>
+</div>
+
+<div class="lectura">
+<h3>Cierre del recorrido de SQL</h3>
+<p>Con esto se completan las cuatro operaciones del CRUD: <code>CREATE</code> (clases 7 y 8),
+<code>INSERT</code> y <code>SELECT</code> (clase 9), y hoy <code>UPDATE</code> y
+<code>DELETE</code>. Esto cierra el módulo de Bases de datos. El módulo siguiente, Herramientas de
+Programación II, empieza el 9 de septiembre y retoma estas mismas bases de datos desde PHP.</p>
+</div>
+
+<div class="ejercicio">
+  <h4>Ejercicio interactivo 1 · ¿Cuál UPDATE es correcto?</h4>
+  <p>El proyecto de Gestión de bazar escolar necesita corregir el precio de un producto
+  (id_producto = 9) a 3500. ¿Cuál sentencia es correcta?</p>
+  <label class="opcion"><input type="radio" name="ej1" value="a"> a) <code>UPDATE producto SET precio = 3500;</code></label>
+  <label class="opcion"><input type="radio" name="ej1" value="b"> b) <code>UPDATE producto SET precio = 3500 WHERE id_producto = 9;</code></label>
+  <label class="opcion"><input type="radio" name="ej1" value="c"> c) <code>UPDATE SET precio = 3500 FROM producto WHERE id_producto = 9;</code></label>
+  <button type="button" class="chequear" data-ej="ej1" data-correcta="b">Verificar</button>
+  <div class="feedback" id="fb_ej1"></div>
+</div>
+
+<div class="ejercicio">
+  <h4>Ejercicio interactivo 2 · Encuentre el DELETE peligroso</h4>
+  <p>De estas tres sentencias sobre el proyecto de Gestión de inventarios, ¿cuál borraría más
+  filas de las que probablemente se pretendía?</p>
+  <label class="opcion"><input type="radio" name="ej2" value="a"> a) <code>DELETE FROM articulo WHERE id_articulo = 3;</code></label>
+  <label class="opcion"><input type="radio" name="ej2" value="b"> b) <code>DELETE FROM articulo WHERE estado = 'dado de baja';</code></label>
+  <label class="opcion"><input type="radio" name="ej2" value="c"> c) <code>DELETE FROM articulo;</code></label>
+  <button type="button" class="chequear" data-ej="ej2" data-correcta="c">Verificar</button>
+  <div class="feedback" id="fb_ej2"></div>
+</div>
+
+</section>
+
+<section id="Ejercicio">
+  <div class="rot"><span class="hora">2:00 – 2:30</span><h2>Ejercicio</h2></div>
+  <p>
+<li>Cambia la especialidad del técnico Andrés Muñoz (id_tecnico 12) de "Electricidad industrial" a "Refrigeración".</li>
+<li>El equipo Compresor SKF 105 (id_equipo 5) salió de reparación. Cambia su estado de "En reparación" a "Activo".</li>
+<li>Aumenta en 20.000 el precio unitario del repuesto Contactor 40A (id_repuesto 9), que actualmente cuesta 316.360,45.</li>
+<li>Actualiza a "Vencido" el estado de todos los planes de mantenimiento que sigan en estado "Programado" con fecha anterior al 1 de septiembre de 2026. Con los datos actuales deben verse afectados los planes con id_plan 5, 8, 14 y 19 — verifica ese número con SELECT COUNT(*) antes y después del UPDATE.</li>
+<li>Aumenta en 5 unidades el stock mínimo de todos los repuestos de categoría "Consumible" (Filtro de aceite, Manguera hidráulica 1/2" y Grasa industrial EP-2, id_repuesto 3, 8 y 14).</li>
+<li>El repuesto Contactor 40A (id_repuesto 9) tiene solo 3 unidades en cantidad_stock, muy por debajo de su stock_minimo de 45. Consulta la fila con SELECT, súmale 50 unidades por reposición con UPDATE, y vuelve a consultarla para mostrar el antes y el después.</li>
+<li>Elimina las órdenes de trabajo que registraron menos de 1 hora trabajada. Con los datos actuales corresponde a id_orden 1 (0.8 horas) e id_orden 12 (0.6 horas).</li>
+<li>Elimina el repuesto Relé térmico (id_repuesto 19), que se descontinuó. Como ninguna otra tabla lo referencia, el DELETE no debería dar error — es el caso simple, sin llave foránea de por medio.</li>
+<li>La técnica Sara Cardona (id_tecnico 8) tiene tres órdenes de trabajo a su nombre (id_orden 10, 13 y 18). Consúltalas primero con SELECT, luego intenta eliminarla con DELETE. Explica en una frase el error que da MySQL y por qué ocurre.</li>
+<li>El equipo Generador eléctrico Grundfos 107 (id_equipo 7) tiene cuatro planes de mantenimiento asociados (id_plan 5, 14, 18 y 20). Intenta eliminarlo directamente y verás el error de llave foránea; resuélvelo eliminando primero esos cuatro planes y después el equipo.<li>Eliminar un equipo (por id_equipo) que tenga planes de mantenimiento asociados en plan_mantenimiento. Cuando falle por la llave foránea, resuelve el problema en el orden correcto: primero elimina (o reasigna) los planes de ese equipo, y solo después elimina el equipo.</li>
+  </p>
+</section>
+
+<section id="pausa">
+  <div class="rot"><span class="hora">2:30 – 3:00</span><h2>Descanso</h2></div>
+  <p>Al volver, Taller 1 empieza a las 3:00 en la página de talleres.</p>
+</section>
+
+<section id="m6">
+  <div class="rot"><span class="hora">4:25 – 4:50</span><h2>Socialización</h2></div>
+  <p>25 minutos para 5 grupos, 5 minutos cada uno. El docente recorre los equipos durante este
+  bloque y verifica en phpMyAdmin lo que cada grupo declaró en el informe del Taller 2: número de
+  tablas, filas pobladas, y que el UPDATE y el DELETE reportados sí se ejecutaron.</p>
+</section>
+
+<section id="m8">
+  <div class="rot"><span class="hora">5:10 – 5:20</span><h2>Agenda de la próxima clase</h2></div>
+  <p>Esta fue la última clase del módulo de Bases de datos. El módulo de Herramientas de
+  Programación II empieza el <strong>miércoles 9 de septiembre</strong> con un diagnóstico de
+  HTML5 semántico y formularios sobre el front ya construido de cada proyecto.</p>
+</section>
+
+<section id="m9">
+  <div class="rot"><span class="hora">5:20 – 5:40</span><h2>Cierre del aula</h2></div>
+  <p>Organización de equipos (5:20–5:30) y aseo del salón (5:30–5:40).</p>
+</section>
+
+</main>
+</div>
+<div class="pie">Clase 10 · Bases de datos · Grado 11 · 2026</div>
+<script>
+function relojYAgenda(){
+  const c=document.getElementById('crono'); if(!c)return;
+  const f=new Date();
+  const hh=String(f.getHours()).padStart(2,'0'), mm=String(f.getMinutes()).padStart(2,'0');
+  const min=f.getHours()*60+f.getMinutes();
+  document.querySelectorAll('.rail a').forEach(a=>{
+    const p=x=>{const [h,m]=x.split(':').map(Number); return (h<8?h+12:h)*60+m;};
+    const i=p(a.dataset.ini), t=p(a.dataset.fin);
+    if(t>i&&min>=i&&min<t)a.classList.add('on'); else a.classList.remove('on');
+  });
+  c.textContent=hh+':'+mm;
+}
+setInterval(relojYAgenda,15000);
+document.addEventListener('DOMContentLoaded',relojYAgenda);
+if(document.readyState!=='loading')relojYAgenda();
+
+document.querySelectorAll('button.chequear').forEach(btn=>{
+  btn.addEventListener('click', function(){
+    const grupo = this.dataset.ej, correcta = this.dataset.correcta;
+    const marcada = document.querySelector('input[name="'+grupo+'"]:checked');
+    const fb = document.getElementById('fb_'+grupo);
+    if(!marcada){ fb.className='feedback mal'; fb.textContent='Marque una opción antes de verificar.'; return; }
+    if(marcada.value === correcta){ fb.className='feedback ok'; fb.textContent='Correcto.'; }
+    else { fb.className='feedback mal'; fb.textContent='No es esa. Vuelva a leer la lectura anterior e intente de nuevo.'; }
+  });
+});
+</script>
+</body>
+</html>
