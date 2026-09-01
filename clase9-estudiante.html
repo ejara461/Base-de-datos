@@ -511,15 +511,15 @@ INSERT INTO tipo_mantenimiento (id_tipo, nombre_tipo, descripcion, periodicidad_
 INSERT INTO tipo_mantenimiento (id_tipo, nombre_tipo, descripcion, periodicidad_dias) 
     VALUES (20, 'Inspección visual (variante 4)', 'Revisión general de condiciones externas y de seguridad', 30);
 <br>
-<br>CREATE TABLE plan_mantenimiento (
-<br>  id_plan INT AUTO_INCREMENT PRIMARY KEY,
-<br>  id_equipo INT NOT NULL,
-<br>  id_tipo INT NOT NULL,
-<br>  fecha_programada DATE NOT NULL,
-<br>  estado VARCHAR(30) NOT NULL,
-<br>  FOREIGN KEY (id_equipo) REFERENCES equipo(id_equipo),
-<br>  FOREIGN KEY (id_tipo) REFERENCES tipo_mantenimiento(id_tipo)
-<br>);
+CREATE TABLE plan_mantenimiento (
+  id_plan INT AUTO_INCREMENT PRIMARY KEY,
+  id_equipo INT NOT NULL,
+  id_tipo INT NOT NULL,
+  fecha_programada DATE NOT NULL,
+  estado VARCHAR(30) NOT NULL,
+  FOREIGN KEY (id_equipo) REFERENCES equipo(id_equipo),
+  FOREIGN KEY (id_tipo) REFERENCES tipo_mantenimiento(id_tipo)
+);
 <br>
 INSERT INTO plan_mantenimiento (id_plan, id_equipo, id_tipo, fecha_programada, estado) 
     VALUES (1, 1, 12, '2026-03-22', 'Ejecutado');
@@ -573,7 +573,7 @@ CREATE TABLE orden_trabajo (
   FOREIGN KEY (id_plan) REFERENCES plan_mantenimiento(id_plan),
   FOREIGN KEY (id_tecnico) REFERENCES tecnico(id_tecnico)
 );
-
+<br>
 INSERT INTO orden_trabajo (id_orden, id_plan, id_tecnico, fecha_ejecucion, horas_trabajadas, costo_repuestos, observaciones) 
     VALUES (1, 9, 1, '2026-09-03', 0.8, 290745.97, 'Equipo quedó operativo tras el ajuste.');
 INSERT INTO orden_trabajo (id_orden, id_plan, id_tecnico, fecha_ejecucion, horas_trabajadas, costo_repuestos, observaciones) 
@@ -665,6 +665,31 @@ INSERT INTO repuesto (id_repuesto, nombre_repuesto, categoria, cantidad_stock, s
 INSERT INTO repuesto (id_repuesto, nombre_repuesto, categoria, cantidad_stock, stock_minimo, precio_unitario) 
     VALUES (20, 'Acople flexible', 'Hidráulico', 77, 35, 48085.85);
     </div>
+    
+  <h3>Consultas a relizar</h3>
+  <ul class="l">
+Tarea de 10 consultas sobre bd_mantenimiento_preventivo, organizada de menor a mayor dificultad y usando las tablas que ya tienen cargadas.
+<br>
+Nivel básico (SELECT y WHERE)
+
+<li>Lista el nombre y la ubicación de todos los equipos registrados.</li>
+<li>Lista los repuestos cuya categoría sea "Eléctrico".</li>
+<li>Lista las órdenes de trabajo con más de 5 horas trabajadas.</li>
+<br>
+Nivel intermedio (operaciones aritméticas por fila)
+<br>
+<li>Calcula el valor total en bodega de cada repuesto (cantidad en stock por precio unitario).</li>
+<li>Calcula, para cada repuesto, cuánto le sobra o le falta frente a su stock mínimo.</li>
+<li>Simula un incremento del 8% en el precio unitario de todos los repuestos, sin modificar la tabla (solo en el resultado del SELECT).</li>
+<br>
+Nivel de agregación (SUM, AVG, MAX, MIN, COUNT)
+<br>
+<li>Calcula el valor total de todo el inventario de repuestos.</li>
+<li>Encuentra el precio unitario promedio, el máximo y el mínimo entre todos los repuestos.</li>
+<li>Cuenta cuántos repuestos están por debajo de su stock mínimo.</li>
+<li>Calcula el total de horas trabajadas y el costo total de repuestos sumando todas las órdenes de trabajo.</li>
+  </ul>
+    
   <h3>Qué se lleva construido al final de hoy</h3>
   <ul class="l">
     <li>El informe individual del taller 1, enviado.</li>
