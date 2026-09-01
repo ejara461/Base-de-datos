@@ -355,23 +355,23 @@ ORDER BY tiempo_preparacion_minutos DESC;</div>
   <div class="ddl">
  
 CREATE DATABASE IF NOT EXISTS bd_mantenimiento_preventivo;
-<br>USE bd_mantenimiento_preventivo;
+USE bd_mantenimiento_preventivo;
 <br>
-<br>DROP TABLE IF EXISTS orden_trabajo;
-<br>DROP TABLE IF EXISTS plan_mantenimiento;
-<br>DROP TABLE IF EXISTS equipo;
-<br>DROP TABLE IF EXISTS tecnico;
-<br>DROP TABLE IF EXISTS tipo_mantenimiento;
-<br>DROP TABLE IF EXISTS repuesto;
+DROP TABLE IF EXISTS orden_trabajo;
+DROP TABLE IF EXISTS plan_mantenimiento;
+DROP TABLE IF EXISTS equipo;
+DROP TABLE IF EXISTS tecnico;
+DROP TABLE IF EXISTS tipo_mantenimiento;
+DROP TABLE IF EXISTS repuesto;
 <br>
-<br>CREATE TABLE equipo (
-  <br>id_equipo INT AUTO_INCREMENT PRIMARY KEY,
-  <br>nombre_equipo VARCHAR(80) NOT NULL,
-  <br>marca VARCHAR(50),
-  <br>ubicacion VARCHAR(80) NOT NULL,
-  <br>fecha_adquisicion DATE,
- <br> estado VARCHAR(30) NOT NULL
-<br>);
+CREATE TABLE equipo (
+id_equipo INT AUTO_INCREMENT PRIMARY KEY,
+nombre_equipo VARCHAR(80) NOT NULL,
+marca VARCHAR(50),
+ubicacion VARCHAR(80) NOT NULL,
+fecha_adquisicion DATE,
+estado VARCHAR(30) NOT NULL
+;
 <br>
 <br>INSERT INTO equipo (id_equipo, nombre_equipo, marca, ubicacion, fecha_adquisicion, estado) VALUES (1, 'Aire acondicionado SKF 101', 'SKF', 'Subestación eléctrica', '2022-09-28', 'Activo');
 <br>INSERT INTO equipo (id_equipo, nombre_equipo, marca, ubicacion, fecha_adquisicion, estado) VALUES (2, 'Montacargas Ingersoll Rand 102', 'Ingersoll Rand', 'Subestación eléctrica', '2024-03-04', 'Activo');
